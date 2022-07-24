@@ -1,0 +1,149 @@
+@import "~antd/dist/antd.css";
+
+/* .App {
+} */
+
+.hero-image {
+  width: 500px;
+  margin-bottom: 10px;
+}
+
+.hero-section {
+  margin-top: 150px;
+}
+
+.white {
+  background: white;
+}
+.boxed {
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.item-card-image {
+  width: 120px;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  min-height: 80vh;
+  margin-top: 60px;
+}
+
+.float-right {
+  text-align: right;
+  justify-content: end;
+  float: right;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.create-detail {
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.salespage-header {
+  margin-top: 25px;
+}
+
+.create-logo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.history-logo {
+  width: 300px;
+  padding-bottom: 10px;
+}
+
+.preview-image {
+  width: 36px;
+}
+
+.item-card {
+  width: 225px;
+  border: 1px solid black;
+  padding: 5px;
+  margin: 10px;
+  display: inline-block;
+}
+
+.itemrow {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10px;;
+  border-top: 1px solid gray;
+  /* border-bottom: 1px solid gray; */
+}
+
+.page-logo {
+  margin-top: 25px;
+  width: 64px;
+}
+
+.success-text {
+  color: green;
+}
+
+.centered {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.error-text {
+  color: red;
+}
+
+.dropzone {
+  border: 1px dotted black;
+  padding: 25px;
+  cursor: pointer;
+}
+
+.hero-slogan-section {
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 50px;
+  margin-left: 25px;
+}
+
+.hero-slogan {
+  font-size: 28px;
+}
+
+.vertical-margin,
+.standard-button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.bold {
+  font-weight: bold;;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.ant-input,
+input,
+textarea {
+  max-width: 400px;
+  /* margin-bottom: 10px;
+  margin-top: 10px; */
+}
+
+.header-logo {
+  height: 40px;
+}
+
+.ant-layout-sider, .ant-layout-header {
+  background: white;
+}
