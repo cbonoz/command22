@@ -20,7 +20,6 @@ const { Header, Footer, Sider, Content } = Layout;
 const {Option} = Select
 
 
-
 export default function App() {
   const navigate = useNavigate();
 
@@ -55,7 +54,7 @@ export default function App() {
       <div style={{height}}>
     <Routes>
             <Route path="/" element={<Home />}/>
-            <Route path="/map" element={<Map />}/>
+            <Route path="/maps" element={<Map />}/>
             <Route path="/video" element={<VideoStreams />}/>
             <Route path="/notifications" element={<Notifications />}/>
     </Routes>
@@ -71,7 +70,7 @@ export default function App() {
     <Menu.Item  key={0} onClick={() => navigate("/")}>
     {APP_NAME} | &copy;2022
       </Menu.Item>
-    <Menu.Item  key={1} onClick={() => navigate("/map")}>
+    <Menu.Item  key={1} onClick={() => navigate("/maps")}>
              <GlobalOutlined/> Maps
             </Menu.Item>
             
