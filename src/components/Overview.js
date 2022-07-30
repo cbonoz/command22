@@ -1,12 +1,22 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
+import CloudCard from './CloudCard'
+import { Empty } from 'antd'
+
+const CATEGORIES = [
+  'Location', 'Description', 'Notes and events', 'Recent alerts', 'Key personnel'
+]
 function Overview(props) {
   return (
-    <div className='white'>Overview</div>
+    <div>
+    {CATEGORIES.map((c, i) => {
+      return <CloudCard height={200} title={c}>
+        <br/>
+        <Empty description={`No ${c} data avaiable`}/>
+      </CloudCard>
+    })}
+</div>
   )
 }
-
-Overview.propTypes = {}
 
 export default Overview
