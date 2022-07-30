@@ -1,104 +1,15 @@
-
-import React, {useEffect, useState} from 'react';
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { Layout, Menu, Select } from 'antd';
-
-import * as THREE from "three";
-//import { VRButton } from "three/examples/jsm/webxr/VRButton";
-//import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-//import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
-import Stats from "three/examples/jsm/libs/stats.module";
-//import { MapControls } from "three/examples/jsm/controls/OrbitControls";
-
-//import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
-//import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
-
+import React, {useState, useEffect} from 'react'
 import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
-import { APP_NAME, PLY_FILE, PLY_FILES } from "./util/constants";
-import logo from "./assets/logo.png";
 
-import 'antd/dist/antd.css';
-import "./styles.css";
+import { PLY_FILES } from '../util/constants';
+import * as THREE from "three";
+import { Select } from 'antd';
+import CloudCard from './CloudCard';
 
-const { Header, Footer, Sider, Content } = Layout;
-const {Option} = Select
-
-
-var loader = new PLYLoader();
-
-export default function App() {
-  const navigate = useNavigate();
-  const [plyFile, setPlyFile] = useState('')
-
-  function removeEntity(name) {
-    var selectedObject = scene.getObjectByName(name);
-    scene.remove( selectedObject );
-    animate();
-}
-
-  useEffect(() => {
-    initScene()
-    animate()
-  }, [])
-
-  useEffect(() => {
-    initPly(plyFile)
-  }, [plyFile])
-
-  return <div className='App'><Layout>
-  <Header>
-  <Menu
-            // theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={[0, 1]}
-          >
-            <Menu.Item key={0}>
-              <img
-                src={logo}
-                className="header-logo pointer"
-                onClick={() => navigate("/")}
-              />
-            </Menu.Item>
-
-            <Menu.Item  key={1} onClick={() => navigate("/lidar")}>
-              Lidar
-            </Menu.Item>
-            
-            <Menu.Item key={2} onClick={() => navigate("/video")}>
-              Video Streams
-            </Menu.Item>
-            <Menu.Item key={3} onClick={() => navigate("/settings")}>
-              Settings
-            </Menu.Item>
-
-            <span>
-            <Select defaultValue={plyFile} style={{ width: 200 }} onChange={(e) => 
-              {
-                removeEntity(plyFile)
-                setPlyFile(e)}
-              }>
-              {PLY_FILES.map((option, i) => {
-                return <Option value={option} key={i}>{option}</Option>
-              })}
-              </Select>
-            </span>
-
-
-        </Menu>
-  </Header>
-  <Layout>
-    {/* <Sider>Sider</Sider> */}
-    <Content>
-      <div id="render-area"></div>
-    </Content>
-  </Layout>
-  <Footer>{APP_NAME} | &copy;2022</Footer>
-</Layout>
-</div> 
-}
-
-var container, stats;
 var camera, cameraTarget, scene, renderer;
+
+const {Option} = Select
+const loader = new PLYLoader();
 
 // init();
 // animate();
@@ -133,14 +44,15 @@ function initPly(activeFile) {
   });
 }
 
-function initScene() {
+function initScene(width, height) {
   // container = document.createElement("div");
   // document.body.appendChild(container);
-  container = document.getElementById('render-area');
+  const container = document.getElementById('render-area');
+//   const height = window.innerHeight - HEADER_FOOTER_HEIGHT
 
   camera = new THREE.PerspectiveCamera(
     35,
-    window.innerWidth / window.innerHeight,
+    width / height,
     1,
     15
   );
@@ -195,21 +107,14 @@ function initScene() {
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(width, height);
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   renderer.shadowMap.enabled = true;
 
   container.appendChild(renderer.domElement);
 
-  // stats
-
-  stats = new Stats();
-  // container.appendChild(stats.dom);
-
-  // resize
-
-  window.addEventListener("resize", onWindowResize, false);
+//   window.addEventListener("resize", onWindowResize, false);
 }
 
 function addShadowedLight(x, y, z, color, intensity) {
@@ -234,17 +139,10 @@ function addShadowedLight(x, y, z, color, intensity) {
   directionalLight.shadow.bias = -0.001;
 }
 
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
 
 function animate() {
   requestAnimationFrame(animate);
   render();
-  stats.update();
 }
 
 const ROTATION_RATE = 0.0001; // was .0005
@@ -259,3 +157,59 @@ function render() {
 
   renderer.render(scene, camera);
 }
+
+
+function PointCloud({width, height, plyFile = PLY_FILES[4]}) {
+    // const [plyFile, setPlyFile] = useState('')
+
+    function removeEntity(name) {
+      var selectedObject = scene.getObjectByName(name);
+      scene.remove( selectedObject );
+      animate();
+  }
+  
+    useEffect(() => {
+      initScene(width, height)
+      animate()
+    }, [width])
+  
+    useEffect(() => {
+      initPly(plyFile)
+    }, [plyFile])
+
+    function onResize() {
+        camera.aspect = width / height
+        camera.updateProjectionMatrix();
+      
+        renderer.setSize(width, height);
+      }
+      
+
+    useEffect(() => {
+        onResize()
+    }, [width, height])
+
+//     const header = <span>
+//  <span style={{marginBottom: '5px'}}>
+//     &nbsp;&nbsp;&nbsp;SELECT: &nbsp;
+//             <Select defaultValue={plyFile} style={{ width: 200 }} onChange={(e) => 
+//               {
+//                 removeEntity(plyFile)
+//                 setPlyFile(e)}
+//               }>
+//               {PLY_FILES.map((option, i) => {
+//                 return <Option value={option} key={i}>{option}</Option>
+//               })}
+//               </Select>
+//             </span>
+
+//     </span>
+  
+  return (<>
+    {/* {header} */}
+    <div id="render-area"></div>
+        </>
+  )
+}
+
+export default PointCloud
