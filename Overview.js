@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CloudCard from './CloudCard'
+import CloudCard from './src/components/CloudCard'
 import { Empty } from 'antd'
 
 const CATEGORIES = [
@@ -10,7 +10,7 @@ function Overview(props) {
   return (
     <div>
     {CATEGORIES.map((c, i) => {
-      return <CloudCard height={200} title={c}>
+      return <CloudCard height={200}  width={400} title={c}>
         <br/>
         <Empty description={`No ${c} data avaiable`}/>
       </CloudCard>
