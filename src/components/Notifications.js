@@ -5,7 +5,7 @@ import CloudCard from './CloudCard'
 export default function Notifications() {
   return (
     <div>
-        <CloudCard title="Notifications" width="90%">
+        <CloudCard title="Notifications">
         <Table
         locale={{emptyText:"You're up to date!"}}
         />

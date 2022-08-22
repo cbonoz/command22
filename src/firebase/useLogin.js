@@ -1,12 +1,26 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import {  getAuth, GoogleAuthProvider, inMemoryPersistence, onAuthStateChanged, setPersistence, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "./config";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+/* Note: Should just have one instance created */
 export const useLogin = () => {
   const [error, setError] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [user, setUser] = useState(undefined)
+  const [init, setInit] = useState(false)
+  const [user, setUser] = useState(auth.currentUser)
   const provider = new GoogleAuthProvider();
+
+  useEffect(() => {
+    console.log('user', user, auth.currentUser)
+  }, [user])
+
+  onAuthStateChanged(auth, (user) => {
+    console.log('authChanged', user)
+    setUser(user)
+    if (!init) {
+      setInit(true)
+    }
+  })
 
   const login = async () => {
     setError(null);
@@ -14,17 +28,13 @@ export const useLogin = () => {
     setUser(null)
 
     try {
+      // await setPersistence(auth, inMemoryPersistence);
       const res = await signInWithPopup(auth, provider);
       if (!res) {
         const e = new Error("Could not complete signup");
         alert(e.message)
         throw e
       }
-
-      const newUser = res.user;
-      console.log('user', newUser);
-      setUser(newUser);
-      setIsPending(false)
     } catch (error) {
       console.log(error);
       setError(error.message);
@@ -34,9 +44,9 @@ export const useLogin = () => {
   };
 
   const logout = () => {
-    signOut(user)
+    signOut(auth)
     setUser(undefined)
   }
 
-  return { login, error, isPending, user, logout };
+  return { login, error, isPending: isPending, init, user, logout };
 };
