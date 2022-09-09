@@ -159,14 +159,14 @@ function render() {
 }
 
 
-function PointCloud({width, height, plyFile = PLY_FILES[4]}) {
+function PointCloud({width, height, plyFile}) {
     // const [plyFile, setPlyFile] = useState('')
 
-    function removeEntity(name) {
-      var selectedObject = scene.getObjectByName(name);
-      scene.remove( selectedObject );
-      animate();
-  }
+  // function removeEntity(name) {
+  //   var selectedObject = scene.getObjectByName(name);
+  //   scene.remove( selectedObject );
+  //   animate();
+  // }
   
     useEffect(() => {
       initScene(width, height)

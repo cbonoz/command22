@@ -12,12 +12,11 @@ function Map(props) {
   return (
     <div>
         <CloudCard title={"Map View"} width={1000} height={800}>
-            <PointCloud  width={1000} height={735}/>
+        {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
+            <PointCloud width={1000} height={735} plyFile={PLY_FILES[0]}/>
         </CloudCard>
         <CloudCard title={"Points of Interest"} width={400}>
-            <Empty
-            className='standard-padding'
-                description="No points of interest available"/>
+            <Empty className='standard-padding' description="No points of interest available"/>
         </CloudCard>
     </div>
   )
