@@ -1,12 +1,16 @@
-import { Col, Empty, Row, Table } from 'antd'
+import { Button, Col, Empty, Input, Row, Table } from 'antd'
 import React, {useState, useEffect} from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
 import { createObjectUrl } from '../util'
 import CloudCard from './CloudCard'
+/*
+Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
 
+*/
 export default function VideoStreams() {
-    const [video, setVideo] = useState()
+    const [video, setVideo] = useState('https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8')
+    const [text, setText] = useState()
 
     // useEffect(() => {
 
@@ -30,8 +34,13 @@ export default function VideoStreams() {
                 multiple={false}
                 handleChange={handleChange}
                 name="file"
-                types={['mp4', 'wav']}
+                types={['mp4', 'wav', 'm3u8']}
             />
+
+            <Input.Group compact>
+                <Input prefix="URL" value={text} onChange={e => setText(e.target.value)} />
+                <Button onClick={e => setVideo(text)} type="primary">Submit</Button>
+            </Input.Group>
         </div>
     </CloudCard>
 </Col>
@@ -42,7 +51,10 @@ export default function VideoStreams() {
         <br/>
         {!video && <Empty description="No video selected"/>}
         {/* https://github.com/CookPete/react-player */}
-        {video && <ReactPlayer url={video}/>}
+        {video && <span className='standard-margin'>
+            <ReactPlayer url={video} controls playing/>
+</span>
+            }
 </div>
 
     </CloudCard>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Avatar, Button, Layout, Menu, Select, Spin } from "antd";
+import { Avatar, Button, Dropdown, Layout, Menu, Select, Spin } from "antd";
 import {
   CheckCircleTwoTone,
   GoogleOutlined,
@@ -38,9 +38,10 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="App container standard-padding">
+      <div className="App container standard-padding centered">
+        <br/><br/><br/>
         <img src={logo} className="standard-padding" />
-        <p className="white">{APP_DESC}</p>
+        <p className="white">{APP_DESC}.</p>
         <br />
         <Button
           size="large"
@@ -57,6 +58,25 @@ export default function App() {
     );
   }
 
+  const userMenu = (
+    <Menu
+    items={[
+      {
+        key: '1',
+        label: (
+          <a target="#" rel="noopener noreferrer" onClick={(e) => {
+            e.preventDefault();
+            logout();
+          }}>
+            Logout
+          </a>
+        ),
+      },
+    ]}
+    />
+
+  )
+
   return (
     <div className="App">
       <Layout>
@@ -72,28 +92,17 @@ export default function App() {
                 onClick={() => navigate("/")}
               />
             </Menu.Item>
-
-            {user && (
-              <Menu.Item key={1}>
-                (
-                <span
-                  className="white"
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    logout();
-                  }}
-                >
-                  logout
-                </span>
-                )
-              </Menu.Item>
-            )}
-
-            <span className="ant-menu-item">
+         
+      
+            {user && <Dropdown overlay={userMenu}  className="pointer">
+            <span className="pointer">
               <Avatar size="large" src={user.photoURL} />
               &nbsp;{user.displayName}&nbsp;
-              <CheckCircleTwoTone twoToneColor="#52c41a" />
+            </span>
+            </Dropdown>}
+&nbsp;
+            <span>
+              <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
               <span className="green">Connected</span>
             </span>
           </Menu>

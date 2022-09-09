@@ -37,9 +37,8 @@
 
 .container {
   max-width: 1100px;
-  margin: 0 auto;
-  /* min-height: 70vh; */
-  margin-top: 60px;
+  /* margin: 0 auto; */
+  margin: 60px 20px 20px 60px;
 }
 
 .float-right {
@@ -162,25 +161,27 @@ textarea {
   padding: 0px;
   color: white;
   background: rgb(134, 142, 150);
+  max-height: 40px;;
 }
 
 .ant-card-body {
-  padding: 0px;
+  padding: 5px;
   background: white;
 }
 
 .ant-card-head-title {
-  padding: 16px;
+  padding-left: 16px;
+  font-size: 12px;
   /* padding-left: 16px; */
 }
 
 .cloud-card {
-  margin: 10px;
   display: inline-grid;
 }
 
 .ant-card {
   background: rgb(134, 142, 150);
+  /* padding: 5px; */
 }
 
 .ant-layout-footer {

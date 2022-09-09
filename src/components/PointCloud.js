@@ -1,18 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 
-import { PLY_FILES } from '../util/constants';
 import * as THREE from "three";
-import { Select } from 'antd';
-import CloudCard from './CloudCard';
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
 
-var camera, cameraTarget, scene, renderer;
 
-const {Option} = Select
+var camera, controls, scene, renderer;
+
 const loader = new PLYLoader();
 
-// init();
-// animate();
 
 function initPly(activeFile) {
   console.log('init', activeFile)
@@ -22,7 +18,6 @@ function initPly(activeFile) {
 
   loader.load(activeFile, function(geometry) {
     geometry.computeVertexNormals();
-    const isNistDemo = activeFile.indexOf('North') !== -1;
 
     var material = new THREE.MeshStandardMaterial({
       wireframe: true
@@ -32,11 +27,8 @@ function initPly(activeFile) {
     // mesh.position.x = -0.2;
     // mesh.position.y = -0.02;
     // mesh.position.z = -0.2;
-    mesh.rotation.x = isNistDemo ? -Math.PI / 4 : -Math.PI / 2;
-    const scale = isNistDemo ? .02 : .0006;
-    mesh.scale.multiplyScalar(scale);//0.0006);
+    mesh.scale.multiplyScalar(0.05);
     mesh.name = activeFile;
-
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
@@ -58,11 +50,13 @@ function initScene(width, height) {
   );
   camera.position.set(3, 0.15, 3);
 
-  cameraTarget = new THREE.Vector3(0, -0.1, 0);
+
+  // const cameraTarget = new THREE.Vector3(0, -0.1, 0);
+  const cameraTarget =new THREE.Vector3(0,0,0)
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x72645b);
-  scene.fog = new THREE.Fog(0x72645b, 2, 15);
+  // scene.background = new THREE.Color(0x72645b);
+  // scene.fog = new THREE.Fog(0x72645b, 2, 15);
 
   // Ground
 
@@ -70,9 +64,10 @@ function initScene(width, height) {
     new THREE.PlaneBufferGeometry(40, 40),
     new THREE.MeshPhongMaterial({ color: 0x999999, specular: 0x101010 })
   );
-  plane.rotation.x = -Math.PI / 2;
+  // plane.rotation.x = -Math.PI / 2;
   plane.position.y = -0.5;
   scene.add(plane);
+  scene.add(camera)
 
   plane.receiveShadow = true;
 
@@ -114,6 +109,15 @@ function initScene(width, height) {
 
   container.appendChild(renderer.domElement);
 
+    // https://medium.com/geekculture/how-to-control-three-js-camera-like-a-pro-a8575a717a2
+    // 2. Initiate FlyControls with various params
+    controls = new FlyControls( camera, renderer.domElement );
+    controls.movementSpeed = 10;
+    controls.rollSpeed = Math.PI / 24;
+    controls.autoForward = false;
+    controls.dragToLook = true;
+  
+
 //   window.addEventListener("resize", onWindowResize, false);
 }
 
@@ -143,6 +147,8 @@ function addShadowedLight(x, y, z, color, intensity) {
 function animate() {
   requestAnimationFrame(animate);
   render();
+   // 3. update controls with a small step value to "power its engines"
+   controls.update(0.01)
 }
 
 const ROTATION_RATE = 0.0001; // was .0005
@@ -150,10 +156,10 @@ const ROTATION_RATE = 0.0001; // was .0005
 function render() {
   var timer = Date.now() * ROTATION_RATE;
 
-  camera.position.x = Math.sin(timer) * 2.5;
-  camera.position.z = Math.cos(timer) * 2.5;
+  // camera.position.x = Math.sin(timer) * 2.5;
+  // camera.position.z = Math.cos(timer) * 2.5;
 
-  camera.lookAt(cameraTarget);
+  // camera.lookAt(cameraTarget);
 
   renderer.render(scene, camera);
 }
@@ -189,25 +195,8 @@ function PointCloud({width, height, plyFile}) {
         onResize()
     }, [width, height])
 
-//     const header = <span>
-//  <span style={{marginBottom: '5px'}}>
-//     &nbsp;&nbsp;&nbsp;SELECT: &nbsp;
-//             <Select defaultValue={plyFile} style={{ width: 200 }} onChange={(e) => 
-//               {
-//                 removeEntity(plyFile)
-//                 setPlyFile(e)}
-//               }>
-//               {PLY_FILES.map((option, i) => {
-//                 return <Option value={option} key={i}>{option}</Option>
-//               })}
-//               </Select>
-//             </span>
-
-//     </span>
-  
   return (<>
-    {/* {header} */}
-    <div id="render-area"></div>
+    <div id="render-area"/>
         </>
   )
 }
