@@ -6,10 +6,10 @@ import { createObjectUrl } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
-
+'https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8'
 */
 export default function VideoStreams() {
-    const [video, setVideo] = useState('https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8')
+    const [video, setVideo] = useState()
     const [text, setText] = useState()
 
     // useEffect(() => {
@@ -51,7 +51,7 @@ export default function VideoStreams() {
     <CloudCard height={600} width="100%" title="Selected Video">
         <div className='video-stream-content'>
         <br/>
-        {!video && <Empty description="No video selected"/>}
+        {!video && <Empty description="No video stream active"/>}
         {/* https://github.com/CookPete/react-player */}
         {video && <span className='standard-margin'>
             <ReactPlayer url={video} controls playing/>
