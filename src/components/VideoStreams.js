@@ -25,21 +25,22 @@ export default function VideoStreams() {
   return (<div className='video-stream-content'>
     <Row>
         <Col span={6}>
-    <CloudCard title="Video Streams" width="100%">
-        <Table
+    <CloudCard title="Manage Video Streams" width="100%">
+        {/* <h3>Enter stream url:</h3> */}
+        {/* <Table
         locale={{emptyText:"No videos uploaded"}}
-        />
+        /> */}
         <div className='standard-padding'>
-            <FileUploader
+            {/* <FileUploader
                 multiple={false}
                 handleChange={handleChange}
                 name="file"
                 types={['mp4', 'wav', 'm3u8']}
-            />
+            /> */}
 
             <Input.Group compact>
-                <Input prefix="URL" value={text} onChange={e => setText(e.target.value)} />
-                <Button onClick={e => setVideo(text)} type="primary">Submit</Button>
+                <Input style={{marginBottom: '10px'}} prefix="Stream URL: " value={text} onChange={e => setText(e.target.value)} />
+                <Button onClick={e => setVideo(text)} type="primary">Load stream</Button>
             </Input.Group>
         </div>
     </CloudCard>
