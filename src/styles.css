@@ -204,6 +204,7 @@ body, .ant-layout-content, .ant-layout-sider {
 
 .ant-card-bordered {
   border: none;
+  margin: 10px;
 }
 
 .green {
