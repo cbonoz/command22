@@ -20,7 +20,7 @@ function initPly(activeFile) {
     geometry.computeVertexNormals();
 
     var material = new THREE.MeshStandardMaterial({
-      wireframe: true
+      wireframe: false
     });
     var mesh = new THREE.Mesh(geometry, material);
 

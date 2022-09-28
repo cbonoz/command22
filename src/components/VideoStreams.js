@@ -32,6 +32,7 @@ export default function VideoStreams() {
         /> */}
         <div className='standard-padding'>
             {/* <FileUploader
+                label="Upload a stream file"
                 multiple={false}
                 handleChange={handleChange}
                 name="file"

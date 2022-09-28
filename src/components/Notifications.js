@@ -45,7 +45,7 @@ export default function Notifications({user}) {
 
   return (
     <div>
-        <CloudCard title={`Notifications (${getDomainFromEmail(user.email)})`} width={'50%'}>
+        <CloudCard title={`Team Notifications (Domain: ${getDomainFromEmail(user.email)})`} width={'50%'}>
         <Table
         locale={{emptyText:"You're up to date!"}}
         loading={loading}
@@ -54,7 +54,7 @@ export default function Notifications({user}) {
         <a href="#" onClick={(e) => {
           e.preventDefault()
           setShow(true)
-        }}>Add notification</a>
+        }}>Add new notification</a>
 </CloudCard>
 
 <Modal visible={show} onCancel={() => setShow(false)} title="Add notification">
