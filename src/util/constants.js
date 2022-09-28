@@ -9,4 +9,4 @@ export const PLY_FILES = [
 ]; //"Lucy100k.ply";
 
 export const APP_NAME = 'CloudResponder';
-export const APP_DESC = 'Data-driven incident response and visualization for first-responders';
+export const APP_DESC = 'Data-driven incident response and visualization platform for first-responders';

@@ -52,8 +52,12 @@ export default function App() {
           disabled={isPending}
         >
           <GoogleOutlined />
-          &nbsp;Login
+          &nbsp;Login with Google
         </Button>
+        <br/>
+        <br/>
+
+        <p className="white">{APP_NAME} &copy;2022</p>
       </div>
     );
   }
