@@ -27,7 +27,7 @@ function Map({}) {
  
   return (
     <div>
-        <CloudCard title={"Rendered Map View"} width={1000} height={600}>
+        <CloudCard title={"Rendered Map View"} width={800} height={600}>
         <FileUploader
           label={"Upload a .ply file to render here"} 
           multiple={false}
@@ -35,8 +35,9 @@ function Map({}) {
           name="file"
           types={['ply']}
         />
+        <br/>
         {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
-            <PointCloud width={800} height={400} plyFile={plyData}/>
+            <PointCloud width={700} height={500} plyFile={plyData}/>
         </CloudCard>
         <CloudCard title={"Points of Interest"} width={400}>
             <Empty className='standard-padding' description="No points of interest available"/>

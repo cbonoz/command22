@@ -10,7 +10,7 @@ var camera, controls, scene, renderer;
 const loader = new PLYLoader();
 
 
-function initPly(activeFile) {
+function initPly(activeFile, cb) {
   console.log('init', activeFile)
   if (!activeFile) {
     return;
@@ -19,20 +19,22 @@ function initPly(activeFile) {
   loader.load(activeFile, function(geometry) {
     geometry.computeVertexNormals();
 
-    var material = new THREE.MeshStandardMaterial({
-      wireframe: false
-    });
-    var mesh = new THREE.Mesh(geometry, material);
+    // var material = new THREE.MeshStandardMaterial({
+    //   wireframe: false
+    // });
+    const material = new THREE.PointsMaterial( { size: 0.25, vertexColors: true, color: 0xffffff } )
+    const mesh = new THREE.Mesh(geometry, material);
 
     // mesh.position.x = -0.2;
-    // mesh.position.y = -0.02;
+    // mesh.position.y = -0.02;s
     // mesh.position.z = -0.2;
     mesh.scale.multiplyScalar(0.1);
     mesh.name = activeFile;
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    // mesh.castShadow = true;
+    // mesh.receiveShadow = true;
 
     scene.add(mesh);
+    cb && cb()
   });
 }
 
@@ -52,59 +54,33 @@ function initScene(width, height) {
 
 
   // const cameraTarget = new THREE.Vector3(0, -0.1, 0);
-  const cameraTarget =new THREE.Vector3(0,0,0)
 
   scene = new THREE.Scene();
   // scene.background = new THREE.Color(0x72645b);
   // scene.fog = new THREE.Fog(0x72645b, 2, 15);
+  scene.add(camera)
 
   // Ground
-
   var plane = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(40, 40),
     new THREE.MeshPhongMaterial({ color: 0x999999, specular: 0x101010 })
   );
-  // plane.rotation.x = -Math.PI / 2;
   plane.position.y = -0.5;
   scene.add(plane);
-  scene.add(camera)
 
   plane.receiveShadow = true;
 
-  // Uncomment to render second ply point cloud.
-  // loader.load("dolphins_be.ply", function(geometry) {
-  //   geometry.computeVertexNormals();
-
-  //   var material = new THREE.MeshStandardMaterial({
-  //     wireframe: true
-  //   });
-  //   var mesh = new THREE.Mesh(geometry, material);
-
-  //   mesh.position.y = -0.2;
-  //   mesh.position.z = 0.3;
-  //   mesh.scale.multiplyScalar(0.001);
-
-  //   mesh.castShadow = true;
-  //   mesh.receiveShadow = true;
-
-  //   scene.add(mesh);
-  // });
-
-
   // Lights
-
   scene.add(new THREE.HemisphereLight(0x443333, 0x111122));
 
   addShadowedLight(1, 1, 1, 0xffffff, 1.35);
   addShadowedLight(0.5, 1, -1, 0xffaa00, 1);
 
   // renderer
-
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(width, height);
   renderer.outputEncoding = THREE.sRGBEncoding;
-
   renderer.shadowMap.enabled = true;
 
   container.appendChild(renderer.domElement);
@@ -151,21 +127,12 @@ function animate() {
    controls.update(0.01)
 }
 
-const ROTATION_RATE = 0.0001; // was .0005
-
 function render() {
-  var timer = Date.now() * ROTATION_RATE;
-
-  // camera.position.x = Math.sin(timer) * 2.5;
-  // camera.position.z = Math.cos(timer) * 2.5;
-
-  // camera.lookAt(cameraTarget);
-
   renderer.render(scene, camera);
 }
 
-
 function PointCloud({width, height, plyFile}) {
+  const [loading ,setLoading] = useState(false)
     // const [plyFile, setPlyFile] = useState('')
 
   // function removeEntity(name) {
@@ -180,7 +147,13 @@ function PointCloud({width, height, plyFile}) {
     }, [width])
   
     useEffect(() => {
-      initPly(plyFile)
+      if (plyFile) {
+        setLoading(true)
+        initPly(plyFile, () => {
+          console.log('loaded', plyFile)
+          setLoading(false)
+        })
+      }
     }, [plyFile])
 
     function onResize() {
