@@ -8,6 +8,9 @@ CloudResponder
 
 Repo for CommandDING contest 2022.
 
+### How to run
+`yarn && yarn start`
+
 
 ### Useful links:
 * Contest Resource folder: https://app.box.com/s/izdgds6vuqt4jqsh7za4ili2byfoj6uz
