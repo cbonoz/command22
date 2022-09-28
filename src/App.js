@@ -91,7 +91,12 @@ export default function App() {
                 className="header-logo pointer"
                 onClick={() => navigate("/")}
               />
+               
             </Menu.Item>
+            <span>
+              <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
+              <span className="green">Connected</span>
+            </span>
          
             <span style={{ marginLeft: 'auto' }}>
             {user && <Dropdown overlay={userMenu}  className="pointer">
@@ -101,10 +106,7 @@ export default function App() {
             </span>
             </Dropdown>}
 &nbsp;
-            <span>
-              <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
-              <span className="green">Connected</span>
-            </span>
+         
 
               </span> 
           </Menu>
