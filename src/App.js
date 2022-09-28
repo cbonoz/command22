@@ -93,7 +93,7 @@ export default function App() {
               />
             </Menu.Item>
          
-      
+            <span style={{ marginLeft: 'auto' }}>
             {user && <Dropdown overlay={userMenu}  className="pointer">
             <span className="pointer">
               <Avatar size="large" src={user.photoURL} />
@@ -105,6 +105,8 @@ export default function App() {
               <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
               <span className="green">Connected</span>
             </span>
+
+              </span> 
           </Menu>
         </Header>
         <Layout>
