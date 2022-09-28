@@ -27,7 +27,7 @@ function initPly(activeFile) {
     // mesh.position.x = -0.2;
     // mesh.position.y = -0.02;
     // mesh.position.z = -0.2;
-    mesh.scale.multiplyScalar(0.05);
+    mesh.scale.multiplyScalar(0.1);
     mesh.name = activeFile;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
