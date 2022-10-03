@@ -14,11 +14,11 @@ function CloudCard({title, width=300, height=300, children}) {
             }}
             title={title?.toUpperCase()}
             >
-                <div    style={{
+            <div    style={{
                 height
             }}>
             {children}
-</div>
+            </div>
         </Card>
 
   )

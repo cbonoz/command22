@@ -9,13 +9,13 @@ const CATEGORIES = [
 function Home(props) {
   return (
     <div>
-    {CATEGORIES.map((c, i) => {
-      return <CloudCard height={200} title={c}>
+      {CATEGORIES.map((c, i) => {
+        return <CloudCard height={200} title={c}>
         <br/>
         <Empty description={`No ${c} data avaiable`}/>
-      </CloudCard>
-    })}
-</div>
+        </CloudCard>
+      })}
+    </div>
   )
 }
 

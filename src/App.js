@@ -6,6 +6,7 @@ import {
   GoogleOutlined,
   NotificationFilled,
   VideoCameraFilled,
+  FundViewOutlined,
 } from "@ant-design/icons";
 
 import { APP_DESC, APP_NAME } from "./util/constants";
@@ -17,6 +18,7 @@ import Home from "./components/Home";
 import Map from "./components/Map";
 import Notifications from "./components/Notifications";
 import VideoStreams from "./components/VideoStreams";
+import SensorData from "./components/SensorData";
 import { useLogin } from "./firebase/useLogin";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -126,6 +128,7 @@ export default function App() {
                   path="/notifications"
                   element={<Notifications user={user} />}
                 />
+                <Route path="/sensorData" element={<SensorData user={user} />} />
               </Routes>
             </div>
           </Content>
@@ -145,6 +148,9 @@ export default function App() {
 
             <Menu.Item key={3} onClick={() => navigate("/notifications")}>
               <NotificationFilled /> Notifications
+            </Menu.Item>
+            <Menu.Item key={4} onClick={() => navigate("/sensorData")}>
+              <FundViewOutlined /> Sensor Data
             </Menu.Item>
           </Menu>
         </Footer>
