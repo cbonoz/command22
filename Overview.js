@@ -10,9 +10,9 @@ function Overview(props) {
   return (
     <div>
       {CATEGORIES.map((c, i) => {
-        return <CloudCard height={200}  width={400} title={c}>
-        <br/>
-        <Empty description={`No ${c} data avaiable`}/>
+        return <CloudCard height={200} width={400} key={i} title={c}>
+          <br/>
+          <Empty description={`No ${(c || 'data').toLowerCase()} available`}/>
         </CloudCard>
       })}
     </div>

@@ -1,5 +1,5 @@
 {
-  "name": "ply-loader",
+  "name": "cloudresponder",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -9,12 +9,14 @@
     "antd": "^4.21.7",
     "env-cmd": "^10.1.0",
     "firebase": "^9.9.2",
+    "global": "^4.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.7",
     "react-player": "^2.10.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "3.0.1",
+    "surge": "^0.23.1",
     "three": "0.117.1"
   },
   "devDependencies": {
