@@ -12,3 +12,7 @@ export function capitalize(string)
 }
 
 export const getDomainFromEmail = email => email?.split('@')[1].toLowerCase()
+
+export const convertToArray = (value) => {
+    return value ? (Array.isArray(value) ? value: [value]) : []
+}

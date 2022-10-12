@@ -116,6 +116,27 @@ export default function App() {
 
               </span> 
           </Menu>
+          <Menu mode="horizontal" defaultSelectedKeys={['/maps']}
+                selectedKeys={[window.location.pathname]}
+          >
+            {/* <Menu.Item key={0} onClick={() => navigate("/")}>
+              {APP_NAME} | &copy;2022
+            </Menu.Item> */}
+            <Menu.Item key={'/maps'} onClick={() => navigate("/maps")}>
+              <GoogleOutlined /> Maps
+            </Menu.Item>
+
+            <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>
+              <VideoCameraFilled /> Video Streams
+            </Menu.Item>
+
+            <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
+              <NotificationFilled /> Notifications
+            </Menu.Item>
+            <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
+              <FundViewOutlined /> Sensor Data
+            </Menu.Item>
+          </Menu>
         </Header>
         <Layout>
           <Content>
@@ -123,7 +144,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Home user={user} />} />
                 <Route path="/maps" element={<Map user={user} />} />
-                <Route path="/video" element={<VideoStreams user={user} />} />
+                <Route path="/videos" element={<VideoStreams user={user} />} />
                 <Route
                   path="/notifications"
                   element={<Notifications user={user} />}
@@ -134,25 +155,7 @@ export default function App() {
           </Content>
         </Layout>
         <Footer>
-          <Menu mode="horizontal" defaultSelectedKeys={[1]}>
-            <Menu.Item key={0} onClick={() => navigate("/")}>
-              {APP_NAME} | &copy;2022
-            </Menu.Item>
-            <Menu.Item key={1} onClick={() => navigate("/maps")}>
-              <GoogleOutlined /> Maps
-            </Menu.Item>
-
-            <Menu.Item key={2} onClick={() => navigate("/video")}>
-              <VideoCameraFilled /> Video Streams
-            </Menu.Item>
-
-            <Menu.Item key={3} onClick={() => navigate("/notifications")}>
-              <NotificationFilled /> Notifications
-            </Menu.Item>
-            <Menu.Item key={4} onClick={() => navigate("/sensorData")}>
-              <FundViewOutlined /> Sensor Data
-            </Menu.Item>
-          </Menu>
+         
         </Footer>
       </Layout>
     </div>

@@ -30,6 +30,10 @@
   border-radius: 5px;
 }
 
+.analytics-image {
+  width: 300px;
+}
+
 .item-card-image {
   width: 120px;
   padding: 20px;
@@ -54,10 +58,6 @@
 .create-detail {
   max-width: 600px;
   line-height: 1.5;
-}
-
-.salespage-header {
-  margin-top: 25px;
 }
 
 .create-logo {
@@ -186,6 +186,10 @@ textarea {
 
 .ant-layout-footer {
   padding: 0px;
+}
+
+.ant-layout-header {
+  height: 128px;
 }
 
 .ant-layout-footer, .ant-layout-header, .ant-menu {

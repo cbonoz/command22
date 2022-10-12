@@ -15,7 +15,6 @@ export const useLogin = () => {
   }, [user])
 
   onAuthStateChanged(auth, (user) => {
-    console.log('authChanged', user)
     setUser(user)
     if (!init) {
       setInit(true)

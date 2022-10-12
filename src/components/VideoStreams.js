@@ -2,19 +2,53 @@ import { Button, Col, Empty, Input, Row, Table } from 'antd'
 import React, {useState, useEffect} from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
-import { createObjectUrl } from '../util'
+import { getAnalytic, getCameras } from '../api'
+import { getAnalyticEndpoint } from '../api/analytics'
+import { convertToArray, createObjectUrl } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
 'https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8'
 */
 export default function VideoStreams() {
+    const [videos, setVideos] = useState()
     const [video, setVideo] = useState()
     const [text, setText] = useState()
+    const [analytics, setAnalytics] = useState()
 
-    // useEffect(() => {
 
-    // }, [video])
+    async function fetchAnalytics(analyticName) {
+        const endpoint = getAnalyticEndpoint(analyticName)
+        console.log('get analytic', endpoint, video.id)
+        try {
+            const {data} = await getAnalytic(video.id, endpoint)
+            console.log('results', data)
+            setAnalytics({...data, analyticName})
+        } catch (e) {
+            console.error('err', e)
+            let msg = e.toString()
+            if (msg.indexOf('503') !== 0) {
+                // Server outage / issue (should retry)
+                msg = 'Server temporarily unavailable. Please try again.'
+            }
+            alert('Error getting data: ' + msg.toString())
+        }
+    }
+
+    async function cameras() {
+        console.log('cameras')
+        try {
+            const {data} = await getCameras()
+            console.log('results', data)
+            setVideos(data)
+        } catch (e) {
+            console.error('err', e)
+        }
+    }
+
+    useEffect(() => {
+        cameras()
+    }, [])
 
     const handleChange = (f) => {
         const s = createObjectUrl(f)
@@ -31,32 +65,43 @@ export default function VideoStreams() {
         locale={{emptyText:"No videos uploaded"}}
         /> */}
         <div className='standard-padding'>
-            {/* <FileUploader
-                label="Upload a stream file"
-                multiple={false}
-                handleChange={handleChange}
-                name="file"
-                types={['mp4', 'wav', 'm3u8']}
-            /> */}
+            {(videos?.map((v, i) => (<div>
+                <a key={i}onClick={() => setVideo(v)}>{v.name}</a>
+            </div>)))}
+
+            <hr/>
 
             <Input.Group compact>
+                <p>Or enter custom url</p>
                 <Input style={{marginBottom: '10px'}} prefix="Stream URL: " value={text} onChange={e => setText(e.target.value)} />
-                <Button onClick={e => setVideo(text)} type="primary">Load stream</Button>
+                <Button onClick={e => setVideo({name: text, link: text})} type="primary">Load stream</Button>
             </Input.Group>
         </div>
     </CloudCard>
 </Col>
 <Col span={1}/>
         <Col span={16}>
-    <CloudCard height={600} width="100%" title="Selected Video">
+    <CloudCard height={'auto'} width="100%" title="Selected Video">
         <div className='video-stream-content'>
-        <br/>
         {!video && <Empty description="No video stream active"/>}
         {/* https://github.com/CookPete/react-player */}
         {video && <span className='standard-margin'>
-            <ReactPlayer url={video} controls playing/>
-</span>
-            }
+            <h1>{video.name}</h1>
+            <ReactPlayer url={video.link} controls playing/>
+            {convertToArray(video.services).map((s, i) => {
+                return <Button className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
+                    {s}
+                </Button>
+            })}
+            {analytics && <span>
+                <h3>{analytics.analyticName}</h3>
+                {new Date(analytics?.timestamp).toLocaleTimeString}
+                {analytics.image && <img className='analytics-image' alt="Image" src={`data:image/jpeg;base64,${analytics.image}`} />}
+                {analytics.results && <p>
+                    Results: {analytics.results}
+                </p>}
+            </span>}
+</span>}
 </div>
 
     </CloudCard>
