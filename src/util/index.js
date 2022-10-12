@@ -16,3 +16,12 @@ export const getDomainFromEmail = email => email?.split('@')[1].toLowerCase()
 export const convertToArray = (value) => {
     return value ? (Array.isArray(value) ? value: [value]) : []
 }
+
+export const getReadableDateTime = t => {
+    if (!t) {
+        return ''
+    }
+    const d = new Date(parseFloat(t))
+    return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`
+
+}

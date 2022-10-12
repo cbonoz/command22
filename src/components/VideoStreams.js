@@ -4,7 +4,7 @@ import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
 import { getAnalytic, getCameras } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
-import { convertToArray, createObjectUrl } from '../util'
+import { convertToArray, createObjectUrl, getReadableDateTime } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
@@ -43,6 +43,13 @@ export default function VideoStreams() {
             setVideos(data)
         } catch (e) {
             console.error('err', e)
+
+            let msg = e.toString()
+            if (msg.indexOf('503') !== 0) {
+                // Server outage / issue (should retry)
+                msg = 'Server temporarily unavailable. Please try again.'
+            }
+            alert('Error getting video streams: ' + msg.toString())
         }
     }
 
@@ -95,7 +102,7 @@ export default function VideoStreams() {
             })}
             {analytics && <span>
                 <h3>{analytics.analyticName}</h3>
-                {new Date(analytics?.timestamp).toLocaleTimeString}
+                <p>Time: {getReadableDateTime(analytics.timestamp)}</p>
                 {analytics.image && <img className='analytics-image' alt="Image" src={`data:image/jpeg;base64,${analytics.image}`} />}
                 {analytics.results && <p>
                     Results: {analytics.results}
