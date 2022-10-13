@@ -3,9 +3,11 @@ import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 
 import * as THREE from "three";
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
+// import Stats from 'three/addons/libs/stats.module.js';
 
 
-var camera, controls, scene, renderer;
+
+var camera, stats, controls, scene, renderer;
 
 const loader = new PLYLoader();
 
@@ -23,7 +25,7 @@ function initPly(activeFile, cb) {
     //   wireframe: false
     // });
     const material = new THREE.PointsMaterial( 
-      { size: 0.05 , vertexColors: true }//, color: 0xffffff } 
+      { size: 0.02 , vertexColors: true }//, color: 0xffffff } 
     )
     // const mesh = new THREE.Mesh(geometry, material);
     const mesh = new THREE.Points(geometry, material)
@@ -46,6 +48,9 @@ function initScene(width, height) {
   // document.body.appendChild(container);
   const container = document.getElementById('render-area');
 //   const height = window.innerHeight - HEADER_FOOTER_HEIGHT
+
+  // stats = new Stats();
+  // container.appendChild( stats.dom );
 
   camera = new THREE.PerspectiveCamera(
     35,
@@ -133,6 +138,8 @@ function animate() {
   render();
    // 3. update controls with a small step value to "power its engines"
    controls.update(0.01)
+    // https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
+   stats && stats.update();
 }
 
 function render() {
