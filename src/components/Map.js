@@ -3,12 +3,14 @@ import CloudCard from './CloudCard'
 import PointCloud from './PointCloud'
 import { Empty, Select } from 'antd'
 import { FileUploader } from 'react-drag-drop-files'
+import { useWindowSize } from '../hooks/WindowSize'
 
 const reader = new FileReader();
 
 
 function Map({}) {
   const [plyData, setPlyData] = useState()
+  const {width, height} = useWindowSize()
 
 
   reader.addEventListener("load", () => {
@@ -24,10 +26,11 @@ function Map({}) {
     // setPlyData(s)
 }
 
+  const sceneWidth = Math.max(400, width-400)
  
   return (
     <div>
-        <CloudCard title={"Rendered Map View"} width={800} height={600}>
+        <CloudCard title={"Rendered Map View"} width={sceneWidth}>
         <FileUploader
           label={"Upload a .ply file to render here"} 
           multiple={false}
@@ -35,11 +38,12 @@ function Map({}) {
           name="file"
           types={['ply']}
         />
+        <span>Once loaded, use 'WASD' keys to control the camera.</span>
         <br/>
         {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
-            <PointCloud width={700} height={500} plyFile={plyData}/>
+            <PointCloud width={sceneWidth-40} height={height-300} plyFile={plyData}/>
         </CloudCard>
-        <CloudCard title={"Points of Interest"} width={400}>
+        <CloudCard title={"Points of Interest"} width={360}>
             <Empty className='standard-padding' description="No points of interest available"/>
         </CloudCard>
     </div>

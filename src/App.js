@@ -4,6 +4,8 @@ import { Avatar, Button, Dropdown, Layout, Menu, Select, Spin } from "antd";
 import {
   CheckCircleTwoTone,
   GoogleOutlined,
+  BuildOutlined,
+  ScanOutlined,
   NotificationFilled,
   VideoCameraFilled,
   FundViewOutlined,
@@ -123,7 +125,7 @@ export default function App() {
               {APP_NAME} | &copy;2022
             </Menu.Item> */}
             <Menu.Item key={'/maps'} onClick={() => navigate("/maps")}>
-              <GoogleOutlined /> Maps
+              <ScanOutlined /> Maps
             </Menu.Item>
 
             <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>

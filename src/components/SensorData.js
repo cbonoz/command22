@@ -69,7 +69,7 @@ function SensorData({}) {
  
   return (
     <div>
-      <CloudCard title={"Rendered SensorData View"} width={800} height={600}>
+      <CloudCard minHeight={500} title={"Rendered SensorData View"} width={800}>
 	    <h1>Upload Json file - Example</h1>
 		<input type="file" onChange={handleChange} />
 		<br />

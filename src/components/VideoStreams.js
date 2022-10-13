@@ -88,7 +88,7 @@ export default function VideoStreams() {
 </Col>
 <Col span={1}/>
         <Col span={16}>
-    <CloudCard height={'auto'} width="100%" title="Selected Video">
+    <CloudCard minHeight={500} width="100%" title="Selected Video">
         <div className='video-stream-content'>
         {!video && <Empty description="No video stream active"/>}
         {/* https://github.com/CookPete/react-player */}

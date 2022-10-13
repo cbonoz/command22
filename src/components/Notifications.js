@@ -45,10 +45,10 @@ export default function Notifications({user}) {
 
   return (
     <div>
-        <CloudCard title={`Team Notifications (Domain: ${getDomainFromEmail(user.email)})`} width={'50%'}>
+        <CloudCard minHeight={500} title={`Team Notifications (Domain: ${getDomainFromEmail(user.email)})`} width={'50%'}>
         <Table
-        locale={{emptyText:"You're up to date!"}}
-        loading={loading}
+          locale={{emptyText:"You're up to date!"}}
+          loading={loading}
         />
 
         <a href="#" onClick={(e) => {
