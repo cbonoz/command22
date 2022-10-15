@@ -1,14 +1,19 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import CloudCard from './CloudCard'
-import PointCloud from './PointCloud'
-import { Empty, Select } from 'antd'
-import { FileUploader } from 'react-drag-drop-files'
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import { useWindowSize } from '../hooks/WindowSize'
+import markerIconPng from "leaflet/dist/images/marker-icon.png"
+import { Icon } from 'leaflet'
+import { Spin } from 'antd'
+
 
 const reader = new FileReader();
 
 function SensorData({}) {
   const [data, setData] = useState({ fileData: {}, sensorData: [] });
+  const [mapPosition, setMapPosition] = useState([34.0522, -118.2437])
+  const [map, setMap] = useState(null)
+  const {height, width} = useWindowSize()
 
   const getSeconds = timeStamp => {
   	const modifiedTimeStamp = timeStamp.replaceAll(':','');
@@ -67,27 +72,40 @@ function SensorData({}) {
   const intervalList = data.sensorData.map(function(interval, index) {
     return <ul key={index}>{dataList(interval)}</ul>;
   });
+
+  const mapWidth = (width || 400) - 400;
+  // console.log('width', mapWidth)
  
   return (
     <div>
-      <CloudCard title={"Rendered SensorData View"} width={800} height={600}>
-        <MapContainer center={[37.768883, -105.684528]} zoom={15} scrollWheelZoom={false}>
-	        <TileLayer
-	          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-	        />
-	        <Marker position={[51.505, -0.09]}>
-	          <Popup>
-	            A pretty CSS3 popup. <br /> Easily customizable.
-	          </Popup>
-	        </Marker>
-	      </MapContainer>
-	    </CloudCard>
-      <CloudCard title={"Rendered SensorData View"} width={800} height={600}>
-	      <h1>Upload Json file - Example</h1>
+        <CloudCard title={"Upload sensor data"} width={300} height={600}>
+	      <h1>Upload JSON sensor data file:</h1>
 		    <input type="file" onChange={handleChange} />
 		    <br />
       	<ul>{ intervalList }</ul>
       </CloudCard>
+      {width > 0 && <CloudCard title={"Rendered SensorData View"} height={600} width={mapWidth}>
+        <MapContainer 
+          ref={setMap}
+          style={{ height: "500px", width: "auto" }} 
+          center={mapPosition} 
+          zoom={15}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={mapPosition}
+            icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})}
+            >
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+
+          </MapContainer>
+
+	    </CloudCard>}
+    
     </div>
   )
 }

@@ -14,14 +14,16 @@ import {
 import { APP_DESC, APP_NAME } from "./util/constants";
 import logo from "./assets/logo_white.png";
 
-import "antd/dist/antd.css";
-import "./styles.css";
 import Home from "./components/Home";
 import Map from "./components/Map";
 import Notifications from "./components/Notifications";
 import VideoStreams from "./components/VideoStreams";
 import SensorData from "./components/SensorData";
 import { useLogin } from "./firebase/useLogin";
+
+import "./styles.css";
+import "antd/dist/antd.css";
+import 'leaflet/dist/leaflet.css';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Option } = Select;
