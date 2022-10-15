@@ -3,6 +3,7 @@ import CloudCard from './CloudCard'
 import PointCloud from './PointCloud'
 import { Empty, Select } from 'antd'
 import { FileUploader } from 'react-drag-drop-files'
+import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 
 const reader = new FileReader();
 
@@ -54,7 +55,7 @@ function SensorData({}) {
   const dataList = interval => {
   	return interval.map(function(dataReading, index) {
   	  if (dataReading["Is HeatStroke"] === "True") {
-  	  	window.alert("Heat Stroke Detected!", { tag: "Is HeatStroke" });
+
   	  }
   	  if (dataReading["Down"] === "True") {
   	  	window.alert("Person Down Detected!", { tag: "Down" });
@@ -69,10 +70,22 @@ function SensorData({}) {
  
   return (
     <div>
-      <CloudCard minHeight={500} title={"Rendered SensorData View"} width={800}>
-	    <h1>Upload Json file - Example</h1>
-		<input type="file" onChange={handleChange} />
-		<br />
+      <CloudCard title={"Rendered SensorData View"} width={800} height={600}>
+        <MapContainer center={[37.768883, -105.684528]} zoom={15} scrollWheelZoom={false}>
+	        <TileLayer
+	          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+	        />
+	        <Marker position={[51.505, -0.09]}>
+	          <Popup>
+	            A pretty CSS3 popup. <br /> Easily customizable.
+	          </Popup>
+	        </Marker>
+	      </MapContainer>
+	    </CloudCard>
+      <CloudCard title={"Rendered SensorData View"} width={800} height={600}>
+	      <h1>Upload Json file - Example</h1>
+		    <input type="file" onChange={handleChange} />
+		    <br />
       	<ul>{ intervalList }</ul>
       </CloudCard>
     </div>
