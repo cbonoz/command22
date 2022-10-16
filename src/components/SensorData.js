@@ -11,7 +11,7 @@ const reader = new FileReader();
 
 function SensorData({}) {
   const [data, setData] = useState({ fileData: {}, sensorData: [] });
-  const [mapPosition, setMapPosition] = useState([34.0522, -118.2437])
+  const [mapPosition, setMapPosition] = useState([37.769365855560956, -105.68456624550286])
   const [map, setMap] = useState(null)
   const {height, width} = useWindowSize()
 
@@ -30,7 +30,7 @@ function SensorData({}) {
       return {
         ...prevState,
         sensorData: [
-      	  ...prevState.sensorData,
+      	  // ...prevState.sensorData,
       	  fileData[dataInterval]
         ],
       };
@@ -73,34 +73,50 @@ function SensorData({}) {
     return <ul key={index}>{dataList(interval)}</ul>;
   });
 
+  const markerList = markers => {
+    return markers.map(function(marker, index) {
+      console.log(marker)
+      if (marker && marker.Lat && marker.Lon) {
+        return (
+          <Marker
+            position={[marker.Lat, marker.Lon]}
+            icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})}
+          >
+            <Popup>
+              {JSON.stringify(marker)}
+            </Popup>
+          </Marker>
+        );
+      }
+    })
+  };
+
+  const markers = data.sensorData.map(function (dataReading, index) {
+    return markerList(dataReading);
+  });
+
   const mapWidth = (width || 400) - 400;
-  // console.log('width', mapWidth)
  
   return (
     <div>
-        <CloudCard title={"Upload sensor data"} width={300} height={600}>
+      <CloudCard title={"Upload sensor data"} width={300} height={600}>
 	      <h1>Upload JSON sensor data file:</h1>
 		    <input type="file" onChange={handleChange} />
 		    <br />
-      	<ul>{ intervalList }</ul>
+      	<ul>{intervalList}</ul>
       </CloudCard>
       {width > 0 && <CloudCard title={"Rendered SensorData View"} height={600} width={mapWidth}>
         <MapContainer 
           ref={setMap}
           style={{ height: "500px", width: "auto" }} 
           center={mapPosition} 
-          zoom={15}>
+          zoom={20}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={mapPosition}
-            icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41]})}
-            >
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
-            </Marker>
+
+            {markers}
 
           </MapContainer>
 
