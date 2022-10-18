@@ -31,7 +31,8 @@
 }
 
 .analytics-image {
-  width: 300px;
+  /* width: 300px; */
+  width: 50%;
 }
 
 .item-card-image {
