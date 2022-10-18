@@ -103,18 +103,18 @@ function SensorData({}) {
     return markerList(dataReading);
   });
 
-  const mapWidth = (width || 400) - 400;
+  const mapWidth = (width || 400) * (3 / 5) - 100;
  
   return (
     <div>
-      <CloudCard title={"Upload sensor data"} width={300} height={600}>
+      <CloudCard title={"Upload sensor data"} width={width * (2 / 5)} height={height}>
 	      <h1>Upload JSON sensor data file:</h1>
 		    <input type="file" onChange={handleChange} />
 		    <br />
         <ul>{alerts}</ul>
       	<ul>{intervals}</ul>
       </CloudCard>
-      {width > 0 && <CloudCard title={"Rendered SensorData View"} height={600} width={mapWidth}>
+      {width > 0 && <CloudCard title={"Rendered SensorData View"} height={height} width={mapWidth}>
         <MapContainer 
           ref={setMap}
           style={{ height: "500px", width: "auto" }} 
