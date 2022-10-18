@@ -57,25 +57,33 @@ function SensorData({}) {
     fileReader.onload = onFileLoad;
   };
 
-  const dataList = interval => {
-  	return interval.map(function(dataReading, index) {
-  	  if (dataReading["Is HeatStroke"] === "True") {
-
-  	  }
-  	  if (dataReading["Down"] === "True") {
-  	  	window.alert("Person Down Detected!", { tag: "Down" });
-  	  }
-	  return <li key={index}>{JSON.stringify(dataReading)}</li>;
-	});
+  const alertList = interval => {
+    return interval.map(function(dataReading, index) {
+      if (dataReading["Is HeatStroke"] === "True") {
+        return <li key={index + 1}>{"Heat Stroke Detected!"}</li>;
+      }
+      if (dataReading["Down"] === "True") {
+        return <li key={index + 101}>{"Person Down Detected!"}</li>;
+      }
+    });
   }
 
-  const intervalList = data.sensorData.map(function(interval, index) {
-    return <ul key={index}>{dataList(interval)}</ul>;
+  const alerts = data.sensorData.map(function(interval, index) {
+    return <ul key={100}>{alertList(interval)}</ul>;
+  });
+
+  const dataList = interval => {
+  	return interval.map(function(dataReading, index) {
+	    return <li key={index + 201}>{JSON.stringify(dataReading)}</li>;
+	  });
+  }
+
+  const intervals = data.sensorData.map(function(interval, index) {
+    return <ul key={200}>{dataList(interval)}</ul>;
   });
 
   const markerList = markers => {
     return markers.map(function(marker, index) {
-      console.log(marker)
       if (marker && marker.Lat && marker.Lon) {
         return (
           <Marker
@@ -103,7 +111,8 @@ function SensorData({}) {
 	      <h1>Upload JSON sensor data file:</h1>
 		    <input type="file" onChange={handleChange} />
 		    <br />
-      	<ul>{intervalList}</ul>
+        <ul>{alerts}</ul>
+      	<ul>{intervals}</ul>
       </CloudCard>
       {width > 0 && <CloudCard title={"Rendered SensorData View"} height={600} width={mapWidth}>
         <MapContainer 
