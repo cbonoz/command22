@@ -20,6 +20,11 @@ Repo for CommandDING contest 2022.
 Not used:
 * https://github.com/pnext/three-loader
 
+### Deployment
+(requires surge account)
+Deploys to cloudresponder.surge.sh
+`yarn deploy`
+
 
 ### Useful links:
 * Contest Resource folder: https://app.box.com/s/izdgds6vuqt4jqsh7za4ili2byfoj6uz
