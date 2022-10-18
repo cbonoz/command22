@@ -94,7 +94,7 @@ export default function VideoStreams() {
         {/* https://github.com/CookPete/react-player */}
         {video && <span className='standard-margin'>
             <h1>{video.name}</h1>
-            <ReactPlayer url={video.link} controls playing/>
+            {video.link && <ReactPlayer url={video.link} controls playing/>}
             {convertToArray(video.services).map((s, i) => {
                 return <Button className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
                     {s}

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const baseURL = `https://cors-anywhere.herokuapp.com/${process.env.REACT_APP_SERVER_URL}`
+// const baseURL = process.env.REACT_APP_SERVER_URL;
 console.log('baseUrl', baseURL)
 
 const nistAxios = axios.create({
