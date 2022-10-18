@@ -114,10 +114,10 @@ function SensorData({}) {
         <ul>{alerts}</ul>
       	<ul>{intervals}</ul>
       </CloudCard>
-      {width > 0 && <CloudCard title={"Rendered SensorData View"} height={600} width={mapWidth}>
+      {width > 0 && <CloudCard title={"Rendered SensorData View"} width={mapWidth}>
         <MapContainer 
           ref={setMap}
-          style={{ height: "500px", width: "auto" }} 
+          style={{ height: height-300, width: "auto" }} 
           center={mapPosition} 
           zoom={20}>
             <TileLayer

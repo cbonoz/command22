@@ -1,5 +1,5 @@
 
-
+export const getDataUrl = (data) => `data:image/jpeg;base64,${data}`
 
 export const createObjectUrl = (f) => {
     const objectURL = window.URL.createObjectURL(f);

@@ -4,7 +4,7 @@ import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
 import { getAnalytic, getCameras } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
-import { convertToArray, createObjectUrl, getReadableDateTime } from '../util'
+import { convertToArray, createObjectUrl, getDataUrl, getReadableDateTime } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
@@ -103,7 +103,7 @@ export default function VideoStreams() {
             {analytics && <span>
                 <h3>{analytics.analyticName}</h3>
                 <p>Time: {getReadableDateTime(analytics.timestamp)}</p>
-                {analytics.image && <img className='analytics-image' alt="Image" src={`data:image/jpeg;base64,${analytics.image}`} />}
+                {analytics.image && <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} />}
                 {analytics.results && <p>
                     Results: {analytics.results}
                 </p>}
