@@ -3,7 +3,7 @@ import TextArea from 'antd/lib/input/TextArea'
 import React, { useEffect, useState } from 'react'
 import { getItemsWithOrgDomainFilter } from '../firebase/firedb'
 import { capitalize, getDomainFromEmail } from '../util'
-import { NOTIFICATION_COLUMNS } from '../util/constants'
+import { NOTIFICATION_COLUMNS } from '../util'
 import CloudCard from './CloudCard'
 
 const {Option} = Select

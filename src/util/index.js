@@ -32,3 +32,10 @@ export const col = (key, render) => {
         render,
     }
 }
+
+export const NOTIFICATION_COLUMNS = [
+    col('type'),
+    col('text'),
+    col('createdAt', getReadableDateTime),
+    col('createdBy'),
+]

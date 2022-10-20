@@ -8,9 +8,14 @@ console.log('baseUrl', baseURL)
 
 function get(path) {
     const url = `${baseURL}${path}`
+
+    // Use proxy urls to get around CORS issues and lack of NIST secure API server.
+    // TODO: Update to hit their endpoint directly.
     if (IS_LOCAL) {
+        // Local proxy.
         return axios.get(url)
     }
+    // Hosted proxy (deployed by Chris).
     return axios.post(PROXY_URL, {
         url,
         type: 'GET',

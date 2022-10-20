@@ -20,6 +20,11 @@ export default function VideoStreams() {
     const [frame, setFrame] = useState()
     const [analytics, setAnalytics] = useState()
 
+    useEffect(() => {
+        // Clear.
+        setAnalytics()
+    }, [video])
+
     async function nextFrame(cameraId) {
         try {
             const {data} = await getFrame(cameraId)
