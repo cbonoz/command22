@@ -288,16 +288,17 @@ function SensorData({}) {
   });
   const mapWidth = (width || 400) * (3 / 5) - 100;
   const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
+  const containerHeight = height - 300;
  
   return (
     <div>
-      <CloudCard title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={height}>
+      <CloudCard title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={containerHeight}>
         <ul>{intervals}</ul>
       </CloudCard>
-      {width > 0 && <CloudCard title={"Rendered SensorData View"} height={height} width={mapWidth}>
+      {width > 0 && <CloudCard title={"Rendered SensorData View"} width={mapWidth}>
         <MapContainer 
           ref={setMap}
-          style={{ height: "500px", width: "auto" }} 
+          style={{ height: containerHeight, width: "auto" }} 
           center={mapPosition} 
           zoom={20}>
             <TileLayer
@@ -307,7 +308,7 @@ function SensorData({}) {
             {markers}
           </MapContainer>
 	    </CloudCard>}
-      <CloudCard title={"Critical Alerts"} width={width * (1 / 5)} height={height}>
+      <CloudCard title={"Critical Alerts"} width={width * (1 / 5)} height={containerHeight}>
         <h4>Upload JSON sensor data file:</h4>
         <input type="file" onChange={handleChange} />
         {alerts}

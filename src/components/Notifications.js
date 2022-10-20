@@ -3,6 +3,7 @@ import TextArea from 'antd/lib/input/TextArea'
 import React, { useEffect, useState } from 'react'
 import { getItemsWithOrgDomainFilter } from '../firebase/firedb'
 import { capitalize, getDomainFromEmail } from '../util'
+import { NOTIFICATION_COLUMNS } from '../util'
 import CloudCard from './CloudCard'
 
 const {Option} = Select
@@ -13,7 +14,7 @@ const TYPE_OPTIONS = [
 ]
 
 export default function Notifications({user}) {
-  const [notifications, setNotifications] = useState()
+  const [notifications, setNotifications] = useState([])
   const [text, setText] = useState()
   const [type, setType] = useState(TYPE_OPTIONS[0])
   const [show, setShow] = useState(false)
@@ -39,14 +40,23 @@ export default function Notifications({user}) {
   }, [])
 
   const submit = async () => {
-
+    const notification = {
+      type,
+      text,
+      createdAt: new Date(),
+      createdBy: user.email
+    }
+    // TODO: call to firebase db.
+    setNotifications([...notifications, notification])
+    setShow(false)
   }
-
 
   return (
     <div>
         <CloudCard minHeight={500} title={`Team Notifications (Domain: ${getDomainFromEmail(user.email)})`} width={'50%'}>
         <Table
+          columns={NOTIFICATION_COLUMNS}
+          dataSource={notifications}
           locale={{emptyText:"You're up to date!"}}
           loading={loading}
         />
@@ -57,7 +67,7 @@ export default function Notifications({user}) {
         }}>Add new notification</a>
 </CloudCard>
 
-<Modal visible={show} onCancel={() => setShow(false)} title="Add notification">
+<Modal visible={show} okText="Submit" onOk={() => submit()} onCancel={() => setShow(false)} title="Add notification">
     <p>Enter detail for notification</p>
 
     <Select value={type} onChange={v => setType(v)}>
@@ -70,8 +80,7 @@ export default function Notifications({user}) {
       rows={5}
       value={text}
       onChange={e => setText(e.target.value)}/>
-
-  <Button type='primary' onClick={submit} disabled={loading || !text}>Submit</Button>
+  {/* <Button type='primary' onClick={submit} disabled={loading || !text}>Submit</Button> */}
 </Modal>
     </div>
   )

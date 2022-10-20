@@ -3,13 +3,16 @@ import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 
 import * as THREE from "three";
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls'
-// import Stats from 'three/addons/libs/stats.module.js';
-
+import { TEST_INTEREST_POINTS } from '../util/constants';
+import { Interaction } from 'three.interaction';
 
 
 var camera, stats, controls, scene, renderer;
 
-const loader = new PLYLoader();
+const plyLoader = new PLYLoader();
+
+const SCALE = 1;
+
 
 
 function initPly(activeFile, cb) {
@@ -18,7 +21,7 @@ function initPly(activeFile, cb) {
     return;
   }
 
-  loader.load(activeFile, function(geometry) {
+  plyLoader.load(activeFile, function(geometry) {
     geometry.computeVertexNormals();
 
     // var material = new THREE.MeshStandardMaterial({
@@ -30,10 +33,10 @@ function initPly(activeFile, cb) {
     // const mesh = new THREE.Mesh(geometry, material);
     const mesh = new THREE.Points(geometry, material)
 
-    // mesh.position.x = -0.2;
-    // mesh.position.y = -0.02;s
-    // mesh.position.z = -0.2;
-    mesh.scale.multiplyScalar(0.12);
+    mesh.position.x = 0;
+    mesh.position.y = 0;
+    mesh.position.z = 0;
+    mesh.scale.multiplyScalar(SCALE);
     mesh.name = activeFile;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -59,16 +62,13 @@ function initScene(width, height) {
     1000
   );
   // camera.position.set(3, 0.15, 3);
-  camera.position.z = 10
-
-
-
-  const cameraTarget = new THREE.Vector3(0, -0.1, 0);
+  camera.position.z = SCALE * 100
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x72645b);
   // scene.fog = new THREE.Fog(0x72645b, 2, 15);
   scene.add(camera)
+
 
   // // Ground
   // var plane = new THREE.Mesh(
@@ -99,8 +99,8 @@ function initScene(width, height) {
   // https://medium.com/geekculture/how-to-control-three-js-camera-like-a-pro-a8575a717a2
   // 2. Initiate FlyControls with various params
   controls = new FlyControls( camera, renderer.domElement );
-  controls.movementSpeed = 10;
-  controls.rollSpeed = Math.PI / 24;
+  controls.movementSpeed = SCALE*40;
+  controls.rollSpeed = Math.PI / 15;
   controls.autoForward = false;
   controls.dragToLook = true;
 
@@ -108,30 +108,8 @@ function initScene(width, height) {
   //
   // https://stackoverflow.com/questions/34698393/get-mouse-clicked-points-3d-coordinate-in-three-js
   // renderer.domElement.
+    const interaction = new Interaction(renderer, scene, camera);
 }
-
-function addShadowedLight(x, y, z, color, intensity) {
-  var directionalLight = new THREE.DirectionalLight(color, intensity);
-  directionalLight.position.set(x, y, z);
-  scene.add(directionalLight);
-
-  directionalLight.castShadow = true;
-
-  var d = 1;
-  directionalLight.shadow.camera.left = -d;
-  directionalLight.shadow.camera.right = d;
-  directionalLight.shadow.camera.top = d;
-  directionalLight.shadow.camera.bottom = -d;
-
-  directionalLight.shadow.camera.near = 1;
-  directionalLight.shadow.camera.far = 4;
-
-  directionalLight.shadow.mapSize.width = 1024;
-  directionalLight.shadow.mapSize.height = 1024;
-
-  directionalLight.shadow.bias = -0.001;
-}
-
 
 function animate() {
   requestAnimationFrame(animate);
@@ -146,8 +124,9 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function PointCloud({width, height, plyFile}) {
+function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
   const [loading ,setLoading] = useState(false)
+  // const [activeMarker, setActiveMarker] = useState()
     // const [plyFile, setPlyFile] = useState('')
 
   // function removeEntity(name) {
@@ -155,6 +134,36 @@ function PointCloud({width, height, plyFile}) {
   //   scene.remove( selectedObject );
   //   animate();
   // }
+
+  function addClickableSphere(marker) {
+    if (!scene) {
+      return
+    }
+  
+    // https://threejs.org/docs/#api/en/geometries/SphereGeometry
+    const geometry = new THREE.SphereGeometry( SCALE, 32, 16 );
+    const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+    const sphere = new THREE.Mesh( geometry, material );
+
+    // TODO: specify location using Lat/Lng -> ply file coordinate mapping function.
+    const randomOffset = 50*SCALE
+    // x,y,z
+    sphere.position.set(
+      Math.random()*randomOffset,
+      Math.random()*randomOffset,
+      0 
+    )
+    scene.add( sphere );
+  
+    // https://stackoverflow.com/questions/7984471/how-to-get-clicked-element-in-three-js
+    sphere.cursor = 'pointer';
+
+    sphere.on('click', function(ev) {
+      console.log('onClick', ev, marker)
+      onPointSelect && onPointSelect(marker)
+    });
+    
+  }
   
     useEffect(() => {
       if (!scene && width && height) {
@@ -169,7 +178,11 @@ function PointCloud({width, height, plyFile}) {
       if (plyFile && scene) {
         setLoading(true)
         initPly(plyFile, () => {
-          console.log('loaded', plyFile)
+          // console.log('loaded', plyFile)
+          // TODO: pull interest points from live source/feed.
+          TEST_INTEREST_POINTS.forEach(p => {
+            addClickableSphere(p)
+          })
           setLoading(false)
           animate()
         })
@@ -182,7 +195,6 @@ function PointCloud({width, height, plyFile}) {
         }
         camera.aspect = width / height
         camera.updateProjectionMatrix();
-      
         renderer.setSize(width, height);
       }
       
@@ -192,8 +204,8 @@ function PointCloud({width, height, plyFile}) {
     }, [width, height])
 
   return (<>
-    <div id="render-area"/>
-        </>
+      <div id="render-area"/>
+    </>
   )
 }
 

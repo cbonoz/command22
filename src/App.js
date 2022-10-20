@@ -115,9 +115,7 @@ export default function App() {
               &nbsp;{user.displayName}&nbsp;
             </span>
             </Dropdown>}
-&nbsp;
-         
-
+              &nbsp;
               </span> 
           </Menu>
           <Menu mode="horizontal" defaultSelectedKeys={['/maps']}

@@ -1,21 +1,47 @@
-import { Button, Col, Empty, Input, Row, Table } from 'antd'
+import { Button, Card, Col, Empty, Input, Row, Table } from 'antd'
 import React, {useState, useEffect} from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
-import { getAnalytic, getCameras } from '../api'
+import { getAnalytic, getCameras, getFrame } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
-import { convertToArray, createObjectUrl, getReadableDateTime } from '../util'
+import { convertToArray, createObjectUrl, getDataUrl, getReadableDateTime } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
 'https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8'
 */
+
+import { useInterval } from 'usehooks-ts'
+
 export default function VideoStreams() {
     const [videos, setVideos] = useState()
     const [video, setVideo] = useState()
     const [text, setText] = useState()
+    const [frame, setFrame] = useState()
     const [analytics, setAnalytics] = useState()
 
+    useEffect(() => {
+        // Clear.
+        setAnalytics()
+    }, [video])
+
+    async function nextFrame(cameraId) {
+        try {
+            const {data} = await getFrame(cameraId)
+            setFrame(data)
+        } catch (e) {
+            console.error('error getting frame', e)
+        }
+    }
+
+    useInterval(
+        () => {
+          // Your custom logic here
+          nextFrame(video?.id)
+        },
+        // Delay in milliseconds or null to stop it
+        (video && video.id) ? 1000 : null,
+      )
 
     async function fetchAnalytics(analyticName) {
         const endpoint = getAnalyticEndpoint(analyticName)
@@ -88,13 +114,16 @@ export default function VideoStreams() {
 </Col>
 <Col span={1}/>
         <Col span={16}>
-    <CloudCard minHeight={500} width="100%" title="Selected Video">
+    <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
         <div className='video-stream-content'>
         {!video && <Empty description="No video stream active"/>}
         {/* https://github.com/CookPete/react-player */}
         {video && <span className='standard-margin'>
-            <h1>{video.name}</h1>
-            {video.link && <ReactPlayer url={video.link} controls playing/>}
+            {/* {video.link && <ReactPlayer url={video.link} controls playing/>} */}
+            {video.id && frame && <div>
+                <p>Time: {getReadableDateTime(parseFloat(frame.timestamp)*1000)}</p>
+                <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />
+            </div>}
             {convertToArray(video.services).map((s, i) => {
                 return <Button className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
                     {s}
@@ -102,8 +131,7 @@ export default function VideoStreams() {
             })}
             {analytics && <span>
                 <h3>{analytics.analyticName}</h3>
-                <p>Time: {getReadableDateTime(analytics.timestamp)}</p>
-                {analytics.image && <img className='analytics-image' alt="Image" src={`data:image/jpeg;base64,${analytics.image}`} />}
+                {analytics.image && <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} />}
                 {analytics.results && <p>
                     Results: {analytics.results}
                 </p>}
