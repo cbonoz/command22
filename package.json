@@ -8,6 +8,7 @@
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.21.7",
     "axios": "^1.1.2",
+    "crypto-js": "^4.1.1",
     "env-cmd": "^10.1.0",
     "firebase": "^9.9.2",
     "leaflet": "^1.9.2",

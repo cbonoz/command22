@@ -1,26 +1,28 @@
 import axios from 'axios'
+import {MD5} from 'crypto-js'
+import { IS_LOCAL } from '../util/constants';
 
-const baseURL = `https://cors-anywhere.herokuapp.com/${process.env.REACT_APP_SERVER_URL}`
-// const baseURL = process.env.REACT_APP_SERVER_URL;
+const baseURL = IS_LOCAL ? 'http://localhost:3001' : process.env.REACT_APP_SERVER_URL;
+const PROXY_URL = 'https://http-proxy.fly.dev/proxy'
 console.log('baseUrl', baseURL)
 
-const nistAxios = axios.create({
-    baseURL,
-    timeout: 6000,
-    headers: {
-        'X-Custom-Header': 'foobar',
-        "Access-Control-Allow-Origin": "*"
+function get(path) {
+    const url = `${baseURL}${path}`
+    if (IS_LOCAL) {
+        return axios.get(url)
     }
-});
-
-
-export const getCameras = () => {
-    return nistAxios.get('/main/camera/', {
+    return axios.post(PROXY_URL, {
+        url,
+        type: 'GET',
+        hash: MD5(window.location.origin).toString()
     })
 }
 
+
+export const getCameras = () => {
+    return get('/main/camera/')
+}
+
 export const getAnalytic = (cameraId, analyticEndpoint) => {
-    const url = `/main/camera/${cameraId}/analytic/${analyticEndpoint}`
-    return nistAxios.get(url, {
-    })
+    return get(`/main/camera/${cameraId}/analytic/${analyticEndpoint}`)
 }
