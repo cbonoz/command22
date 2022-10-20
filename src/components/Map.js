@@ -4,14 +4,15 @@ import PointCloud from './PointCloud'
 import { Empty, Select } from 'antd'
 import { FileUploader } from 'react-drag-drop-files'
 import { useWindowSize } from '../hooks/WindowSize'
+import { TEST_INTEREST_POINTS } from '../util/constants'
 
 const reader = new FileReader();
 
 
 function Map({}) {
   const [plyData, setPlyData] = useState()
+  const [interestPoints, setInterestPoints] = useState(TEST_INTEREST_POINTS)
   const {width, height} = useWindowSize()
-
 
   reader.addEventListener("load", () => {
     // convert image file to base64 string
@@ -41,7 +42,14 @@ function Map({}) {
         <span>Once loaded, use 'WASD' keys to control the camera.</span>
         <br/>
         {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
-            <PointCloud width={sceneWidth-40} height={height-300} plyFile={plyData}/>
+            <PointCloud 
+              width={sceneWidth-40} 
+              height={height-300} 
+              plyFile={plyData}
+              onPointSelect={(point) => {
+                alert('Selected: ' + JSON.stringify(point))
+              }}
+            />
         </CloudCard>
         <CloudCard title={"Points of Interest"} width={360}>
             <Empty className='standard-padding' description="No points of interest available"/>
