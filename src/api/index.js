@@ -24,5 +24,9 @@ export const getCameras = () => {
 }
 
 export const getAnalytic = (cameraId, analyticEndpoint) => {
-    return get(`/main/camera/${cameraId}/analytic/${analyticEndpoint}`)
+    return get(`/main/camera/${cameraId}/analytic/${analyticEndpoint}/`)
+}
+
+export const getFrame = (cameraId) => {
+    return get(`/main/camera/${cameraId}/get_live_data/`)
 }
