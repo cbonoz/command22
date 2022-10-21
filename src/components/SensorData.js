@@ -354,12 +354,12 @@ function SensorData({}) {
           </MapContainer>
 	    </CloudCard>}
       <CloudCard title={"Critical Alerts"} width={width * (1 / 5)} height={containerHeight}>
-        <h4>Upload JSON sensor data file:</h4>
-        <input type="file" onChange={handleChange} />
         {alerts}
         <br/>
         <br/>
       </CloudCard>
+      <h4>Upload JSON sensor data file:</h4>
+      <input type="file" onChange={handleChange} />
     </div>
   )
 }
