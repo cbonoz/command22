@@ -8,7 +8,6 @@ import { convertToArray, createObjectUrl, getDataUrl, getReadableDateTime } from
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
-'https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8'
 */
 
 import { useInterval } from 'usehooks-ts'
@@ -119,7 +118,7 @@ export default function VideoStreams() {
         {!video && <Empty description="No video stream active"/>}
         {/* https://github.com/CookPete/react-player */}
         {video && <span className='standard-margin'>
-            {/* {video.link && <ReactPlayer url={video.link} controls playing/>} */}
+            {video.link && <ReactPlayer url={video.link} controls playing/>}
             {video.id && frame && <div>
                 <p>Time: {getReadableDateTime(parseFloat(frame.timestamp)*1000)}</p>
                 <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />

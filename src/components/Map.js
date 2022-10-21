@@ -34,6 +34,7 @@ function Map({}) {
   return (
     <div>
         <CloudCard title={"Rendered Map View"} width={sceneWidth}>
+          <span>
         <FileUploader
           label={"Upload a .ply file to render here"} 
           multiple={false}
@@ -42,6 +43,7 @@ function Map({}) {
           types={['ply']}
         />
         <span>Once loaded, use 'WASD' keys to control the camera.</span>
+        </span>
         <br/>
         {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
             <PointCloud 
