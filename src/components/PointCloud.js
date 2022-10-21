@@ -134,6 +134,7 @@ function render() {
 
 function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
   const [loading ,setLoading] = useState(false)
+  const [init, setInit] = useState(false)
   // const [activeMarker, setActiveMarker] = useState()
     // const [plyFile, setPlyFile] = useState('')
 
@@ -171,11 +172,12 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
       onPointSelect && onPointSelect(marker)
     });
     
-  }
-  
+    }
+ 
     useEffect(() => {
-      if (!scene && width && height) {
+      if (!init && width && height) {
         initScene(width, height)
+        setInit(true)
       } else if (scene) {
         onResize()
       }
