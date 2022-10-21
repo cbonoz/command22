@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react'
 import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
+import IndoorMap from "../assets/NIST_Reference_2.png"
 import AlertIcons_Generic from "../assets/AlertIcons_Generic.png"
 import MapIcon_Altitude from "../assets/MapIcon_Altitude.png"
 import MapIcon_Count from "../assets/MapIcon_Count.png"
@@ -17,7 +18,7 @@ const reader = new FileReader();
 
 function SensorData({}) {
   const [data, setData] = useState({ fileData: {}, sensorData: [] });
-  const [mapPosition, setMapPosition] = useState([37.769365855560956, -105.68456624550286])
+  const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
   const [map, setMap] = useState(null)
   const {height, width} = useWindowSize()
 
@@ -337,7 +338,12 @@ function SensorData({}) {
  
   return (
     <div>
-      <CloudCard overflowY='scroll' title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={containerHeight}>
+      <CloudCard
+        overflowY='scroll'
+        title={sensorCount + ' Sensors online of ' + sensorCount + ' total'}
+        width={width * (1 / 5)}
+        height={containerHeight}
+      >
           <ul>{intervals}</ul>
       </CloudCard>
       {width > 0 && <CloudCard title={"Rendered SensorData View"} width={mapWidth}>
@@ -351,6 +357,15 @@ function SensorData({}) {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+            <Marker
+              position={[37.76928602, -105.68460486]}
+              icon={new Icon({
+                iconUrl: IndoorMap,
+                iconSize: [100, 156],
+                iconAnchor: [10, 16]
+              })}
+            >
+            </Marker>
             {markers}
           </MapContainer>
 	    </CloudCard>}
