@@ -121,23 +121,22 @@ export default function App() {
           <Menu mode="horizontal" defaultSelectedKeys={['/maps']}
                 selectedKeys={[window.location.pathname]}
           >
-            {/* <Menu.Item key={0} onClick={() => navigate("/")}>
-              {APP_NAME} | &copy;2022
-            </Menu.Item> */}
             <Menu.Item key={'/maps'} onClick={() => navigate("/maps")}>
               <ScanOutlined /> Maps
+            </Menu.Item>
+
+            <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
+              <FundViewOutlined /> Sensor Data
             </Menu.Item>
 
             <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>
               <VideoCameraFilled /> Video Streams
             </Menu.Item>
-
+   
             <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
               <NotificationFilled /> Notifications
             </Menu.Item>
-            <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
-              <FundViewOutlined /> Sensor Data
-            </Menu.Item>
+    
           </Menu>
         </Header>
         <Layout>

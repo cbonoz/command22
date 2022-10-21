@@ -12,7 +12,7 @@ function CloudCard({title, overflowY='visible', width='auto', minHeight, height=
             style={{
                 width,
             }}
-            title={title?.toUpperCase()}
+            title={title}
             >
             <div    style={{
                 height,

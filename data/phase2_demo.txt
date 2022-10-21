@@ -1,0 +1,12 @@
+
+
+
+Maps:
+
+From the maps page the user has the ability to upload any ply file and drill down in a three dimensional view of what's going on in a particular scene.
+
+We're using a combination of Three.js with ply file loading capability to load a ply file onto the scene. Simulataneously we render a stream of sensor events and overlay them onto the map. In the demo here we have three points of interest which are clickable and will show a popup that displays the metadata of the event (this view will later be improved/enhanced).
+
+
+
+

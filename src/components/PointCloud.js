@@ -104,6 +104,14 @@ function initScene(width, height) {
   controls.autoForward = false;
   controls.dragToLook = true;
 
+  // let sprite = new THREE.TextSprite({
+  //   text: 'Hello World!',
+  //   fontFamily: 'Arial, Helvetica, sans-serif',
+  //   fontSize: 12,
+  //   color: '#ffbbff',
+  // });
+  // scene.add(sprite);
+
   // Onclick
   //
   // https://stackoverflow.com/questions/34698393/get-mouse-clicked-points-3d-coordinate-in-three-js
@@ -126,6 +134,7 @@ function render() {
 
 function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
   const [loading ,setLoading] = useState(false)
+  const [init, setInit] = useState(false)
   // const [activeMarker, setActiveMarker] = useState()
     // const [plyFile, setPlyFile] = useState('')
 
@@ -151,7 +160,7 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
     sphere.position.set(
       Math.random()*randomOffset,
       Math.random()*randomOffset,
-      0 
+      0
     )
     scene.add( sphere );
   
@@ -163,11 +172,12 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
       onPointSelect && onPointSelect(marker)
     });
     
-  }
-  
+    }
+ 
     useEffect(() => {
-      if (!scene && width && height) {
+      if (!init && width && height) {
         initScene(width, height)
+        setInit(true)
       } else if (scene) {
         onResize()
       }
