@@ -3,7 +3,7 @@ import {useLayoutEffect, useRef, useState} from 'react';
 
 import { Card } from 'antd'
 
-function CloudCard({title, width='auto', minHeight, height='auto', children}) {
+function CloudCard({title, overflowY='visible', width='auto', minHeight, height='auto', children}) {
     const ref = useRef(null);
 
   return (
@@ -16,7 +16,8 @@ function CloudCard({title, width='auto', minHeight, height='auto', children}) {
             >
             <div    style={{
                 height,
-                minHeight
+                minHeight,
+                overflowY,
             }}>
             {children}
             </div>
