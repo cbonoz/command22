@@ -337,8 +337,8 @@ function SensorData({}) {
  
   return (
     <div>
-      <CloudCard title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={containerHeight}>
-        <ul>{intervals}</ul>
+      <CloudCard overflowY='scroll' title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={containerHeight}>
+          <ul>{intervals}</ul>
       </CloudCard>
       {width > 0 && <CloudCard title={"Rendered SensorData View"} width={mapWidth}>
         <MapContainer 
