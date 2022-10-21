@@ -151,7 +151,7 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
     sphere.position.set(
       Math.random()*randomOffset,
       Math.random()*randomOffset,
-      0 
+      0
     )
     scene.add( sphere );
   

@@ -340,7 +340,14 @@ function SensorData({}) {
       <CloudCard overflowY='scroll' title={"Sensor Count: " + sensorCount} width={width * (1 / 5)} height={containerHeight}>
           <ul>{intervals}</ul>
       </CloudCard>
-      {width > 0 && <CloudCard title={"Rendered SensorData View"} width={mapWidth}>
+      {width > 0 && <CloudCard title={
+        <span>
+        Rendered SensorData View
+        <span className='float-right'>
+        Upload Sensor file&nbsp;<input type="file" className='' onChange={handleChange} />
+</span>&nbsp;
+        </span> 
+        } width={mapWidth}>
         <MapContainer 
           ref={setMap}
           style={{ height: containerHeight, width: "auto" }} 
@@ -358,8 +365,8 @@ function SensorData({}) {
         <br/>
         <br/>
       </CloudCard>
-      <h4>Upload JSON sensor data file:</h4>
-      <input type="file" onChange={handleChange} />
+      {/* <h4>Upload JSON sensor data file:</h4>
+      <input type="file" onChange={handleChange} /> */}
     </div>
   )
 }

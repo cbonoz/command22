@@ -131,13 +131,13 @@ export default function App() {
             <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>
               <VideoCameraFilled /> Video Streams
             </Menu.Item>
-
-            <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
-              <NotificationFilled /> Notifications
-            </Menu.Item>
             <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
               <FundViewOutlined /> Sensor Data
             </Menu.Item>
+            <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
+              <NotificationFilled /> Notifications
+            </Menu.Item>
+    
           </Menu>
         </Header>
         <Layout>
