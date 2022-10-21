@@ -96,6 +96,50 @@ function SensorData({}) {
         }
         return null;
       } else if (sensorId < 6000) {
+        if (Number(dataReading["Temperature"]) > 100) {
+          return alertListItem(
+            index,
+            "High First Responder temperature",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Temperature"]) < 80) {
+          return alertListItem(
+            index,
+            "Low First Responder temperature",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Pulse Rate"]) > 105) {
+          return alertListItem(
+            index,
+            "High First Responder pulse rate",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Pulse Rate"]) < 60) {
+          return alertListItem(
+            index,
+            "Low First Responder pulse rate",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
         return null;
       } else if (sensorId < 7000) {
         return null;
@@ -115,6 +159,50 @@ function SensorData({}) {
         }
         return null;
       } else if (sensorId < 10000) {
+        if (Number(dataReading["Temperature"]) > 100) {
+          return alertListItem(
+            index,
+            "High victim temperature",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Temperature"]) < 80) {
+          return alertListItem(
+            index,
+            "Low victim temperature",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Pulse Rate"]) > 105) {
+          return alertListItem(
+            index,
+            "High victim pulse rate",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
+        if (Number(dataReading["Pulse Rate"]) < 60) {
+          return alertListItem(
+            index,
+            "Low victim pulse rate",
+            [
+              "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
+              "Pulse Rate: " + dataReading["Pulse Rate"],
+              "Temperature: " + dataReading["Temperature"],
+            ]
+          );
+        }
         return null;
       } else if (sensorId < 11000) {
         if (dataReading["Detected"] === "True") {
@@ -319,8 +407,8 @@ function SensorData({}) {
             <Popup>
               {sensorListItem(
                 index,
-                "Marker",
-                [JSON.stringify(marker)]
+                "Sensor",
+                Object.entries(marker)
               )}
             </Popup>
           </Marker>
@@ -351,7 +439,7 @@ function SensorData({}) {
         Rendered SensorData View
         <span className='float-right'>
         Upload Sensor file&nbsp;<input type="file" className='' onChange={handleChange} />
-</span>&nbsp;
+        </span>&nbsp;
         </span> 
         } width={mapWidth}>
         <MapContainer 
