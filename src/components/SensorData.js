@@ -3,6 +3,7 @@ import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
+import sensor_legend from "../assets/sensor_legend.png"
 import AlertIcons_Generic from "../assets/AlertIcons_Generic.png"
 import MapIcon_Altitude from "../assets/MapIcon_Altitude.png"
 import MapIcon_Count from "../assets/MapIcon_Count.png"
@@ -392,6 +393,36 @@ function SensorData({}) {
     return MapIcon_Altitude;
   }
 
+  const getMarkerTitle = marker => {
+    const sensorId = Number(marker["Sensor ID"]);
+      if (sensorId < 2000) {
+        return "Staging Automatic Vehicle Location (AVL)";
+      } else if (sensorId < 3000) {
+        return "First Responder Location";
+      } else if (sensorId < 4000) {
+        return "Event Space Occupancy";
+      } else if (sensorId < 5000) {
+        return "Event Space Ambient Temperature";
+      } else if (sensorId < 6000) {
+        return "First Responder Vitals";
+      } else if (sensorId < 7000) {
+        return "Building Occupancy";
+      } else if (sensorId < 8000) {
+        return "External Protest Monitoring";
+      } else if (sensorId < 9000) {
+        return "Hazard Identification";
+      } else if (sensorId < 10000) {
+        return "Victim Vitals";
+      } else if (sensorId < 11000) {
+        return "Structural Hazard Detection";
+      } else if (sensorId < 12000) {
+        return "Video Feed Object Tracking";
+      } else if (sensorId < 13000) {
+        return "First Responder Status Detection";
+      }
+    return "";
+  }
+
   const markerList = markers => {
     return markers.map(function(marker, index) {
       if (marker && marker.Lat && marker.Lon) {
@@ -407,7 +438,7 @@ function SensorData({}) {
             <Popup>
               {sensorListItem(
                 index,
-                "Sensor",
+                getMarkerTitle(marker),
                 Object.entries(marker)
               )}
             </Popup>
@@ -462,6 +493,15 @@ function SensorData({}) {
             >
             </Marker>
             {markers}
+            <Marker
+              position={[37.77058602, -105.68750486]}
+              icon={new Icon({
+                iconUrl: sensor_legend,
+                iconSize: [200, 500],
+                iconAnchor: [0, 0]
+              })}
+            >
+            </Marker>
           </MapContainer>
 	    </CloudCard>}
       <CloudCard title={"Critical Alerts"} width={width * (1 / 5)} height={containerHeight}>

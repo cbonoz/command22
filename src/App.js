@@ -122,11 +122,11 @@ export default function App() {
                 selectedKeys={[window.location.pathname]}
           >
             <Menu.Item key={'/maps'} onClick={() => navigate("/maps")}>
-              <ScanOutlined /> Maps
+              <ScanOutlined /> 3D Map
             </Menu.Item>
 
             <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
-              <FundViewOutlined /> Sensor Data
+              <FundViewOutlined /> 2D Map
             </Menu.Item>
 
             <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>
@@ -134,7 +134,7 @@ export default function App() {
             </Menu.Item>
    
             <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
-              <NotificationFilled /> Notifications
+              <NotificationFilled /> Alerts
             </Menu.Item>
     
           </Menu>
