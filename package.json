@@ -19,6 +19,7 @@
     "react-player": "^2.10.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "3.0.1",
+    "seedrandom": "^3.0.5",
     "three": "0.117.1",
     "three.interaction": "^0.2.3",
     "usehooks-ts": "^2.9.1"
@@ -27,12 +28,13 @@
     "typescript": "3.8.3"
   },
   "scripts": {
-    "start-legacy": "env-cmd -f .env.local react-scripts --openssl-legacy-provider start",
+    "start:legacy": "env-cmd -f .env.local react-scripts --openssl-legacy-provider start",
     "start": "env-cmd -f .env.local react-scripts start",
     "build": "env-cmd -f .env.local react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && cp build/index.html build/200.html && surge build cloudresponder.surge.sh"
+    "deploy:surge": "yarn build && cp build/index.html build/200.html && surge build cloudresponder.surge.sh",
+    "deploy": "yarn build && cp build/index.html build/200.html && firebase deploy"
   },
   "browserslist": [
     ">0.2%",

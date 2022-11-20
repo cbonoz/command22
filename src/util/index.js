@@ -21,6 +21,34 @@ export const getReadableDateTime = d => {
         d = new Date(d)
     }
     return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`
+}
+
+// list of [[1, "0.98777175", [[0.802286873282967, 0.6504241824150085], ...
+export const getBoundBoxes = (analyticsBoxes, width, height) => {
+    if (!analyticsBoxes) {
+        return []
+    }
+
+    if (typeof analyticsBoxes === 'string') {
+        analyticsBoxes = JSON.parse(analyticsBoxes)
+    }
+
+    if (!Array.isArray(analyticsBoxes)) {
+        return []
+    }
+    // Returns [[x, y, width, height], ...] where x,y is top left corner.
+    const locations = analyticsBoxes.map(x => x[2])
+    let results = [];
+    try {
+        results = locations.map((box, i) => {
+            const diffY = box[1][1] - box[0][1]
+            const diffX = box[1][0] - box[0][0]
+            return [box[0][0]*width, box[0][1]*height, diffX*width, diffY*height]
+        })
+    } catch (e) {
+        console.error(e)
+    }
+    return results;
 
 }
 

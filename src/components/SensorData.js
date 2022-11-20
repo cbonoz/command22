@@ -467,10 +467,10 @@ function SensorData({}) {
       </CloudCard>
       {width > 0 && <CloudCard title={
         <span>
-        Rendered SensorData View
-        <span className='float-right'>
-        Upload Sensor file&nbsp;<input type="file" className='' onChange={handleChange} />
-        </span>&nbsp;
+        {/* Rendered SensorData View
+        <span className='float-right'> */}
+        Sensor View - Upload new file&nbsp;<input type="file" className='' onChange={handleChange} />
+        {/* </span>&nbsp; */}
         </span> 
         } width={mapWidth}>
         <MapContainer 
