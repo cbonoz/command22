@@ -1,4 +1,4 @@
-import { Button, Card, Col, Empty, Input, Row, Table } from 'antd'
+import { Button, Card, Col, Empty, Input, Row, Spin, Table } from 'antd'
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
@@ -23,6 +23,7 @@ export default function VideoStreams() {
     useEffect(() => {
         // Clear.
         setAnalytics()
+        setFrame()
     }, [video])
 
     async function nextFrame(cameraId) {
@@ -100,14 +101,12 @@ export default function VideoStreams() {
     const imageUrl = getDataUrl(analytics?.image)
     const isDetection = analytics?.endpoint === 'objectdetection'
 
+    const loaded = video && frame;
+
     return (<div className='video-stream-content'>
         <Row>
             <Col span={6}>
                 <CloudCard title="Manage Video Streams" width="100%">
-                    {/* <h3>Enter stream url:</h3> */}
-                    {/* <Table
-        locale={{emptyText:"No videos uploaded"}}
-        /> */}
                     <div className='standard-padding'>
                         {(videos?.map((v, i) => (<div>
                             <a key={i} onClick={() => setVideo(v)}>{v.name}</a>
@@ -128,18 +127,22 @@ export default function VideoStreams() {
                 <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
                     <div className='video-stream-content'>
                         {!video && <Empty description="No video stream active" />}
+                        {video && !frame && <Spin size="large"/>}
                         {/* https://github.com/CookPete/react-player */}
-                        {video && <span className='standard-margin'>
+                        {loaded && <span className='standard-margin'>
                             {video.link && <ReactPlayer url={video.link} controls playing />}
                             {video.id && frame && <div>
                                 <p>Time: {getReadableDateTime(parseFloat(frame.timestamp) * 1000)}</p>
                                 <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />
                             </div>}
+
+                            {/* Service button row */}
                             {convertToArray(video.services).map((s, i) => {
                                 return <Button className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
                                     {s}
                                 </Button>
                             })}
+
                             {analytics && <span>
                                 <h3>{analytics.analyticName}</h3>
                                 {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
