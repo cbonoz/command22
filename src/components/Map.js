@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import CloudCard from './CloudCard'
 import PointCloud from './PointCloud'
-import { Card, Empty, Select } from 'antd'
+import { Card, Empty, Modal, Select } from 'antd'
 import { FileUploader } from 'react-drag-drop-files'
 import { useWindowSize } from '../hooks/WindowSize'
-import { TEST_INTEREST_POINTS } from '../util/constants'
-import { getReadableDateTime } from '../util'
+import { LARGE_FILE_MB, TEST_INTEREST_POINTS } from '../util/constants'
+import { getReadableDateTime, isLargeData } from '../util'
 
 const reader = new FileReader();
 
@@ -13,14 +13,23 @@ const reader = new FileReader();
 function Map({}) {
   const [plyData, setPlyData] = useState()
   const [interestPoints, setInterestPoints] = useState([])
+  const [warningModal, setWarningModal] = useState(false)
   const {width, height} = useWindowSize()
 
-  reader.addEventListener("load", () => {
+  const onLoad = () => {
     // convert image file to base64 string
-    console.log('done', reader.result)
-    setPlyData(reader.result)
+    const result = reader.result
+    // console.log('done', target.result)
+    if (isLargeData(result)) {
+      setWarningModal(true)
+    }
+    setPlyData(result)
     setInterestPoints(TEST_INTEREST_POINTS)
-  }, false);
+  }
+
+  useEffect(() => {
+    reader.addEventListener("load", onLoad)
+  }, [])
 
   const handleChange = (f) => {
     reader.readAsDataURL(f)
@@ -29,12 +38,15 @@ function Map({}) {
     // setPlyData(s)
 }
 
-  const sceneWidth = Math.max(400, width-400)
+  const sceneWidth = Math.max(400, (width || 0)-400)
+
+  const title = <span>
+    Rendered Map View {plyData ? " - Use 'WASD' keys to control the camera" : ""}
+  </span>
  
   return (
     <div>
-        <CloudCard title={"Rendered Map View"} width={sceneWidth}>
-          <span>
+        <CloudCard title={title} width={sceneWidth}>
         <FileUploader
           label={"Upload a .ply file to render here"} 
           multiple={false}
@@ -42,10 +54,12 @@ function Map({}) {
           name="file"
           types={['ply']}
         />
-        <span>Once loaded, use 'WASD' keys to control the camera.</span>
-        </span>
+        {/* <span>Once loaded, use 'WASD' keys to control the camera.</span> */}
         <br/>
+ {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */} 
         {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
+ {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */} 
+        {plyData &&
             <PointCloud 
               width={sceneWidth-40} 
               height={height-300} 
@@ -53,7 +67,7 @@ function Map({}) {
               onPointSelect={(point) => {
                 alert('Selected: ' + JSON.stringify(point))
               }}
-            />
+            />}
         </CloudCard>
         <CloudCard title={"Points of Interest"} width={360}>
             {interestPoints.length === 0 && <Empty className='standard-padding' description="No points of interest available"/>}
@@ -66,6 +80,22 @@ function Map({}) {
               </Card>
             })}
         </CloudCard>
+
+        <Modal
+          title="Large file warning"
+          cancelText="I'll compress it"
+          okText="Continue"
+          onCancel={() => {
+            setPlyData(undefined)
+            setWarningModal(false)
+          }}
+          width={400}
+          type="warning"
+          onOk={() => setWarningModal(false)}
+          open={warningModal}>
+            <p>This file is larger than {LARGE_FILE_MB} MB and may have slower performance.</p>
+            <p>You may proceed with slower performance, but we recommend compressing this file.</p>
+          </Modal>
     </div>
   )
 }

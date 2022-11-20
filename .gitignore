@@ -1,5 +1,6 @@
 node_modules
 my-project
+.firebase
 North_Bay_1_50pct_30mm_shade_norm_ts.ply
 data/phase2.ply
 build

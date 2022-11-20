@@ -30,3 +30,5 @@ export const TEST_INTEREST_POINTS = [
         "Time": "13:00:01"
     },
 ]
+
+export const LARGE_FILE_MB = 25;

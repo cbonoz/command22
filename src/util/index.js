@@ -1,3 +1,4 @@
+import { LARGE_FILE_MB } from "./constants";
 
 export const getDataUrl = (data) => `data:image/jpeg;base64,${data}`
 
@@ -49,7 +50,10 @@ export const getBoundBoxes = (analyticsBoxes, width, height) => {
         console.error(e)
     }
     return results;
+}
 
+export const isLargeData = (dataBytes) => {
+    return dataBytes.length > LARGE_FILE_MB*Math.pow(10, 6);
 }
 
 export const col = (key, render) => {
