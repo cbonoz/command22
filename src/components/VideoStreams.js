@@ -4,7 +4,7 @@ import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
 import { getAnalytic, getCameras, getFrame } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
-import { convertToArray, createObjectUrl, getBoundBoxes, getDataUrl, getReadableDateTime } from '../util'
+import { convertToArray, createObjectUrl, getBoundBoxes, getDataUrl, getReadableDateTime, getReadableError } from '../util'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
@@ -70,13 +70,8 @@ export default function VideoStreams() {
             setVideos(data)
         } catch (e) {
             console.error('err', e)
-
-            let msg = e.toString()
-            if (msg.indexOf('503') !== 0) {
-                // Server outage / issue (should retry)
-                msg = 'Server temporarily unavailable. Please try again.'
-            }
-            alert('Error getting video streams: ' + msg.toString())
+            const msg = getReadableError(e)
+            alert('Error getting video streams: ' + msg)
         }
     }
 
@@ -108,6 +103,7 @@ export default function VideoStreams() {
             <Col span={6}>
                 <CloudCard title="Manage Video Streams" width="100%">
                     <div className='standard-padding'>
+                        <h3>Select stream</h3>
                         {(videos?.map((v, i) => (<div>
                             <a key={i} onClick={() => setVideo(v)}>{v.name}</a>
                         </div>)))}

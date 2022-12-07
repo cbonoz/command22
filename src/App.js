@@ -28,6 +28,8 @@ import 'leaflet/dist/leaflet.css';
 const { Header, Footer, Sider, Content } = Layout;
 const { Option } = Select;
 
+// const DEFAULT_PAGE = '/lidar'
+
 export default function App() {
   const navigate = useNavigate();
   const { user, login, init, isPending, logout } = useLogin();
@@ -45,7 +47,7 @@ export default function App() {
   if (!user) {
     return (
       <div className="App container standard-padding centered">
-        <br/><br/><br/>
+        <br /><br /><br />
         <img src={logo} className="standard-padding" />
         <p className="white">{APP_DESC}.</p>
         <br />
@@ -60,8 +62,8 @@ export default function App() {
           <GoogleOutlined />
           &nbsp;Login with Google
         </Button>
-        <br/>
-        <br/>
+        <br />
+        <br />
 
         <p className="white">{APP_NAME} &copy;2022</p>
       </div>
@@ -70,22 +72,37 @@ export default function App() {
 
   const userMenu = (
     <Menu
-    items={[
-      {
-        key: '1',
-        label: (
-          <a target="#" rel="noopener noreferrer" onClick={(e) => {
-            e.preventDefault();
-            logout();
-          }}>
-            Logout
-          </a>
-        ),
-      },
-    ]}
+      items={[
+        {
+          key: '1',
+          label: (
+            <a target="#" rel="noopener noreferrer" onClick={(e) => {
+              e.preventDefault();
+              logout();
+            }}>
+              Logout
+            </a>
+          ),
+        },
+      ]}
     />
-
   )
+
+  const menuItems = [{
+    key: '/',
+    label: <><ScanOutlined /> 3D Map</>,
+    onClick: () => navigate("/"),
+  },
+  {
+    key: '/sensorData',
+    label: <><FundViewOutlined /> 2D Map</>,
+    onClick: () => navigate("/sensorData"),
+  },
+  {
+    key: '/videos',
+    label: <><VideoCameraFilled /> Video Streams</>,
+    onClick: () => navigate("/videos"),
+  }]
 
   return (
     <div className="App">
@@ -95,68 +112,57 @@ export default function App() {
             // theme="dark"
             mode="horizontal"
           >
-            <Menu.Item key={0}>
+            <Menu.Item key={''}>
               <img
                 src={logo}
                 className="header-logo pointer"
                 onClick={() => navigate("/")}
               />
-               
             </Menu.Item>
             <span>
               <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
               <span className="green">Connected</span>
             </span>
-         
+
             <span style={{ marginLeft: 'auto' }}>
-            {user && <Dropdown overlay={userMenu}  className="pointer">
-            <span className="pointer">
-              <Avatar size="large" src={user.photoURL} />
-              &nbsp;{user.displayName}&nbsp;
-            </span>
-            </Dropdown>}
+              {user && <Dropdown overlay={userMenu} className="pointer">
+                <span className="pointer">
+                  <Avatar size="large" src={user.photoURL} />
+                  &nbsp;{user.displayName}&nbsp;
+                </span>
+              </Dropdown>}
               &nbsp;
-              </span> 
+            </span>
           </Menu>
-          <Menu mode="horizontal" defaultSelectedKeys={['/maps']}
-                selectedKeys={[window.location.pathname]}
+          <Menu mode="horizontal"
+            selectedKeys={[window.location.pathname]}
+            items={menuItems}
           >
-            <Menu.Item key={'/maps'} onClick={() => navigate("/maps")}>
-              <ScanOutlined /> 3D Map
-            </Menu.Item>
-
-            <Menu.Item key={'/sensorData'} onClick={() => navigate("/sensorData")}>
-              <FundViewOutlined /> 2D Map
-            </Menu.Item>
-
-            <Menu.Item key={'/videos'} onClick={() => navigate("/videos")}>
-              <VideoCameraFilled /> Video Streams
-            </Menu.Item>
-   
-            <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
+            {/* <Menu.Item key={'/notifications'} onClick={() => navigate("/notifications")}>
               <NotificationFilled /> Alerts
-            </Menu.Item>
-    
+            </Menu.Item> */}
+
           </Menu>
         </Header>
         <Layout>
           <Content>
             <div style={{ height }}>
               <Routes>
-                <Route path="/" element={<Home user={user} />} />
-                <Route path="/maps" element={<Map user={user} />} />
+                <Route path="/" element={<Map user={user} />} />
+                <Route path="/lidar" element={<Map user={user} />} />
                 <Route path="/videos" element={<VideoStreams user={user} />} />
-                <Route
+                <Route path="/sensorData" element={<SensorData user={user} />} />
+
+                {/* <Route
                   path="/notifications"
                   element={<Notifications user={user} />}
-                />
-                <Route path="/sensorData" element={<SensorData user={user} />} />
+                /> */}
               </Routes>
             </div>
           </Content>
         </Layout>
         <Footer>
-         
+
         </Footer>
       </Layout>
     </div>

@@ -17,6 +17,22 @@ export const convertToArray = (value) => {
     return value ? (Array.isArray(value) ? value: [value]) : []
 }
 
+export const getReadableError = (e) => {
+    let msg
+    if (e.response && e.response.data && e.response.data.message) {
+        msg = e.response.data.message
+    } else {
+        msg = e.toString()
+    }
+
+    if (msg.indexOf('503') !== 0) {
+        // Server outage / issue (should retry)
+        msg = 'Server temporarily unavailable. Please try again.'
+    }
+    
+    return msg
+}
+
 export const getReadableDateTime = d => {
     if (!(d instanceof Date)) {
         d = new Date(d)
