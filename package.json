@@ -28,9 +28,8 @@
     "typescript": "3.8.3"
   },
   "scripts": {
-    "start:legacy": "env-cmd -f .env.local react-scripts --openssl-legacy-provider start",
-    "start": "env-cmd -f .env.local react-scripts start",
-    "build": "env-cmd -f .env.local react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy:surge": "yarn build && cp build/index.html build/200.html && surge build cloudresponder.surge.sh",
