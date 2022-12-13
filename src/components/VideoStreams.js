@@ -1,4 +1,4 @@
-import { Button, Card, Col, Empty, Input, Row, Spin, Table } from 'antd'
+import { Button, Card, Col, Empty, Input, Modal, Row, Spin, Table } from 'antd'
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 import ReactPlayer from 'react-player'
@@ -18,6 +18,7 @@ export default function VideoStreams() {
     const [video, setVideo] = useState()
     const [text, setText] = useState()
     const [frame, setFrame] = useState()
+    const [selected, setSelected] = useState() // Selected object.
     const [analytics, setAnalytics] = useState()
 
     useEffect(() => {
@@ -50,6 +51,9 @@ export default function VideoStreams() {
         try {
             const { data } = await getAnalytic(video.id, endpoint)
             console.log('results', data)
+            if (typeof data?.results === 'string') {
+                data['results'] = JSON.parse(data.results)
+            }
             setAnalytics({ ...data, analyticName, endpoint })
         } catch (e) {
             console.error('err', e)
@@ -60,6 +64,13 @@ export default function VideoStreams() {
             }
             alert('Error getting data: ' + msg.toString())
         }
+    }
+
+    const onBoxSelected = (index) => {
+        const results = analytics?.results || []
+        console.log('box selected', index, results[index])
+        setSelected(results[index])
+        // alert(results[index])
     }
 
     async function cameras() {
@@ -92,9 +103,11 @@ export default function VideoStreams() {
         return results
     }, [analytics])
 
+    const { image, endpoint } = analytics || {}
 
-    const imageUrl = getDataUrl(analytics?.image)
-    const isDetection = analytics?.endpoint === 'objectdetection'
+
+    const imageUrl = getDataUrl(image)
+    const isDetection = endpoint === 'objectdetection' || endpoint === 'personattribute'
 
     const loaded = video && frame;
 
@@ -123,7 +136,7 @@ export default function VideoStreams() {
                 <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
                     <div className='video-stream-content'>
                         {!video && <Empty description="No video stream active" />}
-                        {video && !frame && <Spin size="large"/>}
+                        {video && !frame && <Spin size="large" />}
                         {/* https://github.com/CookPete/react-player */}
                         {loaded && <span className='standard-margin'>
                             {video.link && <ReactPlayer url={video.link} controls playing />}
@@ -134,7 +147,7 @@ export default function VideoStreams() {
 
                             {/* Service button row */}
                             {convertToArray(video.services).map((s, i) => {
-                                return <Button className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
+                                return <Button key={i} className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
                                     {s}
                                 </Button>
                             })}
@@ -142,14 +155,14 @@ export default function VideoStreams() {
                             {analytics && <span>
                                 <h3>{analytics.analyticName}</h3>
                                 {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
-                                {imageUrl && <div style={{height: 480, width: 640}}>
-                                {analytics.results && <p>
-                                    Results: {isDetection ? boxes?.length : analytics.results}
-                                </p>}
-                                    <Boundingbox canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
+                                {imageUrl && <div style={{ height: 480, width: 640 }}>
+                                    {analytics.results && isDetection && <p>
+                                        Results: {boxes?.length}
+                                    </p>}
+                                    <Boundingbox onSelected={(i) => onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
                                 </div>}
 
-                               
+
                             </span>}
                         </span>}
                     </div>
@@ -157,6 +170,23 @@ export default function VideoStreams() {
                 </CloudCard>
             </Col>
         </Row>
+
+        <Modal
+            title={"Detected attribute"}
+            visible={!!selected}
+            showCancel={false}
+            cancelText="Close"
+            okButtonProps={{
+                style: {
+                  display: "none",
+                },
+              }}
+            onCancel={() => setSelected(undefined)}
+        >
+            {Object.keys(selected || {}).map((k, i) => {
+                return <li key={i}><b>{k}:</b> {JSON.stringify(selected[k])}</li>
+            })}
+        </Modal>
         {/* <div className='white'>Video Streams</div> */}
     </div>
     )

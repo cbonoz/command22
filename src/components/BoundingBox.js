@@ -71,7 +71,7 @@ class Boundingbox extends Component {
             if (hasSegmentionMasks)
                 this.renderSegmentationMasks();
 
-            this.canvas.onmousemove = ((e) => {
+            this.canvas.onmousedown = ((e) => {
                 // Get the current mouse position
                 const r = this.canvas.getBoundingClientRect();
                 const scaleX = this.canvas.width / r.width;
@@ -149,7 +149,7 @@ class Boundingbox extends Component {
             });
 
             this.canvas.onmouseout = () => {
-                this.props.onSelected(-1);
+                // this.props.onSelected(-1);
                 this.setState({ hoverIndex: -1 });
                 // this.renderBoxes();
             };

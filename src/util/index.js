@@ -50,17 +50,24 @@ export const getBoundBoxes = (analyticsBoxes, width, height) => {
         analyticsBoxes = JSON.parse(analyticsBoxes)
     }
 
-    if (!Array.isArray(analyticsBoxes)) {
+    if (!Array.isArray(analyticsBoxes) || analyticsBoxes.length === 0) {
         return []
     }
+
+    if (analyticsBoxes[0].detection) {
+        analyticsBoxes = analyticsBoxes.map(x => x.detection)
+    }
+
     // Returns [[x, y, width, height], ...] where x,y is top left corner.
     const locations = analyticsBoxes.map(x => x[2])
     let results = [];
     try {
-        results = locations.map((box, i) => {
+        results = locations.map((box, index) => {
             const diffY = box[1][1] - box[0][1]
             const diffX = box[1][0] - box[0][0]
-            return [box[0][0]*width, box[0][1]*height, diffX*width, diffY*height]
+            const coord = [box[0][0]*width, box[0][1]*height, diffX*width, diffY*height]
+            const res = { coord, index}
+            return res;
         })
     } catch (e) {
         console.error(e)

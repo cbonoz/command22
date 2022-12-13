@@ -8,14 +8,33 @@ CloudResponder
 
 Repo for CommandDING contest 2022.
 
+CloudResponder is an open source data-driven incident response and visualization platform for first-responders.
+
 ### How to run
-`yarn && yarn start`
+`yarn && yarn dev`
+
+Use `yarn start`: for openssl legacy provider.
+
+
+CloudResponder is currently configured to work with a <a href="firebase.com">firebase</a> application.
+
+<pre>
+REACT_APP_FB_KEY={YOUR_FIREBASE_KEY}
+REACT_APP_FB_DOMAIN={YOUR_FIREBASE_DOMAIN}
+REACT_APP_FB_PROJECT_ID={YOUR_FIREBASE_PROJECT_ID}
+REACT_APP_FB_BUCKET={YOUR_FIREBASE_BUCKET_ID}
+REACT_APP_FB_SENDER={YOUR_FIREBASE_SENDER_ID}
+REACT_APP_FB_APP={YOUR_FIREBASE_APP_ID}
+REACT_APP_VIDEO_API_URL={VIDEO_FEED_URL} # (optional) defaults to http://qil2.uh.edu
+</pre>
 
 
 ### Point cloud examples:
 
 * Plyloader: https://sbcode.net/threejs/loaders-ply/
 * Camera control: https://medium.com/geekculture/how-to-control-three-js-camera-like-a-pro-a8575a717a2
+* Video API: http://qil2.uh.edu/docs/
+
 
 Not used:
 * https://github.com/pnext/three-loader

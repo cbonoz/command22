@@ -1,9 +1,7 @@
 import axios from 'axios'
 import {MD5} from 'crypto-js'
-import { IS_LOCAL } from '../util/constants';
 
-// const baseURL = IS_LOCAL ? 'http://localhost:3001' : process.env.REACT_APP_SERVER_URL;
-const baseURL = process.env.REACT_APP_SERVER_URL;
+const baseURL = process.env.REACT_APP_VIDEO_API_URL || 'http://qil2.uh.edu';
 const PROXY_URL = 'https://http-proxy.fly.dev/proxy'
 console.log('baseUrl', baseURL)
 
