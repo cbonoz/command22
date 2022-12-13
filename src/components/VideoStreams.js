@@ -12,15 +12,19 @@ Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m
 
 import { useInterval } from 'usehooks-ts'
 import Boundingbox from './BoundingBox'
+import { useParams } from 'react-router-dom'
 
 export default function VideoStreams() {
     const [videos, setVideos] = useState()
     const [video, setVideo] = useState()
     const [text, setText] = useState()
     const [frame, setFrame] = useState()
-    const [first ,setFirst] = useState(true)
+    const [first, setFirst] = useState(true)
     const [selected, setSelected] = useState() // Selected object.
     const [analytics, setAnalytics] = useState()
+
+    let { cameraId } = useParams()
+    cameraId = parseInt(cameraId)
 
     useEffect(() => {
         // Clear.
@@ -37,6 +41,15 @@ export default function VideoStreams() {
             console.error('error getting frame', e)
         }
     }
+
+    useEffect(() => {
+        if (videos && cameraId) {
+            const v = videos.find(v => v.id === cameraId)
+            if (v) {
+                setVideo(v)
+            }
+        }
+    }, [videos, cameraId]);
 
     useInterval(
         () => {
@@ -125,10 +138,12 @@ export default function VideoStreams() {
                 <CloudCard title="Manage Video Streams" width="100%">
                     <div className='standard-padding'>
                         <h3>Select stream</h3>
-                        {(videos?.map((v, i) => (<div>
-                            <a key={i} onClick={() => setVideo(v)}>{v.name}</a>
-                        </div>)))}
-
+                        {(videos?.map((v, i) => {
+                            const selectedVideo = video?.id === v.id
+                            return <div>
+                                <a className={selectedVideo ? 'bold' : ''} key={i} onClick={() => setVideo(v)}>{v.name}</a>
+                            </div>
+                        }))}
                         <hr />
 
                         <Input.Group compact>
@@ -152,13 +167,17 @@ export default function VideoStreams() {
                                 <p>Time: {getReadableDateTime(parseFloat(frame.timestamp) * 1000)}</p>
                                 <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />
                             </div>}
+                            <br/>
 
+                            <p>Click the buttons below to freeze frame.</p>
+                            <div className='vertical-margin'>
                             {/* Service button row */}
                             {convertToArray(video.services).map((s, i) => {
-                                return <Button key={i} className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s, first)}>
+                                return <span key={i}><Button type="primary" onClick={() => fetchAnalytics(s, first)}>
                                     {s}
-                                </Button>
+                                </Button>&nbsp;</span>
                             })}
+                            </div>
 
                             {analytics && <span>
                                 <h3>{analytics.analyticName}</h3>
@@ -186,9 +205,9 @@ export default function VideoStreams() {
             cancelText="Close"
             okButtonProps={{
                 style: {
-                  display: "none",
+                    display: "none",
                 },
-              }}
+            }}
             onCancel={() => setSelected(undefined)}
         >
             {Object.keys(selected || {}).map((k, i) => {

@@ -151,6 +151,7 @@ export default function App() {
                 <Route path="/" element={<Map user={user} />} />
                 <Route path="/lidar" element={<Map user={user} />} />
                 <Route path="/videos" element={<VideoStreams user={user} />} />
+                <Route path="/videos/:cameraId" element={<VideoStreams user={user} />} />
                 <Route path="/sensorData" element={<SensorData user={user} />} />
 
                 {/* <Route
