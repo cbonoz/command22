@@ -18,6 +18,7 @@ export default function VideoStreams() {
     const [video, setVideo] = useState()
     const [text, setText] = useState()
     const [frame, setFrame] = useState()
+    const [first ,setFirst] = useState(true)
     const [selected, setSelected] = useState() // Selected object.
     const [analytics, setAnalytics] = useState()
 
@@ -25,6 +26,7 @@ export default function VideoStreams() {
         // Clear.
         setAnalytics()
         setFrame()
+        setFirst(true)
     }, [video])
 
     async function nextFrame(cameraId) {
@@ -45,7 +47,7 @@ export default function VideoStreams() {
         (video && video.id) ? 1000 : null,
     )
 
-    async function fetchAnalytics(analyticName) {
+    async function fetchAnalytics(analyticName, firstFetch) {
         const endpoint = getAnalyticEndpoint(analyticName)
         console.log('get analytic', endpoint, video.id)
         try {
@@ -63,6 +65,12 @@ export default function VideoStreams() {
                 msg = 'Server temporarily unavailable. Please try again.'
             }
             alert('Error getting data: ' + msg.toString())
+        }
+
+        // TODO: hack to force rerender of bounding boxes.
+        if (firstFetch) {
+            setFirst(false)
+            fetchAnalytics(analyticName, false)
         }
     }
 
@@ -147,7 +155,7 @@ export default function VideoStreams() {
 
                             {/* Service button row */}
                             {convertToArray(video.services).map((s, i) => {
-                                return <Button key={i} className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s)}>
+                                return <Button key={i} className='standard-margin' type="primary" key={i} onClick={() => fetchAnalytics(s, first)}>
                                     {s}
                                 </Button>
                             })}
