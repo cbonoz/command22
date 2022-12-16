@@ -8,14 +8,18 @@ import { getAnalytic, getFrame } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
 import { convertToArray, getBoundBoxes, getDataUrl, getReadableDateTime, getReadableError } from '../util'
 
-function VideoStream({ video, cameraId, onBoxClicked }) {
+function VideoStream({ video, onBoxClicked }) {
     const [frame, setFrame] = useState()
     const [first, setFirst] = useState(true)
     const [analytics, setAnalytics] = useState()
 
     async function nextFrame() {
+        if (!video) {
+            return
+        }
+
         try {
-            const { data } = await getFrame(cameraId)
+            const { data } = await getFrame(video.id)
             setFrame(data)
         } catch (e) {
             console.error('error getting frame', e)
@@ -118,7 +122,7 @@ function VideoStream({ video, cameraId, onBoxClicked }) {
                     {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
                     {imageUrl && <div style={{ height: 480, width: 640 }}>
                         {analytics.results && <p>
-                            Results: {isDetection ? boxes?.length : analytics.results}
+                            Results: {isDetection ? boxes?.length : JSON.stringify(analytics.results)}
                         </p>}
                         <Boundingbox onSelected={(i) => onBoxSelected && onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
                     </div>}

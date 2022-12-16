@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {MD5} from 'crypto-js'
+import { MD5 } from 'crypto-js'
 
 const baseURL = process.env.REACT_APP_VIDEO_API_URL || 'http://qil2.uh.edu';
 const PROXY_URL = 'https://http-proxy.fly.dev/proxy'
@@ -16,9 +16,25 @@ function get(path) {
     })
 }
 
+export const getLocation = (cameraId) => {
+    return get(`/main/camera/${cameraId}/gps/`)
+}
 
-export const getCameras = () => {
-    return get('/main/camera/')
+export const getCameras = async (includeLocations) => {
+    let { data: cameras } = await get('/main/camera/')
+    if (!includeLocations) {
+        return cameras
+    }
+
+    for (let i = 0; i < cameras.length; i++) {
+        const response = await getLocation(cameras[i].id)
+        const data = response.data[0]
+        cameras[i] = {
+            ...cameras[i],
+            ...data
+        }
+    }
+    return cameras
 }
 
 export const getAnalytic = (cameraId, analyticEndpoint) => {
@@ -28,3 +44,4 @@ export const getAnalytic = (cameraId, analyticEndpoint) => {
 export const getFrame = (cameraId) => {
     return get(`/main/camera/${cameraId}/get_live_data/`)
 }
+

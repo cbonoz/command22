@@ -22,15 +22,18 @@ export default function VideoStreams() {
     async function cameras() {
         console.log('cameras')
         try {
-            const { data } = await getCameras()
-            console.log('results', data)
-            setVideos(data)
+            const cameras = await getCameras()
+            console.log('results', cameras)
+            setVideos(cameras)
         } catch (e) {
             console.error('err', e)
             const msg = getReadableError(e)
             alert('Error getting video streams: ' + msg)
         }
     }
+    useEffect(() => {
+        cameras()
+    }, [])
 
     useEffect(() => {
         if (videos && cameraId) {
@@ -42,9 +45,7 @@ export default function VideoStreams() {
     }, [videos, cameraId]);
 
 
-    useEffect(() => {
-        cameras()
-    }, [])
+ 
 
     const onBoxClicked = (box) => setSelected(box)
 
@@ -73,14 +74,14 @@ export default function VideoStreams() {
             <Col span={1} />
             <Col span={16}>
                 <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
-                    <VideoStream video={video} cameraId={cameraId || video?.id} onBoxClicked={onBoxClicked} />
+                    <VideoStream video={video}  onBoxClicked={onBoxClicked} />
                 </CloudCard>
             </Col>
         </Row>
 
         <Modal
             title={"Detected attribute"}
-            visible={!!selected}
+            open={!!selected}
             showCancel={false}
             cancelText="Close"
             okButtonProps={{
