@@ -54,19 +54,22 @@ export const getBoundBoxes = (analyticsBoxes, width, height) => {
         return []
     }
 
+    let boxes;
     if (analyticsBoxes[0].detection) {
-        analyticsBoxes = analyticsBoxes.map(x => x.detection)
+        boxes = analyticsBoxes.map(x => x.detection)
+    } else {
+        boxes = analyticsBoxes
     }
 
     // Returns [[x, y, width, height], ...] where x,y is top left corner.
-    const locations = analyticsBoxes.map(x => x[2])
+    const locations = boxes.map(x => x[2])
     let results = [];
     try {
         results = locations.map((box, index) => {
             const diffY = box[1][1] - box[0][1]
             const diffX = box[1][0] - box[0][0]
             const coord = [box[0][0]*width, box[0][1]*height, diffX*width, diffY*height]
-            const res = { coord, index}
+            const res = { ...analyticsBoxes[index], coord, index}
             return res;
         })
     } catch (e) {

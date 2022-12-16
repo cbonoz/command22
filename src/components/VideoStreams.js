@@ -57,7 +57,7 @@ export default function VideoStreams() {
                         <h3>Select stream</h3>
                         {(videos?.map((v, i) => {
                             const selectedVideo = video?.id === v.id
-                            return <div>
+                            return <div key={i}>
                                 <a className={selectedVideo ? 'bold' : ''} key={i} onClick={() => setVideo(v)}>{v.name}</a>
                             </div>
                         }))}

@@ -1,5 +1,5 @@
 
-import { Empty, Spin, Button } from 'antd';
+import { Empty, Spin, Button, Select } from 'antd';
 import Boundingbox from './BoundingBox';
 import React, { useState, useEffect, useMemo } from 'react'
 import ReactPlayer from 'react-player'
@@ -12,6 +12,13 @@ function VideoStream({ video, onBoxClicked }) {
     const [frame, setFrame] = useState()
     const [first, setFirst] = useState(true)
     const [analytics, setAnalytics] = useState()
+    const [filters, setFilters] = useState()
+    const [filterOptions, setFilterOptions] = useState()
+
+    const onFiltersChanged = (vals) => {
+        console.log('filters', vals)
+        setFilters(vals)
+    }
 
     async function nextFrame() {
         if (!video) {
@@ -35,6 +42,8 @@ function VideoStream({ video, onBoxClicked }) {
     useEffect(() => {
         // Clear.
         setAnalytics()
+        setFilters()
+        setFilterOptions()
         setFrame()
         setFirst(true)
     }, [video])
@@ -47,13 +56,23 @@ function VideoStream({ video, onBoxClicked }) {
             width = canvas.getAttribute('width')
             height = canvas.getAttribute('height')
         }
-        const results = getBoundBoxes(analytics?.results || [], width, height)
+        let results = getBoundBoxes(analytics?.results || [], width, height)
+        if (filters && filters.length > 0 && results) {
+            const processedFilters = filters.map(f => {
+                const tokens = f.split(':')
+                return {
+                    key: tokens[0],
+                    value: tokens[1]
+                }
+            })
+            console.log('boxes', results)
+            results = results.filter(box => processedFilters.some(f => box[f.key] === f.value))
+        }
         console.log('boxes', results)
-        return results
-    }, [analytics])
+        return results 
+    }, [analytics, filters])
 
     const { image, endpoint } = analytics || {}
-
 
     const imageUrl = getDataUrl(image)
     const isDetection = endpoint === 'objectdetection' || endpoint === 'personattribute'
@@ -70,6 +89,29 @@ function VideoStream({ video, onBoxClicked }) {
                 data['results'] = JSON.parse(data.results)
             }
             setAnalytics({ ...data, analyticName, endpoint })
+            if (endpoint === 'personattribute') {
+                const myList = []
+                for (let i = 0; i < data.results.length; i++) {
+                    const result = data.results[i]
+                    const keys = Object.keys(result)
+                    for (let j = 0; j < keys.length; j++) {
+                        const key = keys[j]
+                        if (key === 'detection') {
+                            continue
+                        }
+                        const val = result[key]
+                        myList.push((key + ':' + val).toLowerCase())
+                    }
+                }
+
+                const unique = [...new Set(myList)];
+                setFilterOptions(unique.map(f => {
+                    return {
+                        label: f,
+                        value: f
+                    }
+                }))
+            }
         } catch (e) {
             console.error('err', e)
             let msg = e.toString()
@@ -88,9 +130,8 @@ function VideoStream({ video, onBoxClicked }) {
     }
 
     const onBoxSelected = (index) => {
-        const results = analytics?.results || []
-        console.log('box selected', index, results[index])
-        onBoxClicked && onBoxClicked(results[index])
+        console.log('box selected', index, boxes[index])
+        onBoxClicked && onBoxClicked(boxes[index])
     }
 
     return (
@@ -118,6 +159,20 @@ function VideoStream({ video, onBoxClicked }) {
 
                 {analytics && <span>
                     <h3>{analytics.analyticName}</h3>
+                    {analytics.error && <p>Error: {getReadableError(analytics.error)}</p>}
+                    {endpoint === 'personattribute' && <div>
+                        <Select
+                            mode="multiple"
+                            allowClear
+                            style={{ width: '90%' }}
+                            placeholder="Select filters"
+                            defaultValue={filters}
+                            onChange={onFiltersChanged}
+                            options={filterOptions}
+                        />
+                        <br/>
+                        <br/>
+                    </div>}
                     {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
                     {imageUrl && <div style={{ height: 480, width: 640 }}>
                         {analytics.results && <p>
