@@ -26,7 +26,6 @@ function VideoStream({ video, onBoxClicked }) {
         }
     }
 
-
     useInterval(nextFrame,
         // Delay in milliseconds or null to stop it
         (video && video.id) ? 1000 : null,
@@ -91,7 +90,7 @@ function VideoStream({ video, onBoxClicked }) {
     const onBoxSelected = (index) => {
         const results = analytics?.results || []
         console.log('box selected', index, results[index])
-        onBoxClicked(results[index])
+        onBoxClicked && onBoxClicked(results[index])
     }
 
     return (
@@ -124,7 +123,7 @@ function VideoStream({ video, onBoxClicked }) {
                         {analytics.results && <p>
                             Results: {isDetection ? boxes?.length : JSON.stringify(analytics.results)}
                         </p>}
-                        <Boundingbox onSelected={(i) => onBoxSelected && onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
+                        <Boundingbox onSelected={(i) => onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
                     </div>}
 
 

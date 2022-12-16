@@ -72,6 +72,7 @@ class Boundingbox extends Component {
                 this.renderSegmentationMasks();
 
             this.canvas.onmousedown = ((e) => {
+                e.preventDefault()
                 // Get the current mouse position
                 const r = this.canvas.getBoundingClientRect();
                 const scaleX = this.canvas.width / r.width;

@@ -557,7 +557,7 @@ function SensorData({ }) {
         onOk={() => setVideo(null)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
-        title="Video Feed"
+        title={video?.name || "Video Feed"}
         centered
       >
           <VideoStream video={video} />
