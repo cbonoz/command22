@@ -499,7 +499,7 @@ function SensorData({ }) {
           ref={setMap}
           style={{ height: containerHeight, width: "auto" }}
           center={mapPosition}
-          zoom={21}
+          zoom={20}
           maxZoom={25}
           zoomControl={true}>
           <TileLayer
@@ -510,14 +510,14 @@ function SensorData({ }) {
             position={[37.76928602, -105.68460486]}
             icon={new Icon({
               iconUrl: IndoorMap,
-              iconSize: [100, 156],
-              iconAnchor: [10, 16]
+              iconSize: [500, 780],
+              iconAnchor: [50, 80]
             })}
           >
           </Marker>
           {markers}
           <Marker
-            position={[37.77058602, -105.68750486]}
+            position={[37.76935602, -105.68515486]}
             icon={new Icon({
               iconUrl: sensor_legend,
               iconSize: [200, 500],
