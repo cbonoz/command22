@@ -134,6 +134,10 @@
   margin-bottom: 10px;
 }
 
+.body-padding {
+  padding: 5px;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -158,11 +162,24 @@ textarea {
   color: white;
 }
 
-.cloud-card .ant-card-head {
-  padding: 0px;
-  color: white;
-  background: rgb(134, 142, 150);
-  max-height: 40px;;
+.login-logo {
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+.card-item {
+  padding-left: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;;
+  max-width: 100%;
+  overflow:"hidden";
+  overflow-x: hidden;
+}
+
+/* Use this class to UI indicate high risk sensor data */
+.risk-card {
+  border-color: red;
+  cursor: pointer;
 }
 
 .ant-card-body {
@@ -170,10 +187,11 @@ textarea {
   background: white;
 }
 
-.cloud-card .ant-card-head-title {
-  padding-left: 16px;
-  font-size: 12px;
-  text-transform: uppercase;
+.cloud-card .ant-card-head-title, .cloud-card .ant-tabs-tab {
+  /* padding-left: 16px; */
+  font-size: 14px !important;
+  color: rgb(98,108,125);
+  /* text-transform: uppercase; */
   /* padding-left: 16px; */
 }
 
@@ -181,9 +199,8 @@ textarea {
   display: inline-grid;
 }
 
-.cloud-card .ant-card {
-  background: rgb(134, 142, 150);
-  /* padding: 5px; */
+.cloud-card {
+  padding: 5px;
 }
 
 .ant-layout-footer {
@@ -191,7 +208,7 @@ textarea {
 }
 
 .ant-layout-header {
-  height: 128px;
+  /* height: 128px; */
 }
 
 .ant-layout-footer, .ant-layout-header, .ant-menu {
@@ -199,7 +216,9 @@ textarea {
 }
 
 body, .ant-layout-content, .ant-layout-sider {
-  background: rgb(52,58,63)
+  /* background: rgb(52,58,63) */
+  font-family: 'Noto Sans', sans-serif;
+  background: rgb(86,98,117);
 }
 
 .ant-card-head {
@@ -209,8 +228,8 @@ body, .ant-layout-content, .ant-layout-sider {
 }
 
 .ant-card-bordered {
-  border: none;
-  margin: 10px;
+  border-radius: 5px;
+  /* margin: 10px; */
 }
 
 .green {

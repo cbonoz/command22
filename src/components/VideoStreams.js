@@ -49,9 +49,9 @@ export default function VideoStreams() {
 
     const onBoxClicked = (box) => setSelected(box)
 
-    return (<div className='video-stream-content'>
-        <Row>
-            <Col span={6}>
+    return (<div className='video-stream-content body-padding'>
+             <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+            <Col xs={24} xl={6}>
                 <CloudCard title="Manage Video Streams" width="100%">
                     <div className='standard-padding'>
                         <h3>Select stream</h3>
@@ -71,8 +71,7 @@ export default function VideoStreams() {
                     </div>
                 </CloudCard>
             </Col>
-            <Col span={1} />
-            <Col span={16}>
+            <Col xs={24} xl={18}>
                 <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
                     <VideoStream video={video}  onBoxClicked={onBoxClicked} />
                 </CloudCard>

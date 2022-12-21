@@ -5,27 +5,26 @@ import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/camera_icon.png'
-import MapIcon_Altitude from "../assets/MapIcon_Altitude.png"
-import MapIcon_Count from "../assets/MapIcon_Count.png"
-import MapIcon_Detected from "../assets/MapIcon_Detected.png"
-import MapIcon_Down from "../assets/MapIcon_Down.png"
-import MapIcon_Heatstroke from "../assets/MapIcon_Heatstroke.png"
-import MapIcon_Pulse from "../assets/MapIcon_Pulse.png"
-import MapIcon_Vehicles from "../assets/MapIcon_Vehicles.png"
+
 import { Icon } from 'leaflet'
-import { Button, Modal, Spin } from 'antd'
+import { Button, Card, Col, Modal, Row, Spin, } from 'antd'
 import { getCameras } from '../api'
-import { getReadableError } from '../util'
+import { getReadableError, getSensorDataList, markerList, tab, createCardItem } from '../util'
 import VideoStream from './VideoStream'
+import LidarMap from './LidarMap'
+import { EXAMPLE_SENSOR_DATA } from '../util/constants'
 
-const reader = new FileReader();
-
-function SensorData({ }) {
-  const [data, setData] = useState({ fileData: {}, sensorData: [] });
+function SensorData({ user }) {
+  // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
+  const [data, setData] = useState({ fileData: {}, sensorData: EXAMPLE_SENSOR_DATA });
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
-  const [map, setMap] = useState(null)
+  const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
+
+  const [alerts, setAlerts] = useState([])
+  const [markers, setMarkers] = useState([])
+  const [intervals, setIntervals] = useState([])
   const { height, width } = useWindowSize()
 
   async function cameras() {
@@ -87,40 +86,52 @@ function SensorData({ }) {
     fileReader.onload = onFileLoad;
   };
 
-  const alertListItem = (index, title, lines) => {
-    return (
-      <div key={index + 1}>
-        <h2>{title}</h2>
-        <ul>{lines.map(text => <li><h3>{text}</h3></li>)}</ul>
-      </div>
-    );
-  };
+  const clickableMapAlert = (index, title, lines, dataReading, className) => {
+    return createCardItem(
+      index,
+      title,
+      lines,
+      className,
+      () => {
+        // use the map ref to move the map to the correct location
+        try {
+          const loc = {
+            lat: dataReading["Lat"],
+            lon: dataReading["Lon"]
+          }
+          console.log('goTo', loc)
+          mapRef.current.flyTo(loc, 14, { duration: 2 });
+        } catch (e) {
+          console.error('Could not go to alert location', e);
+        }
+      }
+    )
+  }
 
   const alertList = interval => {
     return interval.map(function (dataReading, index) {
       const sensorId = Number(dataReading["Sensor ID"]);
-      if (sensorId < 2000) {
-        return null;
-      } else if (sensorId < 3000) {
-        return null;
-      } else if (sensorId < 4000) {
+
+      if (sensorId < 4000) {
         return null;
       } else if (sensorId < 5000) {
         if (dataReading["Is HeatStroke"] === "True") {
-          return alertListItem(
+          return clickableMapAlert(
             index,
-            "Temperature indicates an increased risk of heatstroke",
+            "Increased risk of heatstroke",
             [
               "Temperature: " + dataReading["Temperature"],
               "Latitude: " + dataReading["Lat"],
               "Longitude: " + dataReading["Lon"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
       } else if (sensorId < 6000) {
         if (Number(dataReading["Temperature"]) > 100) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "High First Responder temperature",
             [
@@ -131,7 +142,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Temperature"]) < 80) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "Low First Responder temperature",
             [
@@ -142,7 +153,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "High First Responder pulse rate",
             [
@@ -153,7 +164,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "Low First Responder pulse rate",
             [
@@ -170,7 +181,7 @@ function SensorData({ }) {
         return null;
       } else if (sensorId < 9000) {
         if (dataReading["Detected"] === "True") {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "Smoke detected",
             [
@@ -183,7 +194,7 @@ function SensorData({ }) {
         return null;
       } else if (sensorId < 10000) {
         if (Number(dataReading["Temperature"]) > 100) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "High victim temperature",
             [
@@ -194,7 +205,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Temperature"]) < 80) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "Low victim temperature",
             [
@@ -205,7 +216,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "High victim pulse rate",
             [
@@ -216,7 +227,7 @@ function SensorData({ }) {
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "Low victim pulse rate",
             [
@@ -229,14 +240,16 @@ function SensorData({ }) {
         return null;
       } else if (sensorId < 11000) {
         if (dataReading["Detected"] === "True") {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "A wall has structural damage",
             [
               "Structural damage detected: " + dataReading["Detected"],
               "Latitude: " + dataReading["Lat"],
               "Longitude: " + dataReading["Lon"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -244,7 +257,7 @@ function SensorData({ }) {
         return null;
       } else if (sensorId < 13000) {
         if (dataReading["Down"] === "True") {
-          return alertListItem(
+          return clickableMapAlert(
             index,
             "A First Responder is incapacitated",
             []
@@ -256,315 +269,156 @@ function SensorData({ }) {
     });
   }
 
-  const alerts = data.sensorData.map(function (interval, index) {
-    return <div key={100}>{alertList(interval)}</div>;
-  });
+  useEffect(() => {
 
-  const sensorListItem = (index, title, lines) => {
-    return (
-      <li key={index + 1}>
-        <h3>{title}</h3>
-        {lines.map(text => <p>{text}</p>)}
-      </li>
-    );
-  };
+    const { sensorData } = data
+    const sensorTimes = Object.keys(sensorData)
 
-  const dataList = interval => {
-    return interval.map(function (dataReading, index) {
-      const sensorId = Number(dataReading["Sensor ID"]);
-      if (sensorId < 2000) {
-        return sensorListItem(
-          index,
-          "Staging Automatic Vehicle Location (AVL)",
-          ["FR Vehicle Count: " + dataReading["FR Vehicle Count"]]
-        );
-      } else if (sensorId < 3000) {
-        return sensorListItem(
-          index,
-          "First Responder Location",
-          [
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"],
-            "Altitude: " + dataReading["Altitude"]
-          ]
-        );
-      } else if (sensorId < 4000) {
-        return sensorListItem(
-          index,
-          "Event Space Occupancy",
-          ["Occupancy of bystanders in event space: " + dataReading["Count"]]
-        );
-      } else if (sensorId < 5000) {
-        return sensorListItem(
-          index,
-          "Event Space Ambient Temperature",
-          [
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"],
-            "Increased risk of heatstroke: " + dataReading["Is Heatstroke"],
-
-          ]
-        );
-      } else if (sensorId < 6000) {
-        return sensorListItem(
-          index,
-          "First Responder Vitals",
-          [
-            "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
-            "Pulse Rate: " + dataReading["Pulse Rate"],
-            "Temperature: " + dataReading["Temperature"]
-          ]
-        );
-      } else if (sensorId < 7000) {
-        return sensorListItem(
-          index,
-          "Building Occupancy",
-          ["Occupancy of bystanders in building: " + dataReading["Count"]]
-        );
-      } else if (sensorId < 8000) {
-        return sensorListItem(
-          index,
-          "External Protest Monitoring",
-          [
-            "Count: " + dataReading["Count"],
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"]
-          ]
-        );
-      } else if (sensorId < 9000) {
-        return sensorListItem(
-          index,
-          "Hazard Identification",
-          [
-            "Smoke detected: " + dataReading["Detected"],
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"]
-          ]
-        );
-      } else if (sensorId < 10000) {
-        return sensorListItem(
-          index,
-          "Victim Vitals",
-          [
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"],
-            "Altitude: " + dataReading["Altitude"],
-            "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
-            "Pulse Rate: " + dataReading["Pulse Rate"],
-            "Temperature: " + dataReading["Temperature"]
-          ]
-        );
-      } else if (sensorId < 11000) {
-        return sensorListItem(
-          index,
-          "Structural Hazard Detection",
-          [
-            "Structural damage detected: " + dataReading["Detected"],
-            "Latitude: " + dataReading["Lat"],
-            "Longitude: " + dataReading["Lon"]
-          ]
-        );
-      } else if (sensorId < 12000) {
-        return sensorListItem(
-          index,
-          "Video Feed Object Tracking",
-          []
-        );
-      } else if (sensorId < 13000) {
-        return sensorListItem(
-          index,
-          "First Responder Status Detection",
-          ["First Responder is incapacitated: " + dataReading["Down"]]
-        );
-      }
-      return <li key={index + 201}>{JSON.stringify(dataReading)}</li>;
+    const newAlerts = sensorTimes.map(function (interval, index) {
+      return <>{alertList(sensorData[interval])}</>;
     });
-  }
 
-  const intervals = data.sensorData.map(function (interval, index) {
-    return <ul key={200}>{dataList(interval)}</ul>;
-  });
+    const newIntervals = sensorTimes.map(function (interval, index) {
+      return <>{getSensorDataList(sensorData[interval])}</>;
+    });
 
-  const getMarkerIcon = marker => {
-    const sensorId = Number(marker["Sensor ID"]);
-    if (sensorId < 2000) {
-      return MapIcon_Vehicles;
-    } else if (sensorId < 3000) {
-      return MapIcon_Altitude;
-    } else if (sensorId < 4000) {
-      return MapIcon_Count;
-    } else if (sensorId < 5000) {
-      return MapIcon_Heatstroke;
-    } else if (sensorId < 6000) {
-      return MapIcon_Pulse;
-    } else if (sensorId < 7000) {
-      return MapIcon_Count;
-    } else if (sensorId < 8000) {
-      return MapIcon_Count;
-    } else if (sensorId < 9000) {
-      return MapIcon_Detected;
-    } else if (sensorId < 10000) {
-      return MapIcon_Pulse;
-    } else if (sensorId < 11000) {
-      return MapIcon_Detected;
-    } else if (sensorId < 12000) {
-      return MapIcon_Altitude;
-    } else if (sensorId < 13000) {
-      return MapIcon_Down;
-    }
-    return MapIcon_Altitude;
-  }
+    const newMarkers = sensorTimes.map(function (interval, index) {
+      return markerList(sensorData[interval]);
+    });
 
-  const getMarkerTitle = marker => {
-    const sensorId = Number(marker["Sensor ID"]);
-    if (sensorId < 2000) {
-      return "Staging Automatic Vehicle Location (AVL)";
-    } else if (sensorId < 3000) {
-      return "First Responder Location";
-    } else if (sensorId < 4000) {
-      return "Event Space Occupancy";
-    } else if (sensorId < 5000) {
-      return "Event Space Ambient Temperature";
-    } else if (sensorId < 6000) {
-      return "First Responder Vitals";
-    } else if (sensorId < 7000) {
-      return "Building Occupancy";
-    } else if (sensorId < 8000) {
-      return "External Protest Monitoring";
-    } else if (sensorId < 9000) {
-      return "Hazard Identification";
-    } else if (sensorId < 10000) {
-      return "Victim Vitals";
-    } else if (sensorId < 11000) {
-      return "Structural Hazard Detection";
-    } else if (sensorId < 12000) {
-      return "Video Feed Object Tracking";
-    } else if (sensorId < 13000) {
-      return "First Responder Status Detection";
-    }
-    return "";
-  }
+    setAlerts(newAlerts)
+    setIntervals(newIntervals)
+    setMarkers(newMarkers)
+  }, [data])
 
-  const markerList = markers => {
-    return markers.map(function (marker, index) {
-      if (marker && marker.Lat && marker.Lon) {
-        return (
-          <Marker
-            position={[marker.Lat, marker.Lon]}
-            icon={new Icon({
-              iconUrl: getMarkerIcon(marker),
-              iconSize: [25, 41],
-              iconAnchor: [12, 41]
-            })}
-          >
-            <Popup>
-              {sensorListItem(
-                index,
-                getMarkerTitle(marker),
-                Object.entries(marker)
-              )}
-            </Popup>
-          </Marker>
-        );
-      }
-    })
-  };
 
-  const markers = data.sensorData.map(function (dataReading, index) {
-    return markerList(dataReading);
-  });
   const mapWidth = (width || 400) * (3 / 5) - 100;
-  const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
-  const containerHeight = height - 300;
+  // const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
+  const containerHeight = height || 800;
+
+  const leftTabs = {
+    'sensors': <div>{intervals}</div>,
+    'cameras': <div>
+      {videos?.map((v, i) => {
+        return createCardItem(
+          i,
+          `Camera: ${v.name}`,
+          Object.keys(v).map((k) => `${k}: ${v[k]}`),
+          'pointer',
+          () => {
+            setVideo(v)
+          }
+
+        )
+      })}
+    </div>
+  }
+
+  const centerTabs = {
+    "2d map": <MapContainer
+      ref={mapRef}
+      style={{ height: containerHeight, width: "auto" }}
+      center={mapPosition}
+      zoom={20}
+      maxZoom={25}
+      zoomControl={true}>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <Marker
+        position={[37.76928602, -105.68460486]}
+        icon={new Icon({
+          iconUrl: IndoorMap,
+          iconSize: [500, 780],
+          iconAnchor: [50, 80]
+        })}
+      >
+      </Marker>
+      {markers}
+      <Marker
+        position={[37.76935602, -105.68515486]}
+        icon={new Icon({
+          iconUrl: sensor_legend,
+          iconSize: [200, 500],
+          iconAnchor: [0, 0]
+        })}
+      >
+      </Marker>
+
+      {(videos || []).map((video, index) => {
+        return <Marker
+          eventHandlers={{
+            click: (e) => {
+              console.log('clicked', video)
+              setVideo(video);
+            },
+          }}
+          key={index}
+          position={[video.lat, video.long]}
+          icon={new Icon({
+            iconUrl: camera_icon,
+            iconSize: [50, 50],
+            iconAnchor: [0, 0]
+          })} />
+      })}
+    </MapContainer>
+    , "lidar map": <div>
+      <LidarMap user={user} />
+
+    </div>
+
+  }
+
+  const rightTabs = {
+    'critical alerts': <div>{alerts}</div>
+  }
 
   return (
-    <div>
-      <CloudCard
-        overflowY='scroll'
-        title={sensorCount + ' Sensors online of ' + sensorCount + ' total'}
-        width={width * (1 / 5)}
-        height={containerHeight}
-      >
-        <ul>{intervals}</ul>
-      </CloudCard>
-      {width > 0 && <CloudCard title={
-        <span>
-          {/* Rendered SensorData View
-        <span className='float-right'> */}
-          Sensor View - Upload new file&nbsp;<input type="file" className='' onChange={handleChange} />
-          {/* </span>&nbsp; */}
-        </span>
-      } width={mapWidth}>
-        <MapContainer
-          ref={setMap}
-          style={{ height: containerHeight, width: "auto" }}
-          center={mapPosition}
-          zoom={20}
-          maxZoom={25}
-          zoomControl={true}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <div className='body-padding'>
+      <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+        <Col xs={{ span: 24, order: 2 }} md={{ span: 24, order: 2 }} xl={6} order={2}>
+          <CloudCard
+            maxHeight={containerHeight}
+            overflowY='scroll'
+            tabs={[tab("SENSORS"), tab("CAMERAS")]}
+            tabsContent={leftTabs}
           />
-          <Marker
-            position={[37.76928602, -105.68460486]}
-            icon={new Icon({
-              iconUrl: IndoorMap,
-              iconSize: [500, 780],
-              iconAnchor: [50, 80]
-            })}
+        </Col>
+        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 2 }} xl={12} order={1}>
+          <CloudCard
+            tabs={[tab("2D MAP"), tab("LiDAR MAP")]}
+            tabsContent={centerTabs}
+          />
+        </Col>
+        <Col xs={{ span: 24, order: 3 }} md={{ span: 24, order: 2 }} xl={6} order={3}>
+          <CloudCard tabs={[tab("CRITICAL ALERTS")]}
+            maxHeight={containerHeight}
+            overflowY='scroll'
+            tabsContent={rightTabs}
           >
-          </Marker>
-          {markers}
-          <Marker
-            position={[37.76935602, -105.68515486]}
-            icon={new Icon({
-              iconUrl: sensor_legend,
-              iconSize: [200, 500],
-              iconAnchor: [0, 0]
-            })}
-          >
-          </Marker>
+            <br />
+            <br />
+          </CloudCard>
+        </Col>
 
-          {(videos || []).map((video, index) => {
-            return <Marker
-              eventHandlers={{
-                click: (e) => {
-                  console.log('clicked', video)
-                  setVideo(video);
-                },
-              }}
-              key={index}
-              position={[video.lat, video.long]}
-              icon={new Icon({
-                iconUrl: camera_icon,
-                iconSize: [50, 50],
-                iconAnchor: [0, 0]
-              })} />
-          })}
-        </MapContainer>
-      </CloudCard>}
-      <CloudCard title={"Critical Alerts"} width={width * (1 / 5)} height={containerHeight}>
-        {alerts}
-        <br />
-        <br />
-      </CloudCard>
-
-      <Modal
-      width={800}
-        open={!!video}
-        onCancel={() => setVideo(null)}
-        onOk={() => setVideo(null)}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        title={video?.name || "Video Feed"}
-        centered
-      >
+        <Modal
+          width={800}
+          open={!!video}
+          onCancel={() => setVideo(null)}
+          onOk={() => setVideo(null)}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          title={`Camera: ${video?.name || "Video Feed"}`}
+          centered
+        >
           <VideoStream video={video} />
-      </Modal>
+        </Modal>
 
-      {/* <h4>Upload JSON sensor data file:</h4>
+        {/* <h4>Upload JSON sensor data file:</h4>
       // <input type="file" onChange={handleChange} /> */}
+
+      </Row>
     </div>
   )
 }
