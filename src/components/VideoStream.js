@@ -66,7 +66,7 @@ function VideoStream({ video, onBoxClicked }) {
                 }
             })
             console.log('boxes', results)
-            results = results.filter(box => processedFilters.some(f => box[f.key] === f.value))
+            results = results.filter(box => processedFilters.every(f => box[f.key] === f.value))
         }
         console.log('boxes', results)
         return results 
