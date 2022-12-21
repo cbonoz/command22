@@ -294,7 +294,7 @@ function SensorData({ user }) {
 
   const mapWidth = (width || 400) * (3 / 5) - 100;
   // const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
-  const containerHeight = height || 800;
+  const containerHeight = (height - 175) || 800;
 
   const leftTabs = {
     'sensors': <div>{intervals}</div>,
