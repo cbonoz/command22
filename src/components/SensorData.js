@@ -86,6 +86,15 @@ function SensorData({ user }) {
     fileReader.onload = onFileLoad;
   };
 
+  const flyTo = (lat, lon) => {
+    try {
+      console.log('flyTo', lat, lon)
+      mapRef.current.flyTo({ lat, lon }, 14, { duration: 2 });
+    } catch (e) {
+      console.error('Could fly to location', e);
+    }
+  }
+
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
     return createCardItem(
       index,
@@ -94,16 +103,7 @@ function SensorData({ user }) {
       className,
       () => {
         // use the map ref to move the map to the correct location
-        try {
-          const loc = {
-            lat: dataReading["Lat"],
-            lon: dataReading["Lon"]
-          }
-          console.log('goTo', loc)
-          mapRef.current.flyTo(loc, 14, { duration: 2 });
-        } catch (e) {
-          console.error('Could not go to alert location', e);
-        }
+        flyTo(dataReading["Lat"], dataReading["Lon"])
       }
     )
   }
@@ -307,6 +307,7 @@ function SensorData({ user }) {
           'pointer',
           () => {
             setVideo(v)
+            flyTo(v.lat, v.long)
           }
 
         )
