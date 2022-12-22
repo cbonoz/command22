@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CloudCard from './CloudCard'
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/camera_icon.png'
 
-import { Icon } from 'leaflet'
+import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
 import { Col, Modal, Row, } from 'antd'
 import { getCameras } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
@@ -14,6 +14,8 @@ import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
 import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA } from '../util/constants'
 import RenderObject from './RenderObject'
+
+const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
@@ -313,6 +315,28 @@ function SensorData({ user }) {
     </div>
   }
 
+  // TODO: determine why doesn't render on tab back.
+  function Legend({ map }) {
+    useEffect(() => {
+      if (map) {
+        const legend = control({ position: "bottomright" });
+
+        legend.onAdd = () => {
+          const div = DomUtil.create("div", "info legend");
+          div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
+          return div;
+        };
+
+        try {
+        legend.addTo(map);
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    }, [map]);
+    return null;
+  }
+
   const centerTabs = {
     "2d map": <MapContainer
       ref={mapRef}
@@ -325,17 +349,25 @@ function SensorData({ user }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker
-        position={[37.76928602, -105.68460486]}
-        icon={new Icon({
-          iconUrl: IndoorMap,
-          iconSize: [500, 780],
-          iconAnchor: [50, 80]
-        })}
-      >
-      </Marker>
+
+      <LayersControl position="topright">
+        {/* <LayersControl.Overlay name="Show Legend"> */}
+        <Legend map={mapRef?.current} />
+        {/* </LayersControl.Overlay> */}
+
+        <LayersControl.Overlay name="Indoor Map">
+          <ImageOverlay url={IndoorMap}
+            bounds={INDOOR_MAP_BOUNDS}
+            opacity={0.5}
+            zIndex={10}
+          />
+        </LayersControl.Overlay>
+
+      </LayersControl>
       {markers}
-      <Marker
+      {/* <ImageOverlay url={sensor_legend} /> */}
+
+      {/* <Marker
         position={[37.76935602, -105.68515486]}
         icon={new Icon({
           iconUrl: sensor_legend,
@@ -343,7 +375,7 @@ function SensorData({ user }) {
           iconAnchor: [0, 0]
         })}
       >
-      </Marker>
+      </Marker> */}
 
       {(videos || []).map((video, index) => {
         return <Marker

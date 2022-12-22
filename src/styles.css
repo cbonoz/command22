@@ -60,6 +60,10 @@
   cursor: pointer;
 }
 
+.legend-image {
+  width: 150px;
+}
+
 .create-detail {
   max-width: 600px;
   line-height: 1.5;
