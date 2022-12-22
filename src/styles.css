@@ -60,6 +60,10 @@
   cursor: pointer;
 }
 
+.demo-editor {
+  min-height: 500px;
+}
+
 .legend-image {
   width: 150px;
 }

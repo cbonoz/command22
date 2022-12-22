@@ -7,13 +7,14 @@ import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/camera_icon.png'
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
-import { Col, Modal, Row, } from 'antd'
+import { Button, Col, Modal, Row, } from 'antd'
 import { getCameras } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, RTE_CONFIG } from '../util/constants'
 import RenderObject from './RenderObject'
+import RichTextEditor, { EditorValue } from 'react-rte'
 
 const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
 
@@ -24,6 +25,7 @@ function SensorData({ user }) {
   const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
+  const [editorValue, setEditorValue] = useState(RichTextEditor.createEmptyValue())
 
   const [alerts, setAlerts] = useState([])
   const [markers, setMarkers] = useState([])
@@ -328,7 +330,7 @@ function SensorData({ user }) {
         };
 
         try {
-        legend.addTo(map);
+          legend.addTo(map);
         } catch (e) {
           console.error(e)
         }
@@ -336,6 +338,15 @@ function SensorData({ user }) {
     }, [map]);
     return null;
   }
+
+  const onEditorChange = (value) => {
+    // console.log('Content was updated:', value)
+    setEditorValue(value)
+    // Get changes as an HTML string.
+    // This is here to demonstrate using `.toString()` but in a real app it
+    // would be better to avoid generating a string on each change.
+    // value.toString('html')
+  };
 
   const centerTabs = {
     "2d map": <MapContainer
@@ -352,7 +363,7 @@ function SensorData({ user }) {
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
-        <Legend map={mapRef?.current}/>
+        <Legend map={mapRef?.current} />
         {/* </LayersControl.Overlay> */}
 
         <LayersControl.Overlay name="Indoor Map">
@@ -395,10 +406,16 @@ function SensorData({ user }) {
       })}
     </MapContainer>
     , "lidar map": <div>
-      <LidarMap user={user} />
-
-    </div>
-
+      <LidarMap user={user} />,
+    </div>,
+    "planning":
+      <div>
+            <RichTextEditor
+              toolbarClassName="demo-toolbar"
+              editorClassName="demo-editor"
+              toolbarConfig={RTE_CONFIG} value={editorValue} onChange={onEditorChange} />
+            <Button onClick={() => {}} type="primary" className='standard-margin' size='lg'>Save</Button>
+      </div>
   }
 
   const rightTabs = {
@@ -418,7 +435,7 @@ function SensorData({ user }) {
         </Col>
         <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 2 }} xl={12} order={1}>
           <CloudCard
-            tabs={[tab("2D MAP"), tab("LiDAR MAP")]}
+            tabs={[tab("2D MAP"), tab("LiDAR MAP"), tab("PLANNING")]}
             tabsContent={centerTabs}
           />
         </Col>
