@@ -352,7 +352,7 @@ function SensorData({ user }) {
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
-        <Legend map={mapRef?.current} />
+        <Legend map={mapRef?.current}/>
         {/* </LayersControl.Overlay> */}
 
         <LayersControl.Overlay name="Indoor Map">
