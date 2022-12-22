@@ -1,5 +1,5 @@
 import { Button, Col, Input, Modal, Row, } from 'antd'
-import React, { useState, useEffect,  } from 'react'
+import React, { useState, useEffect, } from 'react'
 import CloudCard from './CloudCard'
 /*
 Example stream: https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8
@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'
 import VideoStream from './VideoStream'
 import { getCameras } from '../api'
 import { getReadableError } from '../util'
+import { DEFAULT_GUTTER } from '../util/constants'
 
 export default function VideoStreams() {
     const [videos, setVideos] = useState()
@@ -45,12 +46,12 @@ export default function VideoStreams() {
     }, [videos, cameraId]);
 
 
- 
+
 
     const onBoxClicked = (box) => setSelected(box)
 
     return (<div className='video-stream-content body-padding'>
-             <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+        <Row gutter={DEFAULT_GUTTER}>
             <Col xs={24} xl={6}>
                 <CloudCard title="Manage Video Streams" width="100%">
                     <div className='standard-padding'>
@@ -73,7 +74,7 @@ export default function VideoStreams() {
             </Col>
             <Col xs={24} xl={18}>
                 <CloudCard minHeight={500} width="100%" title={`Selected Video${video ? `: ${video.name}` : ''}`}>
-                    <VideoStream video={video}  onBoxClicked={onBoxClicked} />
+                    <VideoStream video={video} onBoxClicked={onBoxClicked} />
                 </CloudCard>
             </Col>
         </Row>

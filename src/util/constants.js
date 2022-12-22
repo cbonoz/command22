@@ -417,3 +417,5 @@ export const EXAMPLE_SENSOR_DATA = {
         }
     ],
 }
+
+export const DEFAULT_GUTTER = { xs: 8, sm: 16, md: 16, lg: 16 }

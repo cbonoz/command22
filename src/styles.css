@@ -16,6 +16,10 @@
   color: white;
 }
 
+.small-padding {
+  padding: 5px;
+}
+
 .standard-padding {
   padding: 20px;
 }
@@ -32,7 +36,7 @@
 
 .analytics-image {
   /* width: 300px; */
-  width: 50%;
+  width: 100%;
 }
 
 .item-card-image {
@@ -189,6 +193,7 @@ textarea {
 
 .cloud-card .ant-card-head-title, .cloud-card .ant-tabs-tab {
   /* padding-left: 16px; */
+  font-weight: bold;
   font-size: 14px !important;
   color: rgb(98,108,125);
   /* text-transform: uppercase; */
@@ -205,6 +210,26 @@ textarea {
 
 .ant-layout-footer {
   padding: 0px;
+}
+
+.small-margin {
+  margin: 5px;
+}
+
+.attribute-box {
+  max-width: 300px;
+  overflow: hidden;
+  display: grid;
+}
+
+.render-object-key {
+  white-space:nowrap;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.ant-tabs-nav-list {
+  margin-left: 12px;
 }
 
 .ant-layout-header {

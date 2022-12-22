@@ -1,5 +1,5 @@
 
-import { Empty, Spin, Button, Select } from 'antd';
+import { Empty, Spin, Button, Select, Row, Col } from 'antd';
 import Boundingbox from './BoundingBox';
 import React, { useState, useEffect, useMemo } from 'react'
 import ReactPlayer from 'react-player'
@@ -7,10 +7,14 @@ import { useInterval } from 'usehooks-ts'
 import { getAnalytic, getFrame } from '../api'
 import { getAnalyticEndpoint } from '../api/analytics'
 import { convertToArray, getBoundBoxes, getDataUrl, getReadableDateTime, getReadableError } from '../util'
+import { DEFAULT_GUTTER } from '../util/constants';
+import CloudCard from './CloudCard';
+import RenderObject from './RenderObject';
 
 function VideoStream({ video, onBoxClicked }) {
     const [frame, setFrame] = useState()
     const [first, setFirst] = useState(true)
+    const [boxData, setBoxData] = useState()
     const [analytics, setAnalytics] = useState()
     const [filters, setFilters] = useState()
     const [filterOptions, setFilterOptions] = useState()
@@ -44,6 +48,7 @@ function VideoStream({ video, onBoxClicked }) {
         setAnalytics()
         setFilters()
         setFilterOptions()
+        setBoxData()
         setFrame()
         setFirst(true)
     }, [video])
@@ -69,7 +74,7 @@ function VideoStream({ video, onBoxClicked }) {
             results = results.filter(box => processedFilters.every(f => box[f.key] === f.value))
         }
         console.log('boxes', results)
-        return results 
+        return results
     }, [analytics, filters])
 
     const { image, endpoint } = analytics || {}
@@ -131,60 +136,81 @@ function VideoStream({ video, onBoxClicked }) {
 
     const onBoxSelected = (index) => {
         console.log('box selected', index, boxes[index])
+        setBoxData(boxes[index])
         onBoxClicked && onBoxClicked(boxes[index])
     }
 
+    const Title = ({ title, time }) => <span><b>{title.toUpperCase()}</b> - Time: {time}</span>
+
     return (
         <div className='video-stream-content'>
-            {!video && <Empty description="No video stream active" />}
-            {video && !frame && <Spin size="large" />}
-            {/* https://github.com/CookPete/react-player */}
-            {loaded && <span className='standard-margin'>
-                {video.link && <ReactPlayer url={video.link} controls playing />}
-                {video.id && frame && <div>
-                    <p>Time: {getReadableDateTime(parseFloat(frame.timestamp) * 1000)}</p>
-                    <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />
-                </div>}
-                <br />
+            <Row gutter={DEFAULT_GUTTER}>
+                <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+                    {!video && <Empty description="No video stream active" />}
+                    {video && !frame && <Spin size="large" />}
+                    {loaded && <div>
+                        {/* https://github.com/CookPete/react-player */}
+                        {video.link && <ReactPlayer url={video.link} controls playing />}
 
-                <p>Click the buttons below to freeze frame.</p>
-                <div className='vertical-margin'>
-                    {/* Service button row */}
-                    {convertToArray(video.services).map((s, i) => {
-                        return <span key={i}><Button type="primary" onClick={() => fetchAnalytics(s, first)}>
-                            {s}
-                        </Button>&nbsp;</span>
-                    })}
-                </div>
+                        <CloudCard title={<Title title="live feed" time={getReadableDateTime(parseFloat(frame.timestamp) * 1000)} />}>
+                            <img className='analytics-image' alt="Image" src={getDataUrl(frame.image)} />
+                        </CloudCard>
 
-                {analytics && <span>
-                    <h3>{analytics.analyticName}</h3>
-                    {analytics.error && <p>Error: {getReadableError(analytics.error)}</p>}
-                    {endpoint === 'personattribute' && <div>
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            style={{ width: '90%' }}
-                            placeholder="Select filters"
-                            defaultValue={filters}
-                            onChange={onFiltersChanged}
-                            options={filterOptions}
-                        />
-                        <br/>
-                        <br/>
+                        <CloudCard title={"ANALYZE SNAPSHOT"}>
+                            <p>Select an analytics type button below to generate a snapshot and view analytics</p>
+                            <div className='vertical-margin'>
+                                {/* Service button row */}
+                                {convertToArray(video.services).map((s, i) => {
+                                    return <Button className='small-margin' size="large" type="primary" onClick={() => fetchAnalytics(s, first)}>
+                                        {s}
+                                    </Button>
+                                })}
+                            </div>
+                            {analytics?.error && <p>Error: {getReadableError(analytics.error)}</p>}
+                            {endpoint === 'personattribute' && <div>
+                                <Select
+                                    mode="multiple"
+                                    allowClear
+                                    style={{ width: '90%' }}
+                                    placeholder="Select filters"
+                                    defaultValue={filters}
+                                    onChange={onFiltersChanged}
+                                    options={filterOptions}
+                                />
+                                <br />
+                                <br />
+                            </div>}
+                        </CloudCard>
+
+
                     </div>}
-                    {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
-                    {imageUrl && <div style={{ height: 480, width: 640 }}>
-                        {analytics.results && <p>
-                            Results: {isDetection ? boxes?.length : JSON.stringify(analytics.results)}
-                        </p>}
-                        <Boundingbox onSelected={(i) => onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
-                    </div>}
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+
+                    {analytics && <span>
+                        <CloudCard title={<Title title={"snapshot"} time={getReadableDateTime(parseFloat(analytics.timestamp) * 1000)} />}>
+                            {/* {imageUrl && <div style={{ height: 480, width: 640 }}> */}
+                            <Boundingbox onSelected={(i) => onBoxSelected(i)} canvasId={'box-canvas'} image={imageUrl} boxes={boxes} />
+                            {/* </div>} */}
+                        </CloudCard>
+                        <CloudCard title={analytics.analyticName}>
+                            {analytics.results && <p>
+                                Results: {isDetection ? boxes?.length : JSON.stringify(analytics.results)}
+                            </p>}
+                            {boxData && <div>
+                                <RenderObject className="attribute-box" title={"selected object"} obj={boxData} />
+                            </div>}
+                        </CloudCard>
+                        {/* <img className='analytics-image' alt="Image" src={getDataUrl(analytics.image)} /> */}
 
 
-                </span>}
-            </span>}
-        </div>
+
+                    </span>}
+
+                </Col>
+
+            </Row>
+        </div >
     )
 }
 

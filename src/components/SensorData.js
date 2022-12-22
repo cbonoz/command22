@@ -7,12 +7,13 @@ import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/camera_icon.png'
 
 import { Icon } from 'leaflet'
-import { Button, Card, Col, Modal, Row, Spin, } from 'antd'
+import { Col, Modal, Row, } from 'antd'
 import { getCameras } from '../api'
-import { getReadableError, getSensorDataList, markerList, tab, createCardItem } from '../util'
+import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { EXAMPLE_SENSOR_DATA } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA } from '../util/constants'
+import RenderObject from './RenderObject'
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
@@ -175,8 +176,6 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 7000) {
-        return null;
       } else if (sensorId < 8000) {
         return null;
       } else if (sensorId < 9000) {
@@ -292,7 +291,6 @@ function SensorData({ user }) {
   }, [data])
 
 
-  const mapWidth = (width || 400) * (3 / 5) - 100;
   // const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
   const containerHeight = (height - 175) || 800;
 
@@ -303,7 +301,7 @@ function SensorData({ user }) {
         return createCardItem(
           i,
           `Camera: ${v.name}`,
-          Object.keys(v).map((k) => `${k}: ${v[k]}`),
+          Object.keys(v).map((k) => `${capitalize(k)}: ${v[k]}`),
           'pointer',
           () => {
             setVideo(v)
@@ -377,7 +375,7 @@ function SensorData({ user }) {
 
   return (
     <div className='body-padding'>
-      <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+      <Row gutter={DEFAULT_GUTTER}>
         <Col xs={{ span: 24, order: 2 }} md={{ span: 24, order: 2 }} xl={6} order={2}>
           <CloudCard
             maxHeight={containerHeight}
@@ -404,13 +402,16 @@ function SensorData({ user }) {
         </Col>
 
         <Modal
-          width={800}
+          width={'90%'}
           open={!!video}
           onCancel={() => setVideo(null)}
           onOk={() => setVideo(null)}
           size="lg"
           aria-labelledby="contained-modal-title-vcenter"
-          title={`Camera: ${video?.name || "Video Feed"}`}
+          title={<RenderObject
+            style={{ maxWidth: '400px' }}
+            title={`camera - ${video?.name || 'No Camera Selected'}`}
+            obj={video}></RenderObject>}
           centered
         >
           <VideoStream video={video} />
@@ -420,7 +421,7 @@ function SensorData({ user }) {
       // <input type="file" onChange={handleChange} /> */}
 
       </Row>
-    </div>
+    </div >
   )
 }
 
