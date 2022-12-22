@@ -434,7 +434,7 @@ function SensorData({ user }) {
         </Col>
 
         <Modal
-          width={'90%'}
+          width={'80%'}
           open={!!video}
           onCancel={() => setVideo(null)}
           onOk={() => setVideo(null)}
