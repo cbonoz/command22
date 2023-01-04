@@ -95,12 +95,14 @@ export default function App() {
         onClick={() => navigate("/")} />
       </>,
       onClick: () => navigate("/"),
-    },
-    {
-      key: '/videos',
-      label: <><VideoCameraFilled /> Video Streams</>,
-      onClick: () => navigate("/videos"),
-    },
+    }
+    // ,
+    // {
+    //   key: '/videos',
+    //   label: <><VideoCameraFilled /> Video Streams</>,
+    //   onClick: () => navigate("/videos"),
+    // }
+    ,
   {
     label:     <span style={{ marginLeft: 'auto' }}>
     <span>

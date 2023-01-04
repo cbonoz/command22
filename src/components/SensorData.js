@@ -7,12 +7,12 @@ import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/camera_icon.png'
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
-import { Button, Col, Modal, Row, } from 'antd'
+import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
 import { getCameras } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, RTE_CONFIG } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, RTE_CONFIG } from '../util/constants'
 import RenderObject from './RenderObject'
 import RichTextEditor, { EditorValue } from 'react-rte'
 
@@ -22,10 +22,13 @@ function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
   const [data, setData] = useState({ fileData: {}, sensorData: EXAMPLE_SENSOR_DATA });
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
+  const [doc, setDoc] = useState(PLAN_DOC)
+  const [editing, setEditing] = useState(true)
   const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
   const [editorValue, setEditorValue] = useState(RichTextEditor.createEmptyValue())
+  const [activeAlertIndex, setActiveAlertIndex] = useState(null)
 
   const [alerts, setAlerts] = useState([])
   const [markers, setMarkers] = useState([])
@@ -101,12 +104,16 @@ function SensorData({ user }) {
   }
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
+    const classes = `${className} ${activeAlertIndex === index ? 'active' : ''}`
     return createCardItem(
       index,
       title,
       lines,
-      className,
+      classes,
       () => {
+        console.log('clickableMapAlert', index, title, lines, dataReading, classes)
+        // Clear or set active index.
+        setActiveAlertIndex(activeAlertIndex === index ? null : index)
         // use the map ref to move the map to the correct location
         flyTo(dataReading["Lat"], dataReading["Lon"])
       }
@@ -292,11 +299,11 @@ function SensorData({ user }) {
     setAlerts(newAlerts)
     setIntervals(newIntervals)
     setMarkers(newMarkers)
-  }, [data])
+  }, [data, activeAlertIndex])
 
 
   // const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
-  const containerHeight = (height - 175) || 800;
+  const containerHeight = (height - 200) || 800;
 
   const leftTabs = {
     'sensors': <div>{intervals}</div>,
@@ -410,11 +417,20 @@ function SensorData({ user }) {
     </div>,
     "planning":
       <div>
-            <RichTextEditor
-              toolbarClassName="demo-toolbar"
-              editorClassName="demo-editor"
-              toolbarConfig={RTE_CONFIG} value={editorValue} onChange={onEditorChange} />
-            <Button onClick={() => {}} type="primary" className='standard-margin' size='lg'>Save</Button>
+        <Input
+          disabled={editing}
+          value={doc}
+          onChange={(e) => setDoc(e.target.value)}
+          placeholder="Enter Planning Doc URL"
+          style={{ width: '100%', marginBottom: '10px', marginRight: '5px' }}
+        />
+
+        <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={setEditing} />
+        <br/>
+        <div style={{ width: '100%', minHeight: '400px' }}>
+        {editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+        </div>
+
       </div>
   }
 

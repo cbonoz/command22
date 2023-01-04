@@ -420,6 +420,8 @@ export const EXAMPLE_SENSOR_DATA = {
 
 export const DEFAULT_GUTTER = { xs: 8, sm: 16, md: 16, lg: 16 }
 
+export const PLAN_DOC = "https://docs.google.com/document/d/1Yw-KOOK7ieXsGpUdyg4auT6kFr1yVgYA/edit?usp=sharing&ouid=112682453649002000345&rtpof=true&sd=true"
+
 export const RTE_CONFIG  = {
     // Optionally specify the groups to display (displayed in the order listed).
     display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS', 'LINK_BUTTONS', 'BLOCK_TYPE_DROPDOWN', 'HISTORY_BUTTONS'],
