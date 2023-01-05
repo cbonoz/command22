@@ -155,7 +155,7 @@
 }
 
 .body-padding {
-  padding: 5px;
+  padding: 5px 14px;
 }
 
 .bold {
@@ -225,6 +225,8 @@ textarea {
 
 .cloud-card {
   padding: 5px;
+  /* height: 100%; */
+  /* box-shadow: 0px 0px 14px #00000073; */
 }
 
 .ant-layout-footer {
@@ -280,8 +282,6 @@ body, .ant-layout-content, .ant-layout-sider {
 .green {
   color: #52c41a !important;
 }
-
-
 
 .dark-red {
   background: rgb(113, 0, 0);
