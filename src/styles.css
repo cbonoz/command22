@@ -175,7 +175,7 @@ textarea {
 }
 
 .header-logo {
-  height: 30px;
+  height: 40px;
 }
 
 .active {
@@ -252,11 +252,12 @@ textarea {
 }
 
 .ant-layout-header {
-  /* height: 128px; */
+  height: 66px;
+  padding: 0 0px;
 }
 
 .ant-layout-footer, .ant-layout-header, .ant-menu {
-  background: rgb(33, 37, 41);
+  background: rgb(11, 11, 11);
 }
 
 body, .ant-layout-content, .ant-layout-sider {
