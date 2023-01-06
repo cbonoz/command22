@@ -175,8 +175,8 @@ function PointCloud({width, height, plyFile, onPointSelect}) {
     });
     
     }
- 
-    useEffect(() => {
+
+    const reshape = () => {
       const w = getWidth()
       if (!init && w && height) {
         initScene(w, height)
@@ -184,9 +184,12 @@ function PointCloud({width, height, plyFile, onPointSelect}) {
       } else if (scene) {
         onResize()
       }
-      // animate()
+    }
+
+    useEffect(() => {
+      reshape()
     }, [width, height])
-  
+
     useEffect(() => {
       if (plyFile && scene) {
         setLoading(true)
@@ -211,11 +214,13 @@ function PointCloud({width, height, plyFile, onPointSelect}) {
         camera.updateProjectionMatrix();
         renderer.setSize(w, height);
       }
+
+  
       
 
-    useEffect(() => {
-        onResize()
-    }, [width, height])
+    // useEffect(() => {
+    //     onResize()
+    // }, [width, height])
 
   return (<>
       <div id="render-area"/>
