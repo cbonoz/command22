@@ -413,7 +413,7 @@ function SensorData({ user }) {
       })}
     </MapContainer>
     , "lidar map": <div>
-      <LidarMap user={user} />,
+      <LidarMap user={user} />
     </div>,
     "planning":
       <div>
