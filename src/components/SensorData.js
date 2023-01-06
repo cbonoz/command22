@@ -106,7 +106,8 @@ function SensorData({ user }) {
   }
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
-    const classes = `${className} ${activeAlertIndex === index ? 'active' : ''}`
+    const isActive = activeAlertIndex === index && dataReading?.Lat // has location
+    const classes = `${className} ${isActive ? 'active' : ''}`
     return createCardItem(
       index,
       title,
@@ -115,9 +116,11 @@ function SensorData({ user }) {
       () => {
         console.log('clickableMapAlert', index, title, lines, dataReading, classes)
         // Clear or set active index.
-        setActiveAlertIndex(activeAlertIndex === index ? null : index)
+        setActiveAlertIndex(isActive ? null : index)
         // use the map ref to move the map to the correct location
-        flyTo(dataReading["Lat"], dataReading["Lon"])
+        if (dataReading) {
+          flyTo(dataReading["Lat"], dataReading["Lon"])
+        }
       }
     )
   }
