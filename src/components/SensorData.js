@@ -50,6 +50,17 @@ function SensorData({ user }) {
     }
   }
 
+  const readData = (token) => {
+    retrieveSensorData(token).then((response) => {
+      const sensorData = JSON.parse(response.data.data)
+      setData(sensorData)
+      console.log('sensor data', sensorData)
+      setTimeout(() => {
+        readData(token)
+      }, 1000)
+    })
+  }
+
   useEffect(() => {
     cameras()
     retrieveAccessToken().then((response) => {
@@ -57,11 +68,13 @@ function SensorData({ user }) {
       setAccessToken(response.access_token)
       setRefreshToken(response.refresh_token)
 
-      retrieveSensorData(response.access_token).then((response) => {
-        const sensorData = JSON.parse(response.data.data)
-        setData(sensorData)
-        console.log('sensor data', sensorData)
-      })
+      readData(response.access_token)
+
+      // retrieveSensorData(response.access_token).then((response) => {
+      //   const sensorData = JSON.parse(response.data.data)
+      //   setData(sensorData)
+      //   console.log('sensor data', sensorData)
+      // })
     })
 
   }, [])
