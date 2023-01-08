@@ -195,7 +195,10 @@ export const getSensorDataList = interval => {
             return createCardItem(
                 index,
                 "Staging Automatic Vehicle Location (AVL)",
-                ["FR Vehicle Count: " + dataReading["FR Vehicle Count"]],
+                [
+                    "FR Vehicle Count: " + dataReading["FR Vehicle Count"],
+                    "Reg Vehicle Count: " + dataReading["Reg Vehicle Count"]
+                ],
                 'risk-card'
             );
         } else if (sensorId < 3000) {

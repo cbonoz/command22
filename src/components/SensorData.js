@@ -20,7 +20,7 @@ const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.768
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
-  const [data, setData] = useState({ fileData: {}, sensorData: EXAMPLE_SENSOR_DATA });
+  const [data, setData] = useState({ fileData: {}, sensorData: JSON.parse(EXAMPLE_SENSOR_DATA.data) });
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
   const [doc, setDoc] = useState(PLAN_DOC)
   const [editing, setEditing] = useState(true)
@@ -35,6 +35,10 @@ function SensorData({ user }) {
   const [intervals, setIntervals] = useState([])
   const { height, width } = useWindowSize()
 
+  // Sensor Data API
+  const [accessToken, setAccessToken] = useState([])
+  const [refreshToken, setRefreshToken] = useState([])
+
   async function cameras() {
     console.log('cameras')
     try {
@@ -47,10 +51,60 @@ function SensorData({ user }) {
       alert('Error getting video streams: ' + msg)
     }
   }
+
+  async function retrieveAccessToken(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: data // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+
+  async function retrieveSensorData(url = '') {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'include', // include, *same-origin, omit
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Authorization': 'bearer ' + accessToken,
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+
   useEffect(() => {
     cameras()
-  }, [])
+    const url = 'https://api.commandingtechchallenge.com/login'
+    const params = new URLSearchParams()
+    params.append('username', 'CloudResponder')
+    params.append('password', 'Qh*v2@OK8rm7')
+    retrieveAccessToken(url, params).then((response) => {
+      console.log(response)
+      setAccessToken(response.access_token)
+      setRefreshToken(response.refresh_token)
 
+      const url = 'https://api.commandingtechchallenge.com/get_data'
+      retrieveSensorData(url).then((response) => {
+        console.log(response)
+      })
+    })
+
+  }, [])
 
   const getSeconds = timeStamp => {
     const modifiedTimeStamp = timeStamp.replaceAll(':', '');
@@ -383,18 +437,6 @@ function SensorData({ user }) {
 
       </LayersControl>
       {markers}
-      {/* <ImageOverlay url={sensor_legend} /> */}
-
-      {/* <Marker
-        position={[37.76935602, -105.68515486]}
-        icon={new Icon({
-          iconUrl: sensor_legend,
-          iconSize: [200, 500],
-          iconAnchor: [0, 0]
-        })}
-      >
-      </Marker> */}
-
       {(videos || []).map((video, index) => {
         return <Marker
           eventHandlers={{
@@ -417,18 +459,18 @@ function SensorData({ user }) {
     </div>,
     "planning":
       <div>
-        <Input
-          disabled={editing}
-          value={doc}
-          onChange={(e) => setDoc(e.target.value)}
-          placeholder="Enter Planning Doc URL"
-          style={{ width: '100%', marginBottom: '10px', marginRight: '5px' }}
-        />
+        <div style={{ width: '100%', minHeight: containerHeight }}>
+          <Input
+            disabled={editing}
+            value={doc}
+            onChange={(e) => setDoc(e.target.value)}
+            placeholder="Enter Planning Doc URL"
+            style={{ width: '100%', marginBottom: '10px', marginRight: '5px' }}
+          />
 
-        <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={setEditing} />
-        <br/>
-        <div style={{ width: '100%', minHeight: '400px' }}>
-        {editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+          <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={setEditing} />
+          <br/>
+          {editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
         </div>
 
       </div>
