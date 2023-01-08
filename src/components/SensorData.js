@@ -256,25 +256,35 @@ function SensorData({ user }) {
     });
   }
 
+  const isValidJSON = (str) => {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   const readData = (token) => {
     retrieveSensorData(token).then((response) => {
-      const responseData = JSON.parse(response.data.data)
-      setSensorData(responseData)
-      const sensorTimes = Object.keys(responseData)
-      const newAlerts = sensorTimes.map(function (interval, index) {
-        return <>{alertList(responseData[interval])}</>;
-      });
-      const newIntervals = sensorTimes.map(function (interval, index) {
-        return <>{getSensorDataList(responseData[interval])}</>;
-      });
-      const newMarkers = sensorTimes.map(function (interval, index) {
-        return markerList(responseData[interval]);
-      });
-      setAlerts(newAlerts)
-      setIntervals(newIntervals)
-      setMarkers(newMarkers)
-
-      console.log('sensor data', JSON.parse(response.data.data))
+      if (isValidJSON(response.data.data)) {
+        const responseData = JSON.parse(response.data.data)
+        setSensorData(responseData)
+        const sensorTimes = Object.keys(responseData)
+        const newAlerts = sensorTimes.map(function (interval, index) {
+          return <>{alertList(responseData[interval])}</>;
+        });
+        const newIntervals = sensorTimes.map(function (interval, index) {
+          return <>{getSensorDataList(responseData[interval])}</>;
+        });
+        const newMarkers = sensorTimes.map(function (interval, index) {
+          return markerList(responseData[interval]);
+        });
+        setAlerts(newAlerts)
+        setIntervals(newIntervals)
+        setMarkers(newMarkers)
+        console.log('sensor data', JSON.parse(response.data.data))
+      }
       setTimeout(() => {
         readData(token)
       }, 1000)
