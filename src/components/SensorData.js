@@ -8,7 +8,7 @@ import camera_icon from '../assets/camera_icon.png'
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
 import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
-import { getCameras } from '../api'
+import { getCameras, retrieveAccessToken, retrieveSensorData } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
@@ -50,56 +50,21 @@ function SensorData({ user }) {
     }
   }
 
-  async function retrieveAccessToken(url = '', data = {}) {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: data // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
 
-  async function retrieveSensorData(url = '') {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'include', // include, *same-origin, omit
-      headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
-        'Authorization': 'bearer ' + accessToken,
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
 
+
+  
   useEffect(() => {
     cameras()
-    const url = 'https://api.commandingtechchallenge.com/login'
-    const params = new URLSearchParams()
-    params.append('username', 'CloudResponder')
-    params.append('password', 'Qh*v2@OK8rm7')
-    retrieveAccessToken(url, params).then((response) => {
+    retrieveAccessToken().then((response) => {
       console.log(response)
       setAccessToken(response.access_token)
       setRefreshToken(response.refresh_token)
 
-      const url = 'https://api.commandingtechchallenge.com/get_data'
-      // retrieveSensorData(url).then((response) => {
-      //   console.log(response)
-      // })
+      retrieveSensorData(response.access_token).then((response) => {
+        const sensorData = response.data.data
+        console.log('sensor data', sensorData)
+      })
     })
 
   }, [])
@@ -131,16 +96,7 @@ function SensorData({ user }) {
     }
   }
 
-  const onFileLoad = (file) => {
-    const loadedFile = JSON.parse(file.target.result);
-    setData({
-      fileData: loadedFile,
-      sensorData: []
-    });
-    loadNextInterval(loadedFile, 0);
-  };
-
-  const onEditingChange = (value) => {
+   const onEditingChange = (value) => {
     setEditing(value)
     // Not editing anymore, save the value.
     console.log('onEditingChange', value, doc)
