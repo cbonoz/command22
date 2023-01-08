@@ -142,7 +142,7 @@ function SensorData({ user }) {
         if (dataReading["Is HeatStroke"] === "True") {
           return clickableMapAlert(
             index,
-            "Increased risk of heatstroke",
+            "Heatstroke Risk",
             [
               "Temperature: " + dataReading["Temperature"],
               "Latitude: " + dataReading["Lat"],
@@ -157,7 +157,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Temperature"]) > 100) {
           return clickableMapAlert(
             index,
-            "High First Responder temperature",
+            "First Responder High Temperature",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -165,10 +165,10 @@ function SensorData({ user }) {
             ]
           );
         }
-        if (Number(dataReading["Temperature"]) < 80) {
+        if (Number(dataReading["Temperature"]) < 95) {
           return clickableMapAlert(
             index,
-            "Low First Responder temperature",
+            "First Responder Hypothermia Warning",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -179,7 +179,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Pulse Rate"]) > 105) {
           return clickableMapAlert(
             index,
-            "High First Responder pulse rate",
+            "First Responder High Pulse",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -190,7 +190,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Pulse Rate"]) < 60) {
           return clickableMapAlert(
             index,
-            "Low First Responder pulse rate",
+            "First Responder Low Pulse",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -205,7 +205,7 @@ function SensorData({ user }) {
         if (dataReading["Detected"] === "True") {
           return clickableMapAlert(
             index,
-            "Smoke detected",
+            "Smoke Detected",
             [
               "Smoke detector detects smoke: " + dataReading["Detected"],
               "Latitude: " + dataReading["Lat"],
@@ -218,7 +218,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Temperature"]) > 100) {
           return clickableMapAlert(
             index,
-            "High victim temperature",
+            "Victim High Temperature",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -226,10 +226,10 @@ function SensorData({ user }) {
             ]
           );
         }
-        if (Number(dataReading["Temperature"]) < 80) {
+        if (Number(dataReading["Temperature"]) < 95) {
           return clickableMapAlert(
             index,
-            "Low victim temperature",
+            "Victim Hypothermia Warning",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -240,7 +240,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Pulse Rate"]) > 105) {
           return clickableMapAlert(
             index,
-            "High victim pulse rate",
+            "Victim High Pulse",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -251,7 +251,7 @@ function SensorData({ user }) {
         if (Number(dataReading["Pulse Rate"]) < 60) {
           return clickableMapAlert(
             index,
-            "Low victim pulse rate",
+            "Victim Low Pulse",
             [
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
@@ -264,7 +264,7 @@ function SensorData({ user }) {
         if (dataReading["Detected"] === "True") {
           return clickableMapAlert(
             index,
-            "A wall has structural damage",
+            "Structural Damage",
             [
               "Structural damage detected: " + dataReading["Detected"],
               "Latitude: " + dataReading["Lat"],
@@ -281,7 +281,7 @@ function SensorData({ user }) {
         if (dataReading["Down"] === "True") {
           return clickableMapAlert(
             index,
-            "A First Responder is incapacitated",
+            "First Responder Incapacitated",
             []
           );
         }
