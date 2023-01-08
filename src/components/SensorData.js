@@ -50,10 +50,6 @@ function SensorData({ user }) {
     }
   }
 
-
-
-
-  
   useEffect(() => {
     cameras()
     retrieveAccessToken().then((response) => {
@@ -62,7 +58,8 @@ function SensorData({ user }) {
       setRefreshToken(response.refresh_token)
 
       retrieveSensorData(response.access_token).then((response) => {
-        const sensorData = response.data.data
+        const sensorData = JSON.parse(response.data.data)
+        setData(sensorData)
         console.log('sensor data', sensorData)
       })
     })
@@ -77,24 +74,24 @@ function SensorData({ user }) {
     return hours + minutes + seconds;
   }
 
-  const loadNextInterval = (fileData, index) => {
-    const dataIntervals = Object.keys(fileData);
-    const dataInterval = dataIntervals[index];
-    setData(prevState => {
-      return {
-        ...prevState,
-        sensorData: [
-          // ...prevState.sensorData,
-          fileData[dataInterval]
-        ],
-      };
-    });
-    if (dataIntervals.length > index + 1) {
-      setTimeout(() => {
-        loadNextInterval(fileData, index + 1);
-      }, 1000 * (getSeconds(dataIntervals[index + 1]) - getSeconds(dataInterval)));
-    }
-  }
+  // const loadNextInterval = (fileData, index) => {
+  //   const dataIntervals = Object.keys(fileData);
+  //   const dataInterval = dataIntervals[index];
+  //   setData(prevState => {
+  //     return {
+  //       ...prevState,
+  //       sensorData: [
+  //         // ...prevState.sensorData,
+  //         fileData[dataInterval]
+  //       ],
+  //     };
+  //   });
+  //   if (dataIntervals.length > index + 1) {
+  //     setTimeout(() => {
+  //       loadNextInterval(fileData, index + 1);
+  //     }, 1000 * (getSeconds(dataIntervals[index + 1]) - getSeconds(dataInterval)));
+  //   }
+  // }
 
    const onEditingChange = (value) => {
     setEditing(value)
@@ -109,7 +106,7 @@ function SensorData({ user }) {
   const flyTo = (lat, lon) => {
     try {
       console.log('flyTo', lat, lon)
-      mapRef.current.flyTo({ lat, lon }, 14, { duration: 2 });
+      mapRef.current.flyTo({ lat, lon }, 21, { duration: 2 });
     } catch (e) {
       console.error('Could fly to location', e);
     }
@@ -314,7 +311,7 @@ function SensorData({ user }) {
     setAlerts(newAlerts)
     setIntervals(newIntervals)
     setMarkers(newMarkers)
-  }, [data, activeAlertIndex])
+  }, [])
 
 
   // const sensorCount = data.sensorData[0] && Object.keys(data.sensorData[0]).length || "";
@@ -366,7 +363,7 @@ function SensorData({ user }) {
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
-      zoom={15}
+      zoom={21}
       maxZoom={22}
       zoomControl={true}>
       <TileLayer
