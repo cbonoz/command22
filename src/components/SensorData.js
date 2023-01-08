@@ -19,7 +19,7 @@ const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.768
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
-  const [data, setData] = useState({ fileData: {}, sensorData: JSON.parse(EXAMPLE_SENSOR_DATA.data) });
+  const [sensorData, setSensorData] = useState();
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
   const [doc, setDoc] = useState(localStorage?.getItem('PLAN_URL') || PLAN_DOC)
   const [editing, setEditing] = useState(true)
@@ -50,35 +50,6 @@ function SensorData({ user }) {
     }
   }
 
-  const readData = (token) => {
-    retrieveSensorData(token).then((response) => {
-      const sensorData = JSON.parse(response.data.data)
-      setData(sensorData)
-      console.log('sensor data', sensorData)
-      setTimeout(() => {
-        readData(token)
-      }, 1000)
-    })
-  }
-
-  useEffect(() => {
-    cameras()
-    retrieveAccessToken().then((response) => {
-      console.log(response)
-      setAccessToken(response.access_token)
-      setRefreshToken(response.refresh_token)
-
-      readData(response.access_token)
-
-      // retrieveSensorData(response.access_token).then((response) => {
-      //   const sensorData = JSON.parse(response.data.data)
-      //   setData(sensorData)
-      //   console.log('sensor data', sensorData)
-      // })
-    })
-
-  }, [])
-
   const getSeconds = timeStamp => {
     const modifiedTimeStamp = timeStamp.replaceAll(':', '');
     const hours = 60 * 60 * modifiedTimeStamp.substr(0, 2);
@@ -86,25 +57,6 @@ function SensorData({ user }) {
     const seconds = modifiedTimeStamp.substr(4, 2);
     return hours + minutes + seconds;
   }
-
-  // const loadNextInterval = (fileData, index) => {
-  //   const dataIntervals = Object.keys(fileData);
-  //   const dataInterval = dataIntervals[index];
-  //   setData(prevState => {
-  //     return {
-  //       ...prevState,
-  //       sensorData: [
-  //         // ...prevState.sensorData,
-  //         fileData[dataInterval]
-  //       ],
-  //     };
-  //   });
-  //   if (dataIntervals.length > index + 1) {
-  //     setTimeout(() => {
-  //       loadNextInterval(fileData, index + 1);
-  //     }, 1000 * (getSeconds(dataIntervals[index + 1]) - getSeconds(dataInterval)));
-  //   }
-  // }
 
    const onEditingChange = (value) => {
     setEditing(value)
@@ -304,26 +256,39 @@ function SensorData({ user }) {
     });
   }
 
+  const readData = (token) => {
+    retrieveSensorData(token).then((response) => {
+      const responseData = JSON.parse(response.data.data)
+      setSensorData(responseData)
+      const sensorTimes = Object.keys(responseData)
+      const newAlerts = sensorTimes.map(function (interval, index) {
+        return <>{alertList(responseData[interval])}</>;
+      });
+      const newIntervals = sensorTimes.map(function (interval, index) {
+        return <>{getSensorDataList(responseData[interval])}</>;
+      });
+      const newMarkers = sensorTimes.map(function (interval, index) {
+        return markerList(responseData[interval]);
+      });
+      setAlerts(newAlerts)
+      setIntervals(newIntervals)
+      setMarkers(newMarkers)
+
+      console.log('sensor data', JSON.parse(response.data.data))
+      setTimeout(() => {
+        readData(token)
+      }, 1000)
+    })
+  }
+
   useEffect(() => {
-
-    const { sensorData } = data
-    const sensorTimes = Object.keys(sensorData)
-
-    const newAlerts = sensorTimes.map(function (interval, index) {
-      return <>{alertList(sensorData[interval])}</>;
-    });
-
-    const newIntervals = sensorTimes.map(function (interval, index) {
-      return <>{getSensorDataList(sensorData[interval])}</>;
-    });
-
-    const newMarkers = sensorTimes.map(function (interval, index) {
-      return markerList(sensorData[interval]);
-    });
-
-    setAlerts(newAlerts)
-    setIntervals(newIntervals)
-    setMarkers(newMarkers)
+    cameras()
+    retrieveAccessToken().then((response) => {
+      console.log(response)
+      setAccessToken(response.access_token)
+      setRefreshToken(response.refresh_token)
+      readData(response.access_token)
+    })
   }, [])
 
 
