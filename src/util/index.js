@@ -1,13 +1,20 @@
 import React from "react";
 import { LARGE_FILE_MB } from "./constants";
 
-import MapIcon_Altitude from "../assets/MapIcon_Altitude.png"
-import MapIcon_Count from "../assets/MapIcon_Count.png"
-import MapIcon_Detected from "../assets/MapIcon_Detected.png"
-import MapIcon_Down from "../assets/MapIcon_Down.png"
-import MapIcon_Heatstroke from "../assets/MapIcon_Heatstroke.png"
-import MapIcon_Pulse from "../assets/MapIcon_Pulse.png"
-import MapIcon_Vehicles from "../assets/MapIcon_Vehicles.png"
+import MapIcon_AutomaticVehiclesLocation from "../assets/Icon_Standard_AutomaticVehiclesLocation.png"
+import MapIcon_FirstResponderLocation from "../assets/Icon_Standard_FirstResponderLocation.png"
+import MapIcon_EventSpaceOccupancy from "../assets/Icon_Standard_EventSpaceOccupancy.png"
+import MapIcon_EventSpaceAmbientTemperature from "../assets/Icon_Standard_EventSpaceTemperature.png"
+import MapIcon_FirstResponderVitals from "../assets/Icon_Standard_FirstResponderVitals.png"
+import MapIcon_BuildingOccupancy from "../assets/Icon_Standard_BuildingOccupancy.png"
+import MapIcon_ExternalProtestMonitoring from "../assets/Icon_Standard_ExternalProtestMonitoring.png"
+import MapIcon_HazardIdentification from "../assets/Icon_Standard_HazardIdentification.png"
+import MapIcon_VictimVitals from "../assets/Icon_Standard_VictimVitals.png"
+import MapIcon_StructuralHazardDetection from "../assets/Icon_Standard_StructuralHazardDetection.png"
+import MapIcon_VideoFeedObjectTracking from "../assets/Icon_Standard_VideoFeedObjectTracking.png"
+import MapIcon_FirstResponderStatusDetection from "../assets/Icon_Standard_FirstResponderStatus.png"
+import MapIcon_FirstResponderAsset from "../assets/Icon_Standard_FirstResponderAsset.png"
+import MapIcon_Generic from "../assets/Icon_Standard_Generic.png"
 import { Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Card } from "antd";
@@ -121,31 +128,33 @@ export const tab = (label) => {
 export const getMarkerIcon = marker => {
     const sensorId = Number(marker["Sensor ID"]);
     if (sensorId < 2000) {
-        return MapIcon_Vehicles;
+        return MapIcon_AutomaticVehiclesLocation;
     } else if (sensorId < 3000) {
-        return MapIcon_Altitude;
+        return MapIcon_FirstResponderLocation;
     } else if (sensorId < 4000) {
-        return MapIcon_Count;
+        return MapIcon_EventSpaceOccupancy;
     } else if (sensorId < 5000) {
-        return MapIcon_Heatstroke;
+        return MapIcon_EventSpaceAmbientTemperature;
     } else if (sensorId < 6000) {
-        return MapIcon_Pulse;
+        return MapIcon_FirstResponderVitals;
     } else if (sensorId < 7000) {
-        return MapIcon_Count;
+        return MapIcon_BuildingOccupancy;
     } else if (sensorId < 8000) {
-        return MapIcon_Count;
+        return MapIcon_ExternalProtestMonitoring;
     } else if (sensorId < 9000) {
-        return MapIcon_Detected;
+        return MapIcon_HazardIdentification;
     } else if (sensorId < 10000) {
-        return MapIcon_Pulse;
+        return MapIcon_VictimVitals;
     } else if (sensorId < 11000) {
-        return MapIcon_Detected;
+        return MapIcon_StructuralHazardDetection;
     } else if (sensorId < 12000) {
-        return MapIcon_Altitude;
+        return MapIcon_VideoFeedObjectTracking;
     } else if (sensorId < 13000) {
-        return MapIcon_Down;
+        return MapIcon_FirstResponderStatusDetection;
+    } else if (sensorId < 14000) {
+        return MapIcon_FirstResponderAsset;
     }
-    return MapIcon_Altitude;
+    return MapIcon_Generic;
 }
 
 export const getMarkerTitle = marker => {
@@ -174,8 +183,10 @@ export const getMarkerTitle = marker => {
         return "Video Feed Object Tracking";
     } else if (sensorId < 13000) {
         return "First Responder Status Detection";
+    } else if (sensorId < 14000) {
+        return "First Responder Asset";
     }
-    return "";
+    return "Untitled Sensor";
 }
 
 export const createCardItem = (index, title, lines, classes, onClick) => {
