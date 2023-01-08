@@ -38,12 +38,9 @@ function LidarMap({ }) {
     // setPlyData(s)
   }
 
-  const sceneWidth = Math.max(400, (width || 0) - 400)
+  // const sceneWidth = Math.max(400, (width || 0) - 400)
 
-  const title = <span>
-    Rendered Map View {plyData ? " - Use 'WASD' keys to control the camera" : ""}
-  </span>
-
+  /* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */
   return (
     <div>
       <FileUploader
@@ -55,12 +52,8 @@ function LidarMap({ }) {
       />
       <span>Once loaded, use <b>'WASD'</b> keys to move the camera.</span>
       <br />
-      {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
-      {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
-      {/* https://stackoverflow.com/questions/71467209/three-js-ply-loader-object-not-rendered-properly */}
       {plyData &&
         <PointCloud
-          width={sceneWidth - 40}
           height={height - 300}
           plyFile={plyData}
           onPointSelect={(point) => {

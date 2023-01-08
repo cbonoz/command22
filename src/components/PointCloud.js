@@ -46,6 +46,8 @@ function initPly(activeFile, cb) {
   });
 }
 
+
+
 function initScene(width, height) {
   // container = document.createElement("div");
   // document.body.appendChild(container);
@@ -54,7 +56,6 @@ function initScene(width, height) {
 
   // stats = new Stats();
   // container.appendChild( stats.dom );
-
   camera = new THREE.PerspectiveCamera(
     35,
     width / height,
@@ -132,18 +133,19 @@ function render() {
   renderer.render(scene, camera);
 }
 
-function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
+function PointCloud({width, height, plyFile, onPointSelect}) {
   const [loading ,setLoading] = useState(false)
   const [init, setInit] = useState(false)
-  // const [activeMarker, setActiveMarker] = useState()
-    // const [plyFile, setPlyFile] = useState('')
 
-  // function removeEntity(name) {
-  //   var selectedObject = scene.getObjectByName(name);
-  //   scene.remove( selectedObject );
-  //   animate();
-  // }
-
+  const getWidth = (width) => {
+    if (!width) {
+      const container = document.getElementById('render-area');
+      if (container) {
+        width = container.clientWidth
+      }
+    }
+    return width
+  }
   function addClickableSphere(marker) {
     if (!scene) {
       return
@@ -173,17 +175,21 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
     });
     
     }
- 
-    useEffect(() => {
-      if (!init && width && height) {
-        initScene(width, height)
+
+    const reshape = () => {
+      const w = getWidth()
+      if (!init && w && height) {
+        initScene(w, height)
         setInit(true)
       } else if (scene) {
         onResize()
       }
-      // animate()
+    }
+
+    useEffect(() => {
+      reshape()
     }, [width, height])
-  
+
     useEffect(() => {
       if (plyFile && scene) {
         setLoading(true)
@@ -203,15 +209,18 @@ function PointCloud({width, height, plyFile, interestPoints, onPointSelect}) {
         if (!camera) {
           return
         }
-        camera.aspect = width / height
+        const w = getWidth(width)
+        camera.aspect = w / height
         camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
+        renderer.setSize(w, height);
       }
+
+  
       
 
-    useEffect(() => {
-        onResize()
-    }, [width, height])
+    // useEffect(() => {
+    //     onResize()
+    // }, [width, height])
 
   return (<>
       <div id="render-area"/>

@@ -12,9 +12,8 @@ import { getCameras } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, RTE_CONFIG } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, } from '../util/constants'
 import RenderObject from './RenderObject'
-import RichTextEditor, { EditorValue } from 'react-rte'
 
 const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
 
@@ -22,12 +21,11 @@ function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
   const [data, setData] = useState({ fileData: {}, sensorData: JSON.parse(EXAMPLE_SENSOR_DATA.data) });
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
-  const [doc, setDoc] = useState(PLAN_DOC)
+  const [doc, setDoc] = useState(localStorage?.getItem('PLAN_URL') || PLAN_DOC)
   const [editing, setEditing] = useState(true)
   const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
-  const [editorValue, setEditorValue] = useState(RichTextEditor.createEmptyValue())
   const [activeAlertIndex, setActiveAlertIndex] = useState(null)
 
   const [alerts, setAlerts] = useState([])
@@ -99,9 +97,9 @@ function SensorData({ user }) {
       setRefreshToken(response.refresh_token)
 
       const url = 'https://api.commandingtechchallenge.com/get_data'
-      retrieveSensorData(url).then((response) => {
-        console.log(response)
-      })
+      // retrieveSensorData(url).then((response) => {
+      //   console.log(response)
+      // })
     })
 
   }, [])
@@ -142,11 +140,15 @@ function SensorData({ user }) {
     loadNextInterval(loadedFile, 0);
   };
 
-  const handleChange = upload => {
-    const fileReader = new FileReader();
-    fileReader.readAsText(upload.target.files[0], "UTF-8");
-    fileReader.onload = onFileLoad;
-  };
+  const onEditingChange = (value) => {
+    setEditing(value)
+    // Not editing anymore, save the value.
+    console.log('onEditingChange', value, doc)
+    if (value) {
+      localStorage.setItem('PLAN_URL', doc)
+    }
+
+  }
 
   const flyTo = (lat, lon) => {
     try {
@@ -158,7 +160,8 @@ function SensorData({ user }) {
   }
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
-    const classes = `${className} ${activeAlertIndex === index ? 'active' : ''}`
+    const isActive = activeAlertIndex === index && dataReading?.Lat // has location
+    const classes = `${className} ${isActive ? 'active' : ''}`
     return createCardItem(
       index,
       title,
@@ -167,9 +170,11 @@ function SensorData({ user }) {
       () => {
         console.log('clickableMapAlert', index, title, lines, dataReading, classes)
         // Clear or set active index.
-        setActiveAlertIndex(activeAlertIndex === index ? null : index)
+        setActiveAlertIndex(isActive ? null : index)
         // use the map ref to move the map to the correct location
-        flyTo(dataReading["Lat"], dataReading["Lon"])
+        if (dataReading) {
+          flyTo(dataReading["Lat"], dataReading["Lon"])
+        }
       }
     )
   }
@@ -400,22 +405,13 @@ function SensorData({ user }) {
     return null;
   }
 
-  const onEditorChange = (value) => {
-    // console.log('Content was updated:', value)
-    setEditorValue(value)
-    // Get changes as an HTML string.
-    // This is here to demonstrate using `.toString()` but in a real app it
-    // would be better to avoid generating a string on each change.
-    // value.toString('html')
-  };
-
   const centerTabs = {
     "2d map": <MapContainer
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
-      zoom={20}
-      maxZoom={25}
+      zoom={15}
+      maxZoom={22}
       zoomControl={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -437,7 +433,7 @@ function SensorData({ user }) {
 
       </LayersControl>
       {markers}
-      {(videos || []).map((video, index) => {
+        {(videos || []).map((video, index) => {
         return <Marker
           eventHandlers={{
             click: (e) => {
@@ -455,22 +451,22 @@ function SensorData({ user }) {
       })}
     </MapContainer>
     , "lidar map": <div>
-      <LidarMap user={user} />,
+      <LidarMap user={user} />
     </div>,
     "planning":
       <div>
-        <div style={{ width: '100%', minHeight: containerHeight }}>
-          <Input
-            disabled={editing}
-            value={doc}
-            onChange={(e) => setDoc(e.target.value)}
-            placeholder="Enter Planning Doc URL"
-            style={{ width: '100%', marginBottom: '10px', marginRight: '5px' }}
-          />
+        <Input
+          disabled={editing}
+          value={doc}
+          onChange={(e) => setDoc(e.target.value)}
+          placeholder="Enter Planning Doc URL"
+          style={{ width: '100%', marginBottom: '10px', marginRight: '5px' }}
+        />
 
-          <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={setEditing} />
-          <br/>
-          {editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+        <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={v => onEditingChange(v)} />
+        <br/>
+        <div style={{ width: '100%', minHeight: '400px' }}>
+        {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
         </div>
 
       </div>
