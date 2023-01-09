@@ -19,7 +19,7 @@ const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.768
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
-  const [sensorData, setSensorData] = useState();
+  const [sensorData, setSensorData] = useState()
   const [mapPosition, setMapPosition] = useState([37.769021575, -105.68439389])
   const [doc, setDoc] = useState(localStorage?.getItem('PLAN_URL') || PLAN_DOC)
   const [editing, setEditing] = useState(true)
@@ -68,10 +68,10 @@ function SensorData({ user }) {
 
   }
 
-  const flyTo = (lat, lon) => {
+  const flyTo = (lat, lon, zoom = 21) => {
     try {
       console.log('flyTo', lat, lon)
-      mapRef.current.flyTo({ lat, lon }, 21, { duration: 2 });
+      mapRef.current.flyTo({ lat, lon }, zoom, { duration: 2 });
     } catch (e) {
       console.error('Could fly to location', e);
     }
@@ -100,7 +100,6 @@ function SensorData({ user }) {
   const alertList = interval => {
     return interval.map(function (dataReading, index) {
       const sensorId = Number(dataReading["Sensor ID"]);
-
       if (sensorId < 4000) {
         return null;
       } else if (sensorId < 5000) {
@@ -265,7 +264,7 @@ function SensorData({ user }) {
     return true;
   }
 
-  const readData = (token) => {
+  const readData = (token, centerMap) => {
     retrieveSensorData(token).then((response) => {
       if (isValidJSON(response.data.data)) {
         const responseData = JSON.parse(response.data.data)
@@ -280,13 +279,28 @@ function SensorData({ user }) {
         const newMarkers = sensorTimes.map(function (interval, index) {
           return markerList(responseData[interval]);
         });
+        if (centerMap) {
+          let mapCentered = false
+          for (const key of Object.keys(responseData)) {
+            if (!mapCentered) {
+              console.log(responseData[key])
+              for (let responseItem of responseData[key]) {
+                const { Lat, Lon } = responseItem
+                if (Lat && Lon) {
+                  flyTo(Number(Lat), Number(Lon), 20)
+                  mapCentered = true
+                }
+              }
+            }
+          }
+          console.log(responseData)
+        }
         setAlerts(newAlerts)
         setIntervals(newIntervals)
         setMarkers(newMarkers)
-        console.log('sensor data', JSON.parse(response.data.data))
       }
       setTimeout(() => {
-        readData(token)
+        readData(token, false)
       }, 1000)
     })
   }
@@ -297,7 +311,7 @@ function SensorData({ user }) {
       console.log(response)
       setAccessToken(response.access_token)
       setRefreshToken(response.refresh_token)
-      readData(response.access_token)
+      readData(response.access_token, true)
     })
   }, [])
 
@@ -351,7 +365,7 @@ function SensorData({ user }) {
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
-      zoom={21}
+      zoom={20}
       maxZoom={22}
       zoomControl={true}>
       <TileLayer
