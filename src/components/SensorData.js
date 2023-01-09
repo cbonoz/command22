@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOve
 import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
-import camera_icon from '../assets/camera_icon.png'
+import camera_icon from '../assets/Icon_Standard_VideoFeedObjectTracking.png'
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
 import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
@@ -386,7 +386,7 @@ function SensorData({ user }) {
           position={[video.lat, video.long]}
           icon={new Icon({
             iconUrl: camera_icon,
-            iconSize: [50, 50],
+            iconSize: [25, 40],
             iconAnchor: [0, 0]
           })} />
       })}
