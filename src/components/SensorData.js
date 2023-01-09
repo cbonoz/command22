@@ -404,7 +404,7 @@ function SensorData({ user }) {
           icon={new Icon({
             iconUrl: camera_icon,
             iconSize: [25, 40],
-            iconAnchor: [0, 0]
+            iconAnchor: [12, 40]
           })} />
       })}
     </MapContainer>
