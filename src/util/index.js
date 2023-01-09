@@ -126,64 +126,66 @@ export const tab = (label) => {
 
 
 export const getMarkerIcon = marker => {
-    const sensorId = Number(marker["Sensor ID"]);
-    if (sensorId < 2000) {
+    const id = Number(marker["Sensor ID"]);
+    const sensorId = id < 20000 ? id * 10 : id;
+    if (sensorId < 20000) {
         return MapIcon_AutomaticVehiclesLocation;
-    } else if (sensorId < 3000) {
+    } else if (sensorId < 30000) {
         return MapIcon_FirstResponderLocation;
-    } else if (sensorId < 4000) {
+    } else if (sensorId < 40000) {
         return MapIcon_EventSpaceOccupancy;
-    } else if (sensorId < 5000) {
+    } else if (sensorId < 50000) {
         return MapIcon_EventSpaceAmbientTemperature;
-    } else if (sensorId < 6000) {
+    } else if (sensorId < 60000) {
         return MapIcon_FirstResponderVitals;
-    } else if (sensorId < 7000) {
+    } else if (sensorId < 70000) {
         return MapIcon_BuildingOccupancy;
-    } else if (sensorId < 8000) {
+    } else if (sensorId < 80000) {
         return MapIcon_ExternalProtestMonitoring;
-    } else if (sensorId < 9000) {
+    } else if (sensorId < 90000) {
         return MapIcon_HazardIdentification;
-    } else if (sensorId < 10000) {
+    } else if (sensorId < 100000) {
         return MapIcon_VictimVitals;
-    } else if (sensorId < 11000) {
+    } else if (sensorId < 110000) {
         return MapIcon_StructuralHazardDetection;
-    } else if (sensorId < 12000) {
+    } else if (sensorId < 120000) {
         return MapIcon_VideoFeedObjectTracking;
-    } else if (sensorId < 13000) {
+    } else if (sensorId < 130000) {
         return MapIcon_FirstResponderStatusDetection;
-    } else if (sensorId < 14000) {
+    } else if (sensorId < 140000) {
         return MapIcon_FirstResponderAsset;
     }
     return MapIcon_Generic;
 }
 
 export const getMarkerTitle = marker => {
-    const sensorId = Number(marker["Sensor ID"]);
-    if (sensorId < 2000) {
+    const id = Number(marker["Sensor ID"]);
+    const sensorId = id < 20000 ? id * 10 : id;
+    if (sensorId < 20000) {
         return "Staging Automatic Vehicle Location (AVL)";
-    } else if (sensorId < 3000) {
+    } else if (sensorId < 30000) {
         return "First Responder Location";
-    } else if (sensorId < 4000) {
+    } else if (sensorId < 40000) {
         return "Event Space Occupancy";
-    } else if (sensorId < 5000) {
+    } else if (sensorId < 50000) {
         return "Event Space Ambient Temperature";
-    } else if (sensorId < 6000) {
+    } else if (sensorId < 60000) {
         return "First Responder Vitals";
-    } else if (sensorId < 7000) {
+    } else if (sensorId < 70000) {
         return "Building Occupancy";
-    } else if (sensorId < 8000) {
+    } else if (sensorId < 80000) {
         return "External Protest Monitoring";
-    } else if (sensorId < 9000) {
+    } else if (sensorId < 90000) {
         return "Hazard Identification";
-    } else if (sensorId < 10000) {
+    } else if (sensorId < 100000) {
         return "Victim Vitals";
-    } else if (sensorId < 11000) {
+    } else if (sensorId < 110000) {
         return "Structural Hazard Detection";
-    } else if (sensorId < 12000) {
+    } else if (sensorId < 120000) {
         return "Video Feed Object Tracking";
-    } else if (sensorId < 13000) {
+    } else if (sensorId < 130000) {
         return "First Responder Status Detection";
-    } else if (sensorId < 14000) {
+    } else if (sensorId < 140000) {
         return "First Responder Asset";
     }
     return "Untitled Sensor";
@@ -201,8 +203,9 @@ export const createCardItem = (index, title, lines, classes, onClick) => {
 
 export const getSensorDataList = interval => {
     return interval.map(function (dataReading, index) {
-        const sensorId = Number(dataReading["Sensor ID"]);
-        if (sensorId < 2000) {
+        const id = Number(dataReading["Sensor ID"]);
+        const sensorId = id < 20000 ? id * 10 : id;
+        if (sensorId < 20000) {
             return createCardItem(
                 index,
                 "Staging Automatic Vehicle Location (AVL)",
@@ -212,7 +215,7 @@ export const getSensorDataList = interval => {
                 ],
                 'risk-card'
             );
-        } else if (sensorId < 3000) {
+        } else if (sensorId < 30000) {
             return createCardItem(
                 index,
                 "First Responder Location",
@@ -222,13 +225,13 @@ export const getSensorDataList = interval => {
                     "Altitude: " + dataReading["Altitude"]
                 ]
             );
-        } else if (sensorId < 4000) {
+        } else if (sensorId < 40000) {
             return createCardItem(
                 index,
                 "Event Space Occupancy",
                 ["Occupancy of bystanders in event space: " + dataReading["Count"]]
             );
-        } else if (sensorId < 5000) {
+        } else if (sensorId < 50000) {
             return createCardItem(
                 index,
                 "Event Space Ambient Temperature",
@@ -239,7 +242,7 @@ export const getSensorDataList = interval => {
 
                 ]
             );
-        } else if (sensorId < 6000) {
+        } else if (sensorId < 60000) {
             return createCardItem(
                 index,
                 "First Responder Vitals",
@@ -249,13 +252,13 @@ export const getSensorDataList = interval => {
                     "Temperature: " + dataReading["Temperature"]
                 ]
             );
-        } else if (sensorId < 7000) {
+        } else if (sensorId < 70000) {
             return createCardItem(
                 index,
                 "Building Occupancy",
                 ["Occupancy of bystanders in building: " + dataReading["Count"]]
             );
-        } else if (sensorId < 8000) {
+        } else if (sensorId < 80000) {
             return createCardItem(
                 index,
                 "External Protest Monitoring",
@@ -265,7 +268,7 @@ export const getSensorDataList = interval => {
                     "Longitude: " + dataReading["Lon"]
                 ]
             );
-        } else if (sensorId < 9000) {
+        } else if (sensorId < 90000) {
             return createCardItem(
                 index,
                 "Hazard Identification",
@@ -275,7 +278,7 @@ export const getSensorDataList = interval => {
                     "Longitude: " + dataReading["Lon"]
                 ]
             );
-        } else if (sensorId < 10000) {
+        } else if (sensorId < 100000) {
             return createCardItem(
                 index,
                 "Victim Vitals",
@@ -288,7 +291,7 @@ export const getSensorDataList = interval => {
                     "Temperature: " + dataReading["Temperature"]
                 ]
             );
-        } else if (sensorId < 11000) {
+        } else if (sensorId < 110000) {
             return createCardItem(
                 index,
                 "Structural Hazard Detection",
@@ -299,17 +302,28 @@ export const getSensorDataList = interval => {
                 ],
                 'risk-card'
             );
-        } else if (sensorId < 12000) {
+        } else if (sensorId < 120000) {
             return createCardItem(
                 index,
                 "Video Feed Object Tracking",
                 []
             );
-        } else if (sensorId < 13000) {
+        } else if (sensorId < 130000) {
             return createCardItem(
                 index,
                 "First Responder Status Detection",
                 ["First Responder is incapacitated: " + dataReading["Down"]]
+            );
+        } else if (sensorId < 140000) {
+            return createCardItem(
+                index,
+                "Item Detected",
+                [
+                    "Item Type: " + dataReading["Item Type"],
+                    "Latitude: " + dataReading["Lat"],
+                    "Longitude: " + dataReading["Lon"]
+
+                ]
             );
         }
         return <li key={index + 201}>{JSON.stringify(dataReading)}</li>;

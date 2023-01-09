@@ -99,10 +99,11 @@ function SensorData({ user }) {
 
   const alertList = interval => {
     return interval.map(function (dataReading, index) {
-      const sensorId = Number(dataReading["Sensor ID"]);
-      if (sensorId < 4000) {
+      const id = Number(dataReading["Sensor ID"]);
+      const sensorId = id < 20000 ? id * 10 : id;
+      if (sensorId < 40000) {
         return null;
-      } else if (sensorId < 5000) {
+      } else if (sensorId < 50000) {
         if (dataReading["Is HeatStroke"] === "True") {
           return clickableMapAlert(
             index,
@@ -117,7 +118,7 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 6000) {
+      } else if (sensorId < 60000) {
         if (Number(dataReading["Temperature"]) > 100) {
           return clickableMapAlert(
             index,
@@ -163,9 +164,9 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 8000) {
+      } else if (sensorId < 80000) {
         return null;
-      } else if (sensorId < 9000) {
+      } else if (sensorId < 90000) {
         if (dataReading["Detected"] === "True") {
           return clickableMapAlert(
             index,
@@ -178,7 +179,7 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 10000) {
+      } else if (sensorId < 100000) {
         if (Number(dataReading["Temperature"]) > 100) {
           return clickableMapAlert(
             index,
@@ -224,7 +225,7 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 11000) {
+      } else if (sensorId < 110000) {
         if (dataReading["Detected"] === "True") {
           return clickableMapAlert(
             index,
@@ -239,9 +240,9 @@ function SensorData({ user }) {
           );
         }
         return null;
-      } else if (sensorId < 12000) {
+      } else if (sensorId < 120000) {
         return null;
-      } else if (sensorId < 13000) {
+      } else if (sensorId < 130000) {
         if (dataReading["Down"] === "True") {
           return clickableMapAlert(
             index,
@@ -249,6 +250,8 @@ function SensorData({ user }) {
             []
           );
         }
+        return null;
+      } else if (sensorId < 140000) {
         return null;
       }
       return <li key={index + 201}>{JSON.stringify(dataReading)}</li>;
