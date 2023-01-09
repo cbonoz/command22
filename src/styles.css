@@ -74,6 +74,7 @@
 
 .legend-image {
   width: 150px;
+  z-index: 999;
 }
 
 .create-detail {
@@ -270,7 +271,6 @@ body, .ant-layout-content, .ant-layout-sider {
 
 .ant-card-head {
   padding: 0px;
-  /* min-height: 0px; */
   border-bottom: none;
 }
 

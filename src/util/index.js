@@ -355,3 +355,20 @@ export const markerList = markers => {
         }
     })
 };
+
+export const getSeconds = timeStamp => {
+    const modifiedTimeStamp = timeStamp.replaceAll(':', '');
+    const hours = 60 * 60 * modifiedTimeStamp.substr(0, 2);
+    const minutes = 60 * modifiedTimeStamp.substr(2, 2);
+    const seconds = modifiedTimeStamp.substr(4, 2);
+    return hours + minutes + seconds;
+  }
+
+export  const isValidJSON = (str) => {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
