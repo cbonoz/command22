@@ -374,7 +374,7 @@ function SensorData({ user }) {
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
-      zoom={15}
+      zoom={20}
       maxZoom={22}
       zoomControl={true}>
       <TileLayer

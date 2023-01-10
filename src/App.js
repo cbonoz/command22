@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Avatar, Button, Dropdown, Layout, Menu, Select, Spin } from "antd";
+import { Avatar, Button, Dropdown, Input, Layout, Menu, Select, Spin } from "antd";
 import {
   CheckCircleTwoTone,
   GoogleOutlined,
@@ -17,6 +17,7 @@ import { useLogin } from "./firebase/useLogin";
 import "./styles.css";
 import "antd/dist/antd.css";
 import 'leaflet/dist/leaflet.css';
+import Modal from "antd/lib/modal/Modal";
 
 const { Header, Footer, Sider, Content } = Layout;
 const { Option } = Select;
@@ -25,6 +26,7 @@ const { Option } = Select;
 
 export default function App() {
   const navigate = useNavigate();
+  const [showSettings, setShowSettings] = useState(false);
   const { user, login, init, isPending, logout } = useLogin();
 
   if (!init) {
@@ -58,12 +60,12 @@ export default function App() {
         <br />
         <br />
         <div className="white footer">
-          <br/>
+          <br />
           ---
-          <br/>
-        <p>{APP_NAME} &copy;2022<br/>
-        Built for the <a href={CONTEST_LINK} target="_blank">CommanDING Tech Challenge 2022</a></p>
-</div>
+          <br />
+          <p>{APP_NAME} &copy;2022<br />
+            Built for the <a href={CONTEST_LINK} target="_blank">CommanDING Tech Challenge 2022</a></p>
+        </div>
       </div>
     );
   }
@@ -76,7 +78,17 @@ export default function App() {
           label: (
             <a target="#" rel="noopener noreferrer" onClick={(e) => {
               e.preventDefault();
-              logout();
+              setShowSettings(true);
+            }}>
+              Settings
+            </a>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <a target="#" rel="noopener noreferrer" onClick={(e) => {
+              e.preventDefault();
             }}>
               Logout
             </a>
@@ -103,23 +115,23 @@ export default function App() {
     //   onClick: () => navigate("/videos"),
     // }
     ,
-  {
-    label:     <span style={{ marginLeft: 'auto' }}>
-    <span>
-      <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
-      <span className="green">Connected</span>
-      &nbsp;
-      &nbsp;
-    </span>
-    {user && <Dropdown overlay={userMenu} className="pointer">
-      <span className="pointer">
-        <Avatar size="large" src={user.photoURL} />
-        &nbsp;{user.displayName}&nbsp;
+    {
+      label: <span style={{ marginLeft: 'auto' }}>
+        <span>
+          <CheckCircleTwoTone twoToneColor="#52c41a" />&nbsp;
+          <span className="green">Connected</span>
+          &nbsp;
+          &nbsp;
+        </span>
+        {user && <Dropdown overlay={userMenu} className="pointer">
+          <span className="pointer">
+            <Avatar size="large" src={user.photoURL} />
+            &nbsp;{user.displayName}&nbsp;
+          </span>
+        </Dropdown>}
+        &nbsp;
       </span>
-    </Dropdown>}
-    &nbsp;
-  </span>
-  }]
+    }]
 
   return (
     <div className="App">
@@ -148,7 +160,20 @@ export default function App() {
         <Footer>
 
         </Footer>
+        <Modal
+          onCancel={() => setShowSettings(false)}
+          onOk={() => setShowSettings(false)}
+          title="Settings"
+          open={showSettings}
+          size="md"
+        >
+          {/* <h1>Settings</h1> */}
+          {/* <p>Coming soon...</p> */}
+          <p>This app is currently using preview mode settings.</p>
+        </Modal>
       </Layout>
+
+
     </div>
   );
 }
