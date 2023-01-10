@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
-import IndoorMap from "../assets/NIST_Reference_2.png"
+import IndoorMap from "../assets/BuildingMap_NoLatLong.png"
 import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/Icon_Standard_VideoFeedObjectTracking.png'
 import marker_icon from '../assets/Icon_Standard_Generic.png'
@@ -378,7 +378,8 @@ function SensorData({ user }) {
   }
 
   const centerTabs = {
-    "2d map": <MapContainer
+    "2d map":
+    <MapContainer
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
@@ -410,7 +411,6 @@ function SensorData({ user }) {
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
         <Legend map={mapRef?.current} />
-        {/* </LayersControl.Overlay> */}
 
         <LayersControl.Overlay name="Indoor Map">
           <ImageOverlay url={IndoorMap}
