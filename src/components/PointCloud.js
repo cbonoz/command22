@@ -66,7 +66,7 @@ function initScene(width, height) {
   camera.position.z = SCALE * 100
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x72645b);
+  // scene.background = new THREE.Color(0x72645b); // Set background of scene.
   // scene.fog = new THREE.Fog(0x72645b, 2, 15);
   scene.add(camera)
 
