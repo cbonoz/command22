@@ -193,10 +193,14 @@ export const getMarkerTitle = marker => {
 
 export const createCardItem = (index, title, lines, classes, onClick) => {
     return (
-        <Card className={`${classes || ''} card-item`} key={index + 1} title={title}
-        onClick={onClick}
+        <Card className={`${classes || ''} card-item`}
+            key={index + 1}
+            title={title}
+            onClick={onClick}
         >
-            <ul>{lines.map(text => <li><h3>{text}</h3></li>)}</ul>
+            <ul>
+                {lines.map((text, i) => <li key={i}><h3>{text}</h3></li>)}
+            </ul>
         </Card>
     );
 };
@@ -362,13 +366,13 @@ export const getSeconds = timeStamp => {
     const minutes = 60 * modifiedTimeStamp.substr(2, 2);
     const seconds = modifiedTimeStamp.substr(4, 2);
     return hours + minutes + seconds;
-  }
+}
 
-export  const isValidJSON = (str) => {
+export const isValidJSON = (str) => {
     try {
-      JSON.parse(str);
+        JSON.parse(str);
     } catch (e) {
-      return false;
+        return false;
     }
     return true;
-  }
+}

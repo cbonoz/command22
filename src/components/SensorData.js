@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CloudCard from './CloudCard'
-import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
@@ -14,6 +14,7 @@ import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
 import { DEFAULT_GUTTER, PLAN_DOC, } from '../util/constants'
 import RenderObject from './RenderObject'
+import { EditControl } from 'react-leaflet-draw'
 
 const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
 
@@ -120,7 +121,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Temperature"]) < 95) {
@@ -131,7 +134,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
@@ -142,7 +147,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
@@ -153,7 +160,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -168,7 +177,9 @@ function SensorData({ user }) {
               "Smoke detector detects smoke: " + dataReading["Detected"],
               "Latitude: " + dataReading["Lat"],
               "Longitude: " + dataReading["Lon"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -181,7 +192,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Temperature"]) < 95) {
@@ -192,7 +205,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
@@ -203,7 +218,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
@@ -214,8 +231,11 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
-          );
+            ],
+            dataReading,
+            'risk-card'
+          )
+          ;
         }
         return null;
       } else if (sensorId < 110000) {
@@ -240,7 +260,9 @@ function SensorData({ user }) {
           return clickableMapAlert(
             index,
             "First Responder Incapacitated",
-            []
+            [],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -340,7 +362,7 @@ function SensorData({ user }) {
 
       try {
         const legends = document.getElementsByClassName('legend-image')
-        console.log('legends', legends.length)
+        // console.log('legends', legends.length)
         if (legends.length === 0) {
           legend.addTo(map);
         }
@@ -363,6 +385,15 @@ function SensorData({ user }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+<FeatureGroup>
+    <EditControl
+      position='topright'
+      draw={{
+        rectangle: false
+      }}
+    />
+  </FeatureGroup>
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
