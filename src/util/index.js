@@ -351,11 +351,11 @@ const renderLabel = marker => {
         return (
             <Tooltip
                 direction="top"
-                offset={[0, -42]}
+                offset={[0, -43]}
                 opacity={0.85}
                 permanent
             >
-                {marker['Sensor ID']}
+                {marker['Sensor ID'].slice(2)}
             </Tooltip>
         )
     }
@@ -371,10 +371,10 @@ export const markerList = markers => {
                     icon={new Icon({
                         iconUrl: getMarkerIcon(marker),
                         iconSize: [25, 41],
-                        iconAnchor: [12, 41]
+                        iconAnchor: [12, 36 + Math.round(Math.random() * 10)]
                     })}
                 >
-                    <Popup>
+                    <Popup offset={[0, -30]}>
                         {createCardItem(
                             index,
                             getMarkerTitle(marker),
