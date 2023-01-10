@@ -77,6 +77,9 @@
 }
 
 .legend-image {
+  position: absolute;
+  right:0;
+  bottom: 0;
   width: 150px;
   z-index: 999;
 }
@@ -200,6 +203,7 @@ textarea {
   margin-top: 8px;
   margin-bottom: 8px;;
   max-width: 100%;
+  word-wrap: break-word;
   overflow:"hidden";
   overflow-x: hidden;
 }
@@ -213,24 +217,24 @@ textarea {
 .ant-card-body {
   padding: 5px;
 }
+.ant-card-meta-title {
+  white-space: pre-line;
+}
 
 .cloud-card .ant-card-head-title, .cloud-card .ant-tabs-tab {
   /* padding-left: 16px; */
   font-weight: bold;
   font-size: 14px !important;
   color: rgb(98,108,125);
+  text-overflow: hidden;
   /* text-transform: uppercase; */
   /* padding-left: 16px; */
 }
 
 .cloud-card {
   display: inline-grid;
-}
-
-.cloud-card {
+  max-width: 100%;
   padding: 5px;
-  height: 100%;
-  /* box-shadow: 0px 0px 14px #00000073; */
 }
 
 .ant-layout-footer {

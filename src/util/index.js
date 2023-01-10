@@ -17,7 +17,7 @@ import MapIcon_FirstResponderAsset from "../assets/Icon_Standard_FirstResponderA
 import MapIcon_Generic from "../assets/Icon_Standard_Generic.png"
 import { Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
-import { Card } from "antd";
+import { Card, Typography } from "antd";
 
 export const getDataUrl = (data) => `data:image/jpeg;base64,${data}`
 
@@ -195,7 +195,7 @@ export const createCardItem = (index, title, lines, classes, onClick) => {
     return (
         <Card className={`${classes || ''} card-item`}
             key={index + 1}
-            title={title}
+            title={<Typography.Text ellipsis={true}>{title}</Typography.Text>}
             onClick={onClick}
         >
             <ul>
@@ -205,38 +205,39 @@ export const createCardItem = (index, title, lines, classes, onClick) => {
     );
 };
 
-export const getSensorDataList = interval => {
+export const getSensorDataList = (interval, clickableItem) => {
     return interval.map(function (dataReading, index) {
         const id = Number(dataReading["Sensor ID"]);
         const sensorId = id < 20000 ? id * 10 : id;
         if (sensorId < 20000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Staging Automatic Vehicle Location (AVL)",
                 [
                     "FR Vehicle Count: " + dataReading["FR Vehicle Count"],
                     "Reg Vehicle Count: " + dataReading["Reg Vehicle Count"]
                 ],
-                'risk-card'
+                dataReading,
             );
         } else if (sensorId < 30000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "First Responder Location",
                 [
                     "Latitude: " + dataReading["Lat"],
                     "Longitude: " + dataReading["Lon"],
                     "Altitude: " + dataReading["Altitude"]
-                ]
+                ],
+                dataReading,
             );
         } else if (sensorId < 40000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Event Space Occupancy",
                 ["Occupancy of bystanders in event space: " + dataReading["Count"]]
             );
         } else if (sensorId < 50000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Event Space Ambient Temperature",
                 [
@@ -244,46 +245,51 @@ export const getSensorDataList = interval => {
                     "Longitude: " + dataReading["Lon"],
                     "Heatstroke Risk: " + dataReading["Is Heatstroke"],
 
-                ]
+                ],
+                dataReading,
             );
         } else if (sensorId < 60000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "First Responder Vitals",
                 [
                     "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
                     "Pulse Rate: " + dataReading["Pulse Rate"],
                     "Temperature: " + dataReading["Temperature"]
-                ]
+                ],
+                dataReading,
             );
         } else if (sensorId < 70000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Building Occupancy",
                 ["Occupancy of bystanders in building: " + dataReading["Count"]]
             );
         } else if (sensorId < 80000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "External Protest Monitoring",
                 [
                     "Count: " + dataReading["Count"],
                     "Latitude: " + dataReading["Lat"],
                     "Longitude: " + dataReading["Lon"]
-                ]
+                ],
+                dataReading,
             );
         } else if (sensorId < 90000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Hazard Identification",
                 [
                     "Smoke detected: " + dataReading["Detected"],
                     "Latitude: " + dataReading["Lat"],
                     "Longitude: " + dataReading["Lon"]
-                ]
+                ],
+                dataReading,
+                'risk-card'
             );
         } else if (sensorId < 100000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Victim Vitals",
                 [
@@ -293,10 +299,11 @@ export const getSensorDataList = interval => {
                     "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
                     "Pulse Rate: " + dataReading["Pulse Rate"],
                     "Temperature: " + dataReading["Temperature"]
-                ]
+                ],
+                dataReading,
             );
         } else if (sensorId < 110000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Structural Hazard Detection",
                 [
@@ -304,30 +311,33 @@ export const getSensorDataList = interval => {
                     "Latitude: " + dataReading["Lat"],
                     "Longitude: " + dataReading["Lon"]
                 ],
+                dataReading,
                 'risk-card'
             );
         } else if (sensorId < 120000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Video Feed Object Tracking",
-                []
+                [],
+                dataReading,
             );
         } else if (sensorId < 130000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "First Responder Status Detection",
-                ["First Responder is incapacitated: " + dataReading["Down"]]
+                ["First Responder is incapacitated: " + dataReading["Down"]],
+                dataReading,
             );
         } else if (sensorId < 140000) {
-            return createCardItem(
+            return clickableItem(
                 index,
                 "Item Detected",
                 [
                     "Item Type: " + dataReading["Item Type"],
                     "Latitude: " + dataReading["Lat"],
                     "Longitude: " + dataReading["Lon"]
-
-                ]
+                ],
+                dataReading,
             );
         }
         return <li key={index + 201}>{JSON.stringify(dataReading)}</li>;

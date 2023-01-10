@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
@@ -14,7 +14,7 @@ import { getCameras, retrieveAccessToken, retrieveSensorData } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize, isValidJSON } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, PLAN_DOC, } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, TEST_INTEREST_POINTS, } from '../util/constants'
 import RenderObject from './RenderObject'
 import { EditControl } from 'react-leaflet-draw'
 
@@ -34,6 +34,7 @@ function SensorData({ user }) {
   const [alerts, setAlerts] = useState([])
   const [markers, setMarkers] = useState([])
   const [intervals, setIntervals] = useState([])
+  const [centerMap, setCenterMap] = useState(true)
   const { height, width } = useWindowSize()
 
   // Sensor Data API
@@ -75,7 +76,7 @@ function SensorData({ user }) {
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
     const isActive = activeAlertIndex === index && dataReading?.Lat // has location
-    const classes = `${className} ${isActive ? 'active' : ''}`
+    const classes = `${className || ''} ${isActive ? 'active' : ''}`
     return createCardItem(
       index,
       title,
@@ -275,45 +276,54 @@ function SensorData({ user }) {
     });
   }
 
+  useEffect(() => {
+    if (!sensorData) {
+      return
+    }
+    const sensorTimes = Object.keys(sensorData)
 
-  const readData = (token, centerMap) => {
+    const newAlerts = sensorTimes.map(function (interval, index) {
+      return <span key={index}>{alertList(sensorData[interval])}</span>;
+    });
+    const newIntervals = sensorTimes.map(function (interval, index) {
+      return <span key={index}>{getSensorDataList(sensorData[interval], clickableMapAlert)}</span>;
+    });
+    const newMarkers = sensorTimes.map(function (interval, index) {
+      return <span key={index}>{markerList(sensorData[interval])}</span>
+    });
+    if (centerMap) {
+      let mapCentered = false
+      for (const key of Object.keys(sensorData)) {
+        if (!mapCentered) {
+          console.log(sensorData[key])
+          for (let responseItem of sensorData[key]) {
+            const { Lat, Lon } = responseItem
+            if (Lat && Lon) {
+              flyTo(Number(Lat), Number(Lon), 20)
+              mapCentered = true
+            }
+          }
+        }
+        setCenterMap(false)
+      }
+      console.log(sensorData)
+
+    }
+    setAlerts(newAlerts)
+    setIntervals(newIntervals)
+    setMarkers(newMarkers)
+  }, [sensorData])
+
+
+  const readData = (token) => {
     retrieveSensorData(token).then((response) => {
       if (isValidJSON(response.data.data)) {
         const responseData = JSON.parse(response.data.data)
         setSensorData(responseData)
-        const sensorTimes = Object.keys(responseData)
-
-        const newAlerts = sensorTimes.map(function (interval, index) {
-          return <span key={index}>{alertList(responseData[interval])}</span>;
-        });
-        const newIntervals = sensorTimes.map(function (interval, index) {
-          return <span key={index}>{getSensorDataList(responseData[interval])}</span>;
-        });
-        const newMarkers = sensorTimes.map(function (interval, index) {
-          return <span key={index}>{markerList(responseData[interval])}</span>
-        });
-        if (centerMap) {
-          let mapCentered = false
-          for (const key of Object.keys(responseData)) {
-            if (!mapCentered) {
-              console.log(responseData[key])
-              for (let responseItem of responseData[key]) {
-                const { Lat, Lon } = responseItem
-                if (Lat && Lon) {
-                  flyTo(Number(Lat), Number(Lon), 20)
-                  mapCentered = true
-                }
-              }
-            }
-          }
-          console.log(responseData)
-        }
-        setAlerts(newAlerts)
-        setIntervals(newIntervals)
-        setMarkers(newMarkers)
+        
       }
       setTimeout(() => {
-        readData(token, false)
+        readData(token)
       }, 1000)
     })
   }
@@ -327,6 +337,8 @@ function SensorData({ user }) {
       readData(response.access_token, true)
     }).catch(e => {
       console.error('token error', e)
+      setSensorData(EXAMPLE_SENSOR_DATA.data)
+
     })
   }, [])
 
@@ -352,39 +364,17 @@ function SensorData({ user }) {
     </div>
   }
 
-  // TODO: determine why doesn't render on tab back.
-  function Legend({ map }) {
-    useEffect(() => {
-      const legend = control({ position: "bottomright" });
-
-      legend.onAdd = () => {
-        console.log('onAdd')
-        const div = DomUtil.create("div", "info legend");
-        div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
-        return div;
-      };
-
-      try {
-        const legends = document.getElementsByClassName('legend-image')
-        // console.log('legends', legends.length)
-        if (legends.length === 0 && map) {
-          legend.addTo(map);
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }, []);
-    return null;
-  }
-
   const centerTabs = {
     "2d map":
+    <div style={{
+      position: 'relative',
+    }}>
     <MapContainer
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
       zoom={15}
-      maxZoom={20}
+      maxZoom={22}
       zoomControl={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -410,9 +400,8 @@ function SensorData({ user }) {
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
-        <Legend map={mapRef?.current} />
 
-        <LayersControl.Overlay name="Indoor Map">
+        <LayersControl.Overlay checked name="Indoor Map">
           <ImageOverlay url={IndoorMap}
             bounds={INDOOR_MAP_BOUNDS}
             opacity={0.85}
@@ -439,6 +428,8 @@ function SensorData({ user }) {
           })} />
       })}
     </MapContainer>
+    <img src={sensor_legend} className='legend-image' /> 
+</div>
     , "lidar map": <div style={{minHeight: containerHeight}}>
       <LidarMap user={user} />
     </div>,
@@ -455,7 +446,7 @@ function SensorData({ user }) {
         <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={v => onEditingChange(v)} />
         <br />
         <div style={{ width: '100%', minHeight: '400px' }}>
-          {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+          {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight - 50 }} />}
         </div>
 
       </div>
@@ -470,6 +461,7 @@ function SensorData({ user }) {
       <Row gutter={DEFAULT_GUTTER}>
         <Col xs={{ span: 24, order: 2 }} md={{ span: 12, order: 2 }} lg={{ span: 6, order: 1 }}>
           <CloudCard
+            minHeight={containerHeight}
             maxHeight={containerHeight}
             overflowY='scroll'
             tabs={[tab("SENSORS"), tab("CAMERAS")]}
@@ -485,6 +477,7 @@ function SensorData({ user }) {
         </Col>
         <Col xs={{ span: 24, order: 3 }} md={{ span: 12, order: 3 }} lg={{ span: 6, order: 3 }}>
           <CloudCard tabs={[tab("CRITICAL ALERTS")]}
+            minHeight={containerHeight}
             maxHeight={containerHeight}
             overflowY='scroll'
             tabsContent={rightTabs}
