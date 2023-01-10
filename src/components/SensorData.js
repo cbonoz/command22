@@ -81,8 +81,9 @@ function SensorData({ user }) {
   }
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
-    const isActive = activeAlertIndex === index && dataReading?.Lat // has location
-    const classes = `${className || ''} ${isActive ? 'active' : ''}`
+    const hasLocation = dataReading?.Lat
+    const isActive = activeAlertIndex === index && hasLocation
+    const classes = `${className || ''} ${hasLocation ? 'pointer' : ''} ${isActive ? 'active' : ''}`
     return createCardItem(
       index,
       title,
