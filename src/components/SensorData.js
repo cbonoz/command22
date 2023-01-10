@@ -18,7 +18,7 @@ import { DEFAULT_GUTTER, PLAN_DOC, } from '../util/constants'
 import RenderObject from './RenderObject'
 import { EditControl } from 'react-leaflet-draw'
 
-const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
+const INDOOR_MAP_BOUNDS = new LatLngBounds([37.769335, -105.684833], [37.768683, -105.68348])
 
 function SensorData({ user }) {
   // TODO: replace EXAMPLE_SENSOR_DATA with fetched data from the sensor API.
@@ -415,7 +415,7 @@ function SensorData({ user }) {
         <LayersControl.Overlay name="Indoor Map">
           <ImageOverlay url={IndoorMap}
             bounds={INDOOR_MAP_BOUNDS}
-            opacity={0.5}
+            opacity={0.85}
             zIndex={10}
           />
         </LayersControl.Overlay>
