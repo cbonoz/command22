@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 
 import { Card } from 'antd'
 
-function CloudCard({ title, tabs, tabsContent, overflowY = 'visible', width = '100%', minHeight, maxHeight, height = 'auto', children }) {
+function CloudCard({ title, tabs, tabExtra, tabsContent, overflowY = 'visible', width = '100%', minHeight, maxHeight, height = 'auto', children }) {
     const ref = useRef(null);
     const [tabKey, setTabKey] = useState();
 
@@ -26,6 +26,7 @@ function CloudCard({ title, tabs, tabsContent, overflowY = 'visible', width = '1
                 width,
             }}
             title={title}
+            tabBarExtraContent={tabExtra}
             activeTabKey={tabKey}
             onTabChange={key => {
                 console.log('onTabChange', key)

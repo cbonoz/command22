@@ -29,6 +29,7 @@ function SensorData({ user }) {
   const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
+  const [expand, setExpand] = useState(false)
   const [activeAlertIndex, setActiveAlertIndex] = useState(null)
 
   const [alerts, setAlerts] = useState([])
@@ -459,7 +460,7 @@ function SensorData({ user }) {
   return (
     <div className='body-padding'>
       <Row gutter={DEFAULT_GUTTER}>
-        <Col xs={{ span: 24, order: 2 }} md={{ span: 12, order: 2 }} lg={{ span: 6, order: 1 }}>
+        <Col xs={{ span: 24, order: 2 }} md={{ span: 12, order: 2 }} lg={{ span: expand ? 12 : 6, order: expand ? 2 : 1 }}>
           <CloudCard
             minHeight={containerHeight}
             maxHeight={containerHeight}
@@ -468,14 +469,15 @@ function SensorData({ user }) {
             tabsContent={leftTabs}
           />
         </Col>
-        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 1 }}  lg={{ span: 12, order: 2 }}>
+        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 1 }}  lg={{ span: expand ? 24 : 12, order: expand ? 1 : 2 }}>
           <CloudCard
-          maxHeight={containerHeight}
+            tabExtra={width >= 1200 && <a href="#" onClick={() => setExpand(!expand)}>{expand ? 'Collapse' : 'Expand'}</a>}
+            maxHeight={containerHeight}
             tabs={[tab("2D MAP"), tab("LiDAR MAP"), tab("PLANNING")]}
             tabsContent={centerTabs}
           />
         </Col>
-        <Col xs={{ span: 24, order: 3 }} md={{ span: 12, order: 3 }} lg={{ span: 6, order: 3 }}>
+        <Col xs={{ span: 24, order: 3 }} md={{ span: 12, order: 3 }} lg={{ span: expand ? 12 : 6, order: expand ? 3 : 3 }}>
           <CloudCard tabs={[tab("CRITICAL ALERTS")]}
             minHeight={containerHeight}
             maxHeight={containerHeight}
