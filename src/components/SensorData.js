@@ -69,9 +69,13 @@ function SensorData({ user }) {
   const flyTo = (lat, lon, zoom = 21) => {
     try {
       console.log('flyTo', lat, lon)
-      mapRef.current.flyTo({ lat, lon }, zoom, { duration: 2 });
+      if (mapRef.current) {
+        mapRef.current.flyTo({ lat, lon }, zoom, { duration: 2 });
+      } else {
+        throw new Error('Map ref not set')
+      }
     } catch (e) {
-      console.error('Could fly to location', e);
+      console.error('Could not fly to location', e);
     }
   }
 
