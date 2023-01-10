@@ -5,6 +5,8 @@ import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/Icon_Standard_VideoFeedObjectTracking.png'
+import marker_icon from '../assets/Icon_Standard_Generic.png'
+
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
 import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
@@ -323,6 +325,8 @@ function SensorData({ user }) {
       setAccessToken(response.access_token)
       setRefreshToken(response.refresh_token)
       readData(response.access_token, true)
+    }).catch(e => {
+      console.error('token error', e)
     })
   }, [])
 
@@ -363,7 +367,7 @@ function SensorData({ user }) {
       try {
         const legends = document.getElementsByClassName('legend-image')
         // console.log('legends', legends.length)
-        if (legends.length === 0) {
+        if (legends.length === 0 && map) {
           legend.addTo(map);
         }
       } catch (e) {
@@ -390,7 +394,15 @@ function SensorData({ user }) {
     <EditControl
       position='topright'
       draw={{
-        rectangle: false
+        rectangle: false,
+        marker:
+        {
+          icon: new Icon({
+            iconUrl: marker_icon,
+            iconSize: [25, 40],
+            iconAnchor: [12, 40]
+          })
+        }
       }}
     />
   </FeatureGroup>
