@@ -77,6 +77,9 @@
 }
 
 .legend-image {
+  position: absolute;
+  right:0;
+  bottom: 0;
   width: 150px;
   z-index: 999;
 }

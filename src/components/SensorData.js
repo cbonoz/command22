@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
@@ -352,33 +352,11 @@ function SensorData({ user }) {
     </div>
   }
 
-  // TODO: determine why doesn't render on tab back.
-  function Legend({ map }) {
-    useEffect(() => {
-      const legend = control({ position: "bottomright" });
-
-      legend.onAdd = () => {
-        console.log('onAdd')
-        const div = DomUtil.create("div", "info legend");
-        div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
-        return div;
-      };
-
-      try {
-        const legends = document.getElementsByClassName('legend-image')
-        // console.log('legends', legends.length)
-        if (legends.length === 0 && map) {
-          legend.addTo(map);
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }, []);
-    return null;
-  }
-
   const centerTabs = {
     "2d map":
+    <div style={{
+      position: 'relative',
+    }}>
     <MapContainer
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
@@ -410,7 +388,6 @@ function SensorData({ user }) {
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
-        <Legend map={mapRef?.current} />
 
         <LayersControl.Overlay name="Indoor Map">
           <ImageOverlay url={IndoorMap}
@@ -439,6 +416,8 @@ function SensorData({ user }) {
           })} />
       })}
     </MapContainer>
+    <img src={sensor_legend} className='legend-image' /> 
+</div>
     , "lidar map": <div style={{minHeight: containerHeight}}>
       <LidarMap user={user} />
     </div>,
