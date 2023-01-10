@@ -199,7 +199,7 @@ export const createCardItem = (index, title, lines, classes, onClick) => {
             onClick={onClick}
         >
             <ul>
-                {lines.map((text, i) => <li key={i}><h3>{text}</h3></li>)}
+                {lines.map((text, i) => <li key={i}>{text}</li>)}
             </ul>
         </Card>
     );

@@ -214,6 +214,10 @@ textarea {
   cursor: pointer;
 }
 
+.text-small {
+  font-size: 12px;
+}
+
 .ant-card-body {
   padding: 5px;
 }
