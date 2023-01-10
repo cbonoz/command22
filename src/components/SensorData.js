@@ -286,9 +286,10 @@ function SensorData({ user }) {
   }
 
   useEffect(() => {
-    if (!sensorData) {
+    if (!(sensorData instanceof Object)) {
       return
     }
+    
     const sensorKeys = Object.keys(sensorData)
 
     // TODO: This is a hack to remove unexpected (nonarray) key values from the sensor data
