@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import CloudCard from './CloudCard'
 import PointCloud from './PointCloud'
-import { Card, Empty, Modal, Select } from 'antd'
+import { Modal } from 'antd'
 import { FileUploader } from 'react-drag-drop-files'
 import { useWindowSize } from '../hooks/WindowSize'
 import { LARGE_FILE_MB, TEST_INTEREST_POINTS } from '../util/constants'
-import { getReadableDateTime, isLargeData } from '../util'
+import { isLargeData } from '../util'
+import RenderObject from './RenderObject'
 
 const reader = new FileReader();
 
 
 function LidarMap({ }) {
   const [plyData, setPlyData] = useState()
-  const [interestPoints, setInterestPoints] = useState([])
+  const [selected, setSelected] = useState()
   const [warningModal, setWarningModal] = useState(false)
   const { width, height } = useWindowSize()
 
@@ -24,7 +24,6 @@ function LidarMap({ }) {
       setWarningModal(true)
     }
     setPlyData(result)
-    setInterestPoints(TEST_INTEREST_POINTS)
   }
 
   useEffect(() => {
@@ -57,7 +56,7 @@ function LidarMap({ }) {
           height={height - 300}
           plyFile={plyData}
           onPointSelect={(point) => {
-            alert('Selected: ' + JSON.stringify(point))
+            setSelected(point)
           }}
         />}
       <Modal
@@ -75,10 +74,21 @@ function LidarMap({ }) {
         <p>This file is larger than {LARGE_FILE_MB} MB and may have slower performance.</p>
         <p>You may proceed with slower performance, but we recommend compressing this file.</p>
       </Modal>
+
+      <Modal
+          open={!!selected}
+          onCancel={() => setSelected(null)}
+          onOk={() => setSelected(null)}
+          size="md"
+          aria-labelledby="contained-modal-title-vcenter"
+          title={"Point of interest"}
+          centered
+        >
+        <RenderObject
+            obj={selected}></RenderObject>
+        </Modal>
     </div>
   )
 }
-
-Map.propTypes = {}
 
 export default LidarMap

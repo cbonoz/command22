@@ -60,6 +60,10 @@
   border-bottom: none;
 }
 
+.sr-only {
+  display: none;
+}
+
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after, .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
   border-bottom: none !important;
 }
@@ -74,6 +78,7 @@
 
 .legend-image {
   width: 150px;
+  z-index: 999;
 }
 
 .create-detail {
@@ -96,7 +101,6 @@
 }
 
 .item-card {
-  width: 225px;
   border: 1px solid black;
   padding: 5px;
   margin: 10px;
@@ -270,7 +274,6 @@ body, .ant-layout-content, .ant-layout-sider {
 
 .ant-card-head {
   padding: 0px;
-  /* min-height: 0px; */
   border-bottom: none;
 }
 

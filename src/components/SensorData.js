@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import CloudCard from './CloudCard'
-import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
 import IndoorMap from "../assets/NIST_Reference_2.png"
 import sensor_legend from "../assets/sensor_legend.png"
@@ -9,11 +9,12 @@ import camera_icon from '../assets/Icon_Standard_VideoFeedObjectTracking.png'
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
 import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
 import { getCameras, retrieveAccessToken, retrieveSensorData } from '../api'
-import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize } from '../util'
+import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize, isValidJSON } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, } from '../util/constants'
+import { DEFAULT_GUTTER, PLAN_DOC, } from '../util/constants'
 import RenderObject from './RenderObject'
+import { EditControl } from 'react-leaflet-draw'
 
 const INDOOR_MAP_BOUNDS = new LatLngBounds([37.76928602, -105.68418292], [37.76875713, -105.68460486])
 
@@ -50,15 +51,8 @@ function SensorData({ user }) {
     }
   }
 
-  const getSeconds = timeStamp => {
-    const modifiedTimeStamp = timeStamp.replaceAll(':', '');
-    const hours = 60 * 60 * modifiedTimeStamp.substr(0, 2);
-    const minutes = 60 * modifiedTimeStamp.substr(2, 2);
-    const seconds = modifiedTimeStamp.substr(4, 2);
-    return hours + minutes + seconds;
-  }
 
-   const onEditingChange = (value) => {
+  const onEditingChange = (value) => {
     setEditing(value)
     // Not editing anymore, save the value.
     console.log('onEditingChange', value, doc)
@@ -127,7 +121,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Temperature"]) < 95) {
@@ -138,7 +134,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
@@ -149,7 +147,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
@@ -160,7 +160,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -175,7 +177,9 @@ function SensorData({ user }) {
               "Smoke detector detects smoke: " + dataReading["Detected"],
               "Latitude: " + dataReading["Lat"],
               "Longitude: " + dataReading["Lon"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -188,7 +192,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Temperature"]) < 95) {
@@ -199,7 +205,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) > 105) {
@@ -210,7 +218,9 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
+            ],
+            dataReading,
+            'risk-card'
           );
         }
         if (Number(dataReading["Pulse Rate"]) < 60) {
@@ -221,8 +231,11 @@ function SensorData({ user }) {
               "Pulse Oxygen: " + dataReading["Pulse Oxygen"],
               "Pulse Rate: " + dataReading["Pulse Rate"],
               "Temperature: " + dataReading["Temperature"],
-            ]
-          );
+            ],
+            dataReading,
+            'risk-card'
+          )
+          ;
         }
         return null;
       } else if (sensorId < 110000) {
@@ -247,7 +260,9 @@ function SensorData({ user }) {
           return clickableMapAlert(
             index,
             "First Responder Incapacitated",
-            []
+            [],
+            dataReading,
+            'risk-card'
           );
         }
         return null;
@@ -258,14 +273,6 @@ function SensorData({ user }) {
     });
   }
 
-  const isValidJSON = (str) => {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
 
   const readData = (token, centerMap) => {
     retrieveSensorData(token).then((response) => {
@@ -273,14 +280,15 @@ function SensorData({ user }) {
         const responseData = JSON.parse(response.data.data)
         setSensorData(responseData)
         const sensorTimes = Object.keys(responseData)
+
         const newAlerts = sensorTimes.map(function (interval, index) {
-          return <>{alertList(responseData[interval])}</>;
+          return <span key={index}>{alertList(responseData[interval])}</span>;
         });
         const newIntervals = sensorTimes.map(function (interval, index) {
-          return <>{getSensorDataList(responseData[interval])}</>;
+          return <span key={index}>{getSensorDataList(responseData[interval])}</span>;
         });
         const newMarkers = sensorTimes.map(function (interval, index) {
-          return markerList(responseData[interval]);
+          return <span key={index}>{markerList(responseData[interval])}</span>
         });
         if (centerMap) {
           let mapCentered = false
@@ -335,7 +343,6 @@ function SensorData({ user }) {
             setVideo(v)
             flyTo(v.lat, v.long)
           }
-
         )
       })}
     </div>
@@ -343,21 +350,26 @@ function SensorData({ user }) {
 
   // TODO: determine why doesn't render on tab back.
   function Legend({ map }) {
-    if (map) {
+    useEffect(() => {
       const legend = control({ position: "bottomright" });
 
       legend.onAdd = () => {
+        console.log('onAdd')
         const div = DomUtil.create("div", "info legend");
         div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
         return div;
       };
 
       try {
-        legend.addTo(map);
+        const legends = document.getElementsByClassName('legend-image')
+        // console.log('legends', legends.length)
+        if (legends.length === 0) {
+          legend.addTo(map);
+        }
       } catch (e) {
         console.error(e)
       }
-    }
+    }, []);
     return null;
   }
 
@@ -367,13 +379,22 @@ function SensorData({ user }) {
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
-      zoom={20}
-      maxZoom={22}
+      zoom={15}
+      maxZoom={20}
       zoomControl={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+<FeatureGroup>
+    <EditControl
+      position='topright'
+      draw={{
+        rectangle: false
+      }}
+    />
+  </FeatureGroup>
 
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
@@ -389,7 +410,7 @@ function SensorData({ user }) {
 
       </LayersControl>
       {markers}
-        {(videos || []).map((video, index) => {
+      {(videos || []).map((video, index) => {
         return <Marker
           eventHandlers={{
             click: (e) => {
@@ -406,7 +427,7 @@ function SensorData({ user }) {
           })} />
       })}
     </MapContainer>
-    , "lidar map": <div>
+    , "lidar map": <div style={{minHeight: containerHeight}}>
       <LidarMap user={user} />
     </div>,
     "planning":
@@ -420,9 +441,9 @@ function SensorData({ user }) {
         />
 
         <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={v => onEditingChange(v)} />
-        <br/>
+        <br />
         <div style={{ width: '100%', minHeight: '400px' }}>
-        {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+          {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
         </div>
 
       </div>
@@ -435,7 +456,7 @@ function SensorData({ user }) {
   return (
     <div className='body-padding'>
       <Row gutter={DEFAULT_GUTTER}>
-        <Col xs={{ span: 24, order: 2 }} md={{ span: 24, order: 2 }} xl={6} order={2}>
+        <Col xs={{ span: 24, order: 2 }} md={{ span: 12, order: 2 }} lg={{ span: 6, order: 1 }}>
           <CloudCard
             maxHeight={containerHeight}
             overflowY='scroll'
@@ -443,13 +464,14 @@ function SensorData({ user }) {
             tabsContent={leftTabs}
           />
         </Col>
-        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 2 }} xl={12} order={1}>
+        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 1 }}  lg={{ span: 12, order: 2 }}>
           <CloudCard
+          maxHeight={containerHeight}
             tabs={[tab("2D MAP"), tab("LiDAR MAP"), tab("PLANNING")]}
             tabsContent={centerTabs}
           />
         </Col>
-        <Col xs={{ span: 24, order: 3 }} md={{ span: 24, order: 2 }} xl={6} order={3}>
+        <Col xs={{ span: 24, order: 3 }} md={{ span: 12, order: 3 }} lg={{ span: 6, order: 3 }}>
           <CloudCard tabs={[tab("CRITICAL ALERTS")]}
             maxHeight={containerHeight}
             overflowY='scroll'
