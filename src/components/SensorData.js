@@ -101,9 +101,10 @@ function SensorData({ user }) {
 
   const alertList = interval => {
     if (!Array.isArray(interval)) {
-      console.log('interval', interval)
-
+      console.log('', interval)
+      return
     }
+
     return interval.map(function (dataReading, index) {
       const id = Number(dataReading["Sensor ID"]);
       const sensorId = id < 20000 ? id * 10 : id;
@@ -290,15 +291,16 @@ function SensorData({ user }) {
       return
     }
 
-    const sensorKeys = Object.keys(sensorData)
 
     // TODO: This is a hack to remove unexpected (nonarray) key values from the sensor data
     // Sometimes a key will return 'Stream starting in N seconds'
-    for (const key of sensorKeys) {
-      if (!(sensorData[key] instanceof Array)) {
+    for (const key of Object.keys(sensorData)) {
+      if (!Array.isArray(sensorData[key])) {
         delete sensorData[key]
       }
     }
+    
+    const sensorKeys = Object.keys(sensorData)
 
     const newAlerts = sensorKeys.map(function (interval, index) {
       return <span key={index}>{alertList(sensorData[interval])}</span>;
