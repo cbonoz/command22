@@ -17,7 +17,7 @@ import MapIcon_FirstResponderAsset from "../assets/Icon_Standard_FirstResponderA
 import MapIcon_Generic from "../assets/Icon_Standard_Generic.png"
 import { Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
-import { Card } from "antd";
+import { Card, Typography } from "antd";
 
 export const getDataUrl = (data) => `data:image/jpeg;base64,${data}`
 
@@ -195,7 +195,7 @@ export const createCardItem = (index, title, lines, classes, onClick) => {
     return (
         <Card className={`${classes || ''} card-item`}
             key={index + 1}
-            title={title}
+            title={<Typography.Text ellipsis={true}>{title}</Typography.Text>}
             onClick={onClick}
         >
             <ul>
@@ -218,7 +218,6 @@ export const getSensorDataList = (interval, clickableItem) => {
                     "Reg Vehicle Count: " + dataReading["Reg Vehicle Count"]
                 ],
                 dataReading,
-                'risk-card'
             );
         } else if (sensorId < 30000) {
             return clickableItem(
@@ -230,7 +229,6 @@ export const getSensorDataList = (interval, clickableItem) => {
                     "Altitude: " + dataReading["Altitude"]
                 ],
                 dataReading,
-                'risk-card'
             );
         } else if (sensorId < 40000) {
             return clickableItem(
@@ -288,6 +286,7 @@ export const getSensorDataList = (interval, clickableItem) => {
                     "Longitude: " + dataReading["Lon"]
                 ],
                 dataReading,
+                'risk-card'
             );
         } else if (sensorId < 100000) {
             return clickableItem(

@@ -446,7 +446,7 @@ function SensorData({ user }) {
         <Switch checkedChildren="Editing" unCheckedChildren="Set url" checked={editing} onChange={v => onEditingChange(v)} />
         <br />
         <div style={{ width: '100%', minHeight: '400px' }}>
-          {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight }} />}
+          {doc && editing && <iframe src={doc} style={{ width: '100%', minHeight: containerHeight - 50 }} />}
         </div>
 
       </div>
