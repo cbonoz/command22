@@ -14,7 +14,7 @@ import { getCameras, retrieveAccessToken, retrieveSensorData } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize, isValidJSON } from '../util'
 import VideoStream from './VideoStream'
 import LidarMap from './LidarMap'
-import { DEFAULT_GUTTER, PLAN_DOC, } from '../util/constants'
+import { DEFAULT_GUTTER, EXAMPLE_SENSOR_DATA, PLAN_DOC, TEST_INTEREST_POINTS, } from '../util/constants'
 import RenderObject from './RenderObject'
 import { EditControl } from 'react-leaflet-draw'
 
@@ -75,7 +75,7 @@ function SensorData({ user }) {
 
   const clickableMapAlert = (index, title, lines, dataReading, className) => {
     const isActive = activeAlertIndex === index && dataReading?.Lat // has location
-    const classes = `${className} ${isActive ? 'active' : ''}`
+    const classes = `${className || ''} ${isActive ? 'active' : ''}`
     return createCardItem(
       index,
       title,
@@ -287,7 +287,7 @@ function SensorData({ user }) {
           return <span key={index}>{alertList(responseData[interval])}</span>;
         });
         const newIntervals = sensorTimes.map(function (interval, index) {
-          return <span key={index}>{getSensorDataList(responseData[interval])}</span>;
+          return <span key={index}>{getSensorDataList(responseData[interval], clickableMapAlert)}</span>;
         });
         const newMarkers = sensorTimes.map(function (interval, index) {
           return <span key={index}>{markerList(responseData[interval])}</span>
@@ -327,6 +327,7 @@ function SensorData({ user }) {
       readData(response.access_token, true)
     }).catch(e => {
       console.error('token error', e)
+      setAlerts()
     })
   }, [])
 
@@ -389,7 +390,7 @@ function SensorData({ user }) {
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
 
-        <LayersControl.Overlay name="Indoor Map">
+        <LayersControl.Overlay checked name="Indoor Map">
           <ImageOverlay url={IndoorMap}
             bounds={INDOOR_MAP_BOUNDS}
             opacity={0.5}
