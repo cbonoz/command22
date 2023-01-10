@@ -15,7 +15,7 @@ import MapIcon_VideoFeedObjectTracking from "../assets/Icon_Standard_VideoFeedOb
 import MapIcon_FirstResponderStatusDetection from "../assets/Icon_Standard_FirstResponderStatus.png"
 import MapIcon_FirstResponderAsset from "../assets/Icon_Standard_FirstResponderAsset.png"
 import MapIcon_Generic from "../assets/Icon_Standard_Generic.png"
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, Tooltip } from "react-leaflet";
 import { Icon } from "leaflet";
 import { Card, Typography } from "antd";
 
@@ -344,6 +344,23 @@ export const getSensorDataList = (interval, clickableItem) => {
     });
 }
 
+const renderLabel = marker => {
+    const id = Number(marker["Sensor ID"]);
+    const sensorId = id < 20000 ? id * 10 : id;
+    if (sensorId >= 20000 && sensorId < 30000) {
+        return (
+            <Tooltip
+                direction="top"
+                offset={[0, -42]}
+                opacity={0.85}
+                permanent
+            >
+                {marker['Sensor ID']}
+            </Tooltip>
+        )
+    }
+    return null
+}
 
 export const markerList = markers => {
     return markers.map(function (marker, index) {
@@ -364,6 +381,7 @@ export const markerList = markers => {
                             Object.keys(marker).map((k) => `${k}: ${marker[k]}`),
                         )}
                     </Popup>
+                    {renderLabel(marker)}
                 </Marker>
             );
         }
