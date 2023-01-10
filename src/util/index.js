@@ -367,11 +367,12 @@ export const markerList = markers => {
         if (marker && marker.Lat && marker.Lon) {
             return (
                 <Marker
+                    key={index}
                     position={[marker.Lat, marker.Lon]}
                     icon={new Icon({
                         iconUrl: getMarkerIcon(marker),
                         iconSize: [25, 41],
-                        iconAnchor: [12, 41)]
+                        iconAnchor: [12, 41],
                     })}
                 >
                     <Popup offset={[0, -30]}>
