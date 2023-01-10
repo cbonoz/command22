@@ -100,7 +100,7 @@ function SensorData({ user }) {
   }
 
   const alertList = interval => {
-    if (!(interval instanceof Array)) {
+    if (!Array.isArray(interval)) {
       console.log('interval', interval)
 
     }
@@ -289,7 +289,7 @@ function SensorData({ user }) {
     if (!(sensorData instanceof Object)) {
       return
     }
-    
+
     const sensorKeys = Object.keys(sensorData)
 
     // TODO: This is a hack to remove unexpected (nonarray) key values from the sensor data
@@ -337,10 +337,16 @@ function SensorData({ user }) {
   const readData = (token) => {
     retrieveSensorData(token).then((response) => {
       let data = response.data.data
-      if (data instanceof String) {
+      if (typeof data === 'string') {
         data = JSON.parse(data)
       }
+      // Return if the data is a stream starting message.
+      if (data.data && data.data.indexOf('Stream starts') !== -1) {
+        return
+      }
+      console.log('set data', data)
       setSensorData(data)
+    }).finally(() => {
       setTimeout(() => {
         readData(token)
       }, 1000)
