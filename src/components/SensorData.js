@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import CloudCard from './CloudCard'
 import { MapContainer, TileLayer, useMap, Marker, Popup, LayersControl, ImageOverlay, FeatureGroup } from 'react-leaflet'
 import { useWindowSize } from '../hooks/WindowSize'
-import IndoorMap from "../assets/BuildingMap_NoLatLong.png"
+import IndoorMap from "../assets/BuildingMap_Transparent_Background.png"
 import sensor_legend from "../assets/sensor_legend.png"
 import camera_icon from '../assets/Icon_Standard_VideoFeedObjectTracking.png'
 import marker_icon from '../assets/Icon_Standard_Generic.png'
