@@ -382,6 +382,7 @@ export const isValidJSON = (str) => {
     try {
         JSON.parse(str);
     } catch (e) {
+        console.error('error', e)
         return false;
     }
     return true;

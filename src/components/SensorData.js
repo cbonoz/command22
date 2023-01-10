@@ -318,11 +318,11 @@ function SensorData({ user }) {
 
   const readData = (token) => {
     retrieveSensorData(token).then((response) => {
-      if (isValidJSON(response.data.data)) {
-        const responseData = JSON.parse(response.data.data)
-        setSensorData(responseData)
-        
+      let data = response.data.data
+      if (data instanceof String) {
+        data = JSON.parse(data)
       }
+      setSensorData(data)
       setTimeout(() => {
         readData(token)
       }, 1000)
