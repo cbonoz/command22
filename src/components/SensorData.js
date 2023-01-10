@@ -9,7 +9,7 @@ import marker_icon from '../assets/Icon_Standard_Generic.png'
 
 
 import { Icon, LatLngBounds, control, DomUtil } from 'leaflet'
-import { Button, Col, Input, Modal, Row, Switch, } from 'antd'
+import { Button, Col, Input, Modal, Row, Spin, Switch, } from 'antd'
 import { getCameras, retrieveAccessToken, retrieveSensorData } from '../api'
 import { getReadableError, getSensorDataList, markerList, tab, createCardItem, capitalize, isValidJSON } from '../util'
 import VideoStream from './VideoStream'
@@ -29,6 +29,7 @@ function SensorData({ user }) {
   const mapRef = useRef()
   const [video, setVideo] = useState(null)
   const [videos, setVideos] = useState()
+  const [loading, setLoading] = useState(false)
   const [expand, setExpand] = useState(false)
   const [activeAlertIndex, setActiveAlertIndex] = useState(null)
 
@@ -299,7 +300,7 @@ function SensorData({ user }) {
         delete sensorData[key]
       }
     }
-    
+
     const sensorKeys = Object.keys(sensorData)
 
     const newAlerts = sensorKeys.map(function (interval, index) {
@@ -349,6 +350,7 @@ function SensorData({ user }) {
       console.log('set data', data)
       setSensorData(data)
     }).finally(() => {
+      setLoading(false)
       setTimeout(() => {
         readData(token)
       }, 1000)
@@ -356,16 +358,16 @@ function SensorData({ user }) {
   }
 
   useEffect(() => {
+    setLoading(true)
     cameras()
     retrieveAccessToken().then((response) => {
       console.log(response)
       setAccessToken(response.access_token)
       setRefreshToken(response.refresh_token)
-      readData(response.access_token, true)
+      readData(response.access_token)
     }).catch(e => {
       console.error('token error', e)
       setSensorData(EXAMPLE_SENSOR_DATA.data)
-
     })
   }, [])
 
@@ -374,7 +376,10 @@ function SensorData({ user }) {
   const containerHeight = (height - 200) || 800;
 
   const leftTabs = {
-    'sensors': <div>{intervals}</div>,
+    'sensors': <div>
+      {loading && <Spin size="large" />}
+      {intervals}
+      </div>,
     'cameras': <div>
       {videos?.map((v, i) => {
         return createCardItem(
