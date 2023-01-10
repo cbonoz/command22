@@ -362,7 +362,7 @@ function SensorData({ user }) {
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
       zoom={15}
-      maxZoom={20}
+      maxZoom={22}
       zoomControl={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
