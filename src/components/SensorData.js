@@ -247,7 +247,7 @@ function SensorData({ user }) {
             dataReading,
             'risk-card'
           )
-          ;
+            ;
         }
         return null;
       } else if (sensorId < 110000) {
@@ -378,7 +378,7 @@ function SensorData({ user }) {
         return createCardItem(
           i,
           `Camera: ${v.name}`,
-          Object.keys(v).map((k) => `${capitalize(k)}: ${v[k]}`),
+          Object.keys(v).map((k, i) => <span key={i}><b>{capitalize(k)}</b>: {v[k]}</span>),
           'pointer',
           () => {
             setVideo(v)
@@ -391,71 +391,71 @@ function SensorData({ user }) {
 
   const centerTabs = {
     "2d map":
-    <div style={{
-      position: 'relative',
-    }}>
-    <MapContainer
-      ref={mapRef}
-      style={{ height: containerHeight, width: "auto" }}
-      center={mapPosition}
-      zoom={20}
-      maxZoom={22}
-      zoomControl={true}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-
-<FeatureGroup>
-    <EditControl
-      position='topright'
-      draw={{
-        rectangle: false,
-        marker:
-        {
-          icon: new Icon({
-            iconUrl: marker_icon,
-            iconSize: [25, 40],
-            iconAnchor: [12, 40]
-          })
-        }
-      }}
-    />
-  </FeatureGroup>
-
-      <LayersControl position="topright">
-        {/* <LayersControl.Overlay name="Show Legend"> */}
-
-        <LayersControl.Overlay checked name="Indoor Map">
-          <ImageOverlay url={IndoorMap}
-            bounds={INDOOR_MAP_BOUNDS}
-            opacity={0.85}
-            zIndex={10}
+      <div style={{
+        position: 'relative',
+      }}>
+        <MapContainer
+          ref={mapRef}
+          style={{ height: containerHeight, width: "auto" }}
+          center={mapPosition}
+          zoom={20}
+          maxZoom={22}
+          zoomControl={true}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        </LayersControl.Overlay>
 
-      </LayersControl>
-      {markers}
-      {(videos || []).map((video, index) => {
-        return <Marker
-          eventHandlers={{
-            click: (e) => {
-              console.log('clicked', video)
-              setVideo(video);
-            },
-          }}
-          key={index}
-          position={[video.lat, video.long]}
-          icon={new Icon({
-            iconUrl: camera_icon,
-            iconSize: [25, 40],
-            iconAnchor: [12, 40]
-          })} />
-      })}
-    </MapContainer>
-    <img src={sensor_legend} className='legend-image' /> 
-</div>
-    , "lidar map": <div style={{minHeight: containerHeight}}>
+          <FeatureGroup>
+            <EditControl
+              position='topright'
+              draw={{
+                rectangle: false,
+                marker:
+                {
+                  icon: new Icon({
+                    iconUrl: marker_icon,
+                    iconSize: [25, 40],
+                    iconAnchor: [12, 40]
+                  })
+                }
+              }}
+            />
+          </FeatureGroup>
+
+          <LayersControl position="topright">
+            {/* <LayersControl.Overlay name="Show Legend"> */}
+
+            <LayersControl.Overlay checked name="Indoor Map">
+              <ImageOverlay url={IndoorMap}
+                bounds={INDOOR_MAP_BOUNDS}
+                opacity={0.85}
+                zIndex={10}
+              />
+            </LayersControl.Overlay>
+
+          </LayersControl>
+          {markers}
+          {(videos || []).map((video, index) => {
+            return <Marker
+              eventHandlers={{
+                click: (e) => {
+                  console.log('clicked', video)
+                  setVideo(video);
+                },
+              }}
+              key={index}
+              position={[video.lat, video.long]}
+              icon={new Icon({
+                iconUrl: camera_icon,
+                iconSize: [25, 40],
+                iconAnchor: [12, 40]
+              })} />
+          })}
+        </MapContainer>
+        <img src={sensor_legend} className='legend-image' />
+      </div>
+    , "lidar map": <div style={{ minHeight: containerHeight }}>
       <LidarMap user={user} />
     </div>,
     "planning":
@@ -493,7 +493,7 @@ function SensorData({ user }) {
             tabsContent={leftTabs}
           />
         </Col>
-        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 1 }}  lg={{ span: expand ? 24 : 12, order: expand ? 1 : 2 }}>
+        <Col xs={{ span: 24, order: 1 }} md={{ span: 24, order: 1 }} lg={{ span: expand ? 24 : 12, order: expand ? 1 : 2 }}>
           <CloudCard
             tabExtra={width >= 1200 && <a href="#" onClick={() => setExpand(!expand)}>{expand ? 'Collapse' : 'Expand'}</a>}
             maxHeight={containerHeight}
