@@ -157,7 +157,7 @@ function VideoStream({ video, onBoxClicked }) {
                         </CloudCard>
 
                         <CloudCard title={"ANALYZE SNAPSHOT"}>
-                            <p>Select an analytics type button below to generate a snapshot and view analytics</p>
+                            <p>Select an analytics type button below to generate a snapshot with analytics.<br />Click again to update the snapshot frame.</p>
                             <div className='vertical-margin'>
                                 {/* Service button row */}
                                 {convertToArray(video.services).map((s, i) => {
@@ -167,19 +167,7 @@ function VideoStream({ video, onBoxClicked }) {
                                 })}
                             </div>
                             {analytics?.error && <p>Error: {getReadableError(analytics.error)}</p>}
-                            {endpoint === 'personattribute' && <div>
-                                <Select
-                                    mode="multiple"
-                                    allowClear
-                                    style={{ width: '90%' }}
-                                    placeholder="Select filters"
-                                    defaultValue={filters}
-                                    onChange={onFiltersChanged}
-                                    options={filterOptions}
-                                />
-                                <br />
-                                <br />
-                            </div>}
+
                         </CloudCard>
 
 
@@ -194,6 +182,17 @@ function VideoStream({ video, onBoxClicked }) {
                             {/* </div>} */}
                         </CloudCard>
                         <CloudCard title={analytics.analyticName}>
+                            {endpoint === 'personattribute' && <div>
+                                <Select
+                                    mode="multiple"
+                                    allowClear
+                                    style={{ width: '90%' }}
+                                    placeholder="Filter for specific objects of interest"
+                                    defaultValue={filters}
+                                    onChange={onFiltersChanged}
+                                    options={filterOptions}
+                                />
+                            </div>}
                             {analytics.results && <p>
                                 Results: {isDetection ? boxes?.length : JSON.stringify(analytics.results)}
                             </p>}

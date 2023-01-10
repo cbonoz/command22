@@ -219,6 +219,13 @@ textarea {
 }
 .ant-card-meta-title {
   white-space: pre-line;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+}
+
+.ant-card-head-title {
+  inline-size: 200px;
+  overflow-wrap: break-word;
 }
 
 .cloud-card .ant-card-head-title, .cloud-card .ant-tabs-tab {
@@ -226,7 +233,7 @@ textarea {
   font-weight: bold;
   font-size: 14px !important;
   color: rgb(98,108,125);
-  text-overflow: hidden;
+ 
   /* text-transform: uppercase; */
   /* padding-left: 16px; */
 }

@@ -96,6 +96,10 @@ function SensorData({ user }) {
   }
 
   const alertList = interval => {
+    if (!(interval instanceof Array)) {
+      console.log('interval', interval)
+
+    }
     return interval.map(function (dataReading, index) {
       const id = Number(dataReading["Sensor ID"]);
       const sensorId = id < 20000 ? id * 10 : id;
@@ -281,17 +285,26 @@ function SensorData({ user }) {
     if (!sensorData) {
       return
     }
-    const sensorTimes = Object.keys(sensorData)
+    const sensorKeys = Object.keys(sensorData)
 
-    const newAlerts = sensorTimes.map(function (interval, index) {
+    // TODO: This is a hack to remove unexpected (nonarray) key values from the sensor data
+    // Sometimes a key will return 'Stream starting in N seconds'
+    for (const key of sensorKeys) {
+      if (!(sensorData[key] instanceof Array)) {
+        delete sensorData[key]
+      }
+    }
+
+    const newAlerts = sensorKeys.map(function (interval, index) {
       return <span key={index}>{alertList(sensorData[interval])}</span>;
     });
-    const newIntervals = sensorTimes.map(function (interval, index) {
+    const newIntervals = sensorKeys.map(function (interval, index) {
       return <span key={index}>{getSensorDataList(sensorData[interval], clickableMapAlert)}</span>;
     });
-    const newMarkers = sensorTimes.map(function (interval, index) {
+    const newMarkers = sensorKeys.map(function (interval, index) {
       return <span key={index}>{markerList(sensorData[interval])}</span>
     });
+
     if (centerMap) {
       let mapCentered = false
       for (const key of Object.keys(sensorData)) {
