@@ -355,10 +355,9 @@ function SensorData({ user }) {
         data = JSON.parse(data)
       }
       // Return if the data is a stream starting message.
-      if (data.data && data.data.indexOf('Stream starts') !== -1) {
+      if (JSON.stringify(data.data || {}).indexOf('starting') !== -1) {
         return
       }
-      console.log('set data', data)
       setSensorData(data)
     }).finally(() => {
       setLoading(false)
