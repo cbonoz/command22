@@ -343,28 +343,27 @@ function SensorData({ user }) {
 
   // TODO: determine why doesn't render on tab back.
   function Legend({ map }) {
-    useEffect(() => {
-      if (map) {
-        const legend = control({ position: "bottomright" });
+    if (map) {
+      const legend = control({ position: "bottomright" });
 
-        legend.onAdd = () => {
-          const div = DomUtil.create("div", "info legend");
-          div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
-          return div;
-        };
+      legend.onAdd = () => {
+        const div = DomUtil.create("div", "info legend");
+        div.innerHTML = "<img src=" + sensor_legend + " class='legend-image' />";
+        return div;
+      };
 
-        try {
-          legend.addTo(map);
-        } catch (e) {
-          console.error(e)
-        }
+      try {
+        legend.addTo(map);
+      } catch (e) {
+        console.error(e)
       }
-    }, [map]);
+    }
     return null;
   }
 
   const centerTabs = {
-    "2d map": <MapContainer
+    "2d map":
+    <MapContainer
       ref={mapRef}
       style={{ height: containerHeight, width: "auto" }}
       center={mapPosition}
@@ -379,7 +378,6 @@ function SensorData({ user }) {
       <LayersControl position="topright">
         {/* <LayersControl.Overlay name="Show Legend"> */}
         <Legend map={mapRef?.current} />
-        {/* </LayersControl.Overlay> */}
 
         <LayersControl.Overlay name="Indoor Map">
           <ImageOverlay url={IndoorMap}
