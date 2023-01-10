@@ -371,7 +371,7 @@ export const markerList = markers => {
                     icon={new Icon({
                         iconUrl: getMarkerIcon(marker),
                         iconSize: [25, 41],
-                        iconAnchor: [12, 36 + Math.round(Math.random() * 10)]
+                        iconAnchor: [12, 41)]
                     })}
                 >
                     <Popup offset={[0, -30]}>
