@@ -196,9 +196,9 @@ function PointCloud({width, height, plyFile, onPointSelect}) {
         initPly(plyFile, () => {
           // console.log('loaded', plyFile)
           // TODO: pull interest points from live source/feed.
-          TEST_INTEREST_POINTS.forEach(p => {
-            addClickableSphere(p)
-          })
+          // TEST_INTEREST_POINTS.forEach(p => {
+          //   addClickableSphere(p)
+          // })
           setLoading(false)
           animate()
         })
