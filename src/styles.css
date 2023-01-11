@@ -198,6 +198,10 @@ textarea {
   margin-bottom: 20px;
 }
 
+.card-item:hover {
+  background-color: #f5f5f5 !important; 
+}
+
 .card-item {
   padding-left: 8px;
   margin-top: 8px;
