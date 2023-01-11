@@ -88,8 +88,9 @@ export default function App() {
           key: '2',
           label: (
             <a target="#" rel="noopener noreferrer" onClick={(e) => {
-              e.preventDefault();
+              console.log('logout')
               logout()
+              e.preventDefault();
             }}>
               Logout
             </a>
