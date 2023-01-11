@@ -80,7 +80,10 @@ function VideoStream({ video, onBoxClicked }) {
     const { image, endpoint } = analytics || {}
 
     const imageUrl = getDataUrl(image)
+
+    // API classifications
     const isDetection = endpoint === 'objectdetection' || endpoint === 'personattribute'
+    const isAttribute = endpoint?.indexOf('attribute') !== -1
 
     const loaded = video && frame;
 
@@ -94,7 +97,7 @@ function VideoStream({ video, onBoxClicked }) {
                 data['results'] = JSON.parse(data.results)
             }
             setAnalytics({ ...data, analyticName, endpoint })
-            if (endpoint === 'personattribute') {
+            if (isAttribute) {
                 const myList = []
                 for (let i = 0; i < data.results.length; i++) {
                     const result = data.results[i]
@@ -182,7 +185,7 @@ function VideoStream({ video, onBoxClicked }) {
                             {/* </div>} */}
                         </CloudCard>
                         <CloudCard title={analytics.analyticName}>
-                            {endpoint === 'personattribute' && <div>
+                            {isAttribute && <div>
                                 <Select
                                     mode="multiple"
                                     allowClear

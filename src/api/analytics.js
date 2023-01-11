@@ -1,3 +1,5 @@
+
+// TODO: This list should be fetched from the server
 export const ANALYTICS = [
     {
         "id": 1,
@@ -27,6 +29,12 @@ export const ANALYTICS = [
         "id": 5,
         "name": "Object Counter",
         "endpoint": "objectcounter",
+        "fps": 2
+    },
+    {
+        "id": 6,
+        "name": "Bag Attributes",
+        "endpoint": "bagattributes",
         "fps": 2
     }
 ]
