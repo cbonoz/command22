@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { MD5 } from 'crypto-js'
+import { NIST_API_PASSWORD, NIST_PASSWORD } from '../util/constants';
 
 const baseURL = process.env.REACT_APP_VIDEO_API_URL || 'http://qil2.uh.edu';
 const PROXY_URL = 'https://http-proxy.fly.dev/proxy'
@@ -60,7 +61,7 @@ export async function retrieveAccessToken() {
     const url = 'https://api.commandingtechchallenge.com/login'
     const params = new URLSearchParams()
     params.append('username', 'CloudResponder')
-    params.append('password', 'Qh*v2@OK8rm7')
+    params.append('password', NIST_API_PASSWORD)
     // Default options are marked with *
     const response = await fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.

@@ -6,3 +6,6 @@ data/phase2.ply
 build
 .DS_Store
 .dccache
+
+# local env
+.env.local

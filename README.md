@@ -11,12 +11,8 @@ Repo for CommandDING contest 2022.
 CloudResponder is an open source data-driven incident response and visualization platform for first-responders.
 
 ### How to run
-`yarn && yarn dev`
 
-Use `yarn start`: for openssl legacy provider.
-
-
-CloudResponder is currently configured to work with a <a href="firebase.com">firebase</a> application.
+This app uses <a href="firebase.com">firebase</a> for authentication. Add the following variables to your environment before starting the project (ex: by adding an `.env.local` file)
 
 <pre>
 REACT_APP_FB_KEY={YOUR_FIREBASE_KEY}
@@ -26,7 +22,17 @@ REACT_APP_FB_BUCKET={YOUR_FIREBASE_BUCKET_ID}
 REACT_APP_FB_SENDER={YOUR_FIREBASE_SENDER_ID}
 REACT_APP_FB_APP={YOUR_FIREBASE_APP_ID}
 REACT_APP_VIDEO_API_URL={VIDEO_FEED_URL} # (optional) defaults to http://qil2.uh.edu
+REACT_APP_NIST_API_PASSWORD={NIST_API_PASSWORD} # API password for 'CloudResponder' user
 </pre>
+
+`yarn && yarn dev`
+
+Use `yarn start`: for openssl legacy provider.
+
+<!--
+CloudResponder is currently configured to work with a <a href="firebase.com">firebase</a> application.
+
+-->
 
 
 ### Point cloud examples:
